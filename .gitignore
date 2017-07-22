@@ -10,6 +10,12 @@ src/energi
 src/energid
 src/energi-cli
 src/energi-tx
+src/test/test_energi
+src/qt/test/test_energi-qt
+src/bench/bench_energi
+src/qt/energi-qt
+
+# will remove later, when rebranding is complete
 src/dash-tx
 src/test/test_dash
 src/qt/test/test_dash-qt
