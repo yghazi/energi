@@ -48,7 +48,7 @@ src/config/dash-config.h
 src/config/dash-config.h.in
 
 
-src/config/energi-config.h
+#src/config/energi-config.h
 src/config/energi-config.h.in
 src/config/stamp-h1
 share/setup.nsi
