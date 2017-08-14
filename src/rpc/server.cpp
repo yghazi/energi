@@ -4,7 +4,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "rpcserver.h"
+#include "rpc/server.h"
 
 #include "base58.h"
 #include "init.h"
@@ -362,6 +362,7 @@ static const CRPCCommand vRPCCommands[] =
     { "wallet",             "addmultisigaddress",     &addmultisigaddress,     true  },
     { "wallet",             "backupwallet",           &backupwallet,           true  },
     { "wallet",             "dumpprivkey",            &dumpprivkey,            true  },
+    { "wallet",             "dumphdinfo",             &dumphdinfo,             true  },
     { "wallet",             "dumpwallet",             &dumpwallet,             true  },
     { "wallet",             "encryptwallet",          &encryptwallet,          true  },
     { "wallet",             "getaccountaddress",      &getaccountaddress,      true  },
