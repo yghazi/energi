@@ -1,4 +1,4 @@
-Building Dash Core
+Building Energi Core
 
 After you install the usual build tools and C++ development tools,
 Dash Core also needs some build dependencies which are not always provided
@@ -21,13 +21,13 @@ use the autogen script to prepare the build environment.
     make
 
 Precompiled binaries are available at github, see
-https://github.com/dashpay/dash-binaries
+https://github.com/energicryptocurrency/energi-binaries
 
 Always verify the signatures and checksums.
 
-See doc/build-*.md for instructions on building dashd,
+See doc/build-*.md for instructions on building energid,
 the intended-for-services, no-graphical-interface, reference
-implementation of Dash.
+implementation of Energi.
 
 
 -------------------------------

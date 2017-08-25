@@ -178,7 +178,8 @@ CMasternode::CollateralStatus CMasternode::CheckCollateral(CTxIn vin, int& nHeig
         return COLLATERAL_UTXO_NOT_FOUND;
     }
 
-    if(coins.vout[vin.prevout.n].nValue != 1000 * COIN) {
+    //10,000 EGI collateral for masternode
+    if(coins.vout[vin.prevout.n].nValue != 10000 * COIN) {
         return COLLATERAL_INVALID_AMOUNT;
     }
 
