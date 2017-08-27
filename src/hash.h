@@ -347,16 +347,4 @@ inline uint256 HashX11(const T1 pbegin, const T1 pend)
     return hash[10].trim256();
 }
 
-
-/* ----------- Egi Hash ------------------------------------------------ */
-template<typename T1>
-inline uint256 EgiHash(const T1 pbegin, const T1 pend)
-{
-    uint256 output_hash;
-    egihash_h256_compute( (EGIHASH_NAMESPACE(h256_t) * ) &output_hash, (void *) &pbegin[0], 
-            (uint64_t) ( (pend - pbegin) * sizeof(pbegin[0])) );
-    return output_hash;
-}
-
-
 #endif // BITCOIN_HASH_H
