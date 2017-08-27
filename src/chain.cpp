@@ -111,3 +111,26 @@ void CBlockIndex::BuildSkip()
     if (pprev)
         pskip = pprev->GetAncestor(GetSkipHeight(nHeight));
 }
+
+void loadDAG(std::string dataDir){
+    auto filename = dataDir + std::string(“epoch”) 
+                            + std::to_string(Height() / egihash::constants::EPOCH_LENGTH) + “.dag”;
+
+    try
+    {
+        egihash::dag_t load(filename);
+    }
+    catch (hash_exception const & e)
+    {
+        // unable to load the dag, must be generated
+        try
+        {
+            egihash::dag_t newDAG(Height());
+            newDAG.save(filename);
+        }
+        catch (hash_exception const & e)
+        {
+            // error generating dag, log it and quit
+        }
+    }
+}
