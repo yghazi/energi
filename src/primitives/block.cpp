@@ -10,11 +10,13 @@
 #include "utilstrencodings.h"
 #include "crypto/common.h"
 
-uint256 CBlockHeader::GetHash() const
+uint256 CBlockHeader::GetHash(uint32_t blockHeight) const
 {
     // BEGIN(a) = ((char*)&(a))
     // END(a)   = ((char*)&((&(a))[1]))
-    return EgiHash(BEGIN(nVersion), END(nNonce));
+    return egihash::full::hash(egihash::dag_t(blockHeight/egihash::constants::EPOCH_LENGTH), 
+                                nVersion,
+                                nNonce);
 }
 
 std::string CBlock::ToString() const
