@@ -337,7 +337,7 @@ UniValue verifytxoutproof(const UniValue& params, bool fHelp)
         return res;
 
     LOCK(cs_main);
-
+    // TODO: can't figure out how to add the height here
     if (!mapBlockIndex.count(merkleBlock.header.GetHash()) || !chainActive.Contains(mapBlockIndex[merkleBlock.header.GetHash()]))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Block not found in chain");
 
