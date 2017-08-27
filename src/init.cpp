@@ -1612,7 +1612,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     fFeeEstimatesInitialized = true;
 
     // Load or generate DAG
-    chainActive.loadDAG(GetDataDir().string());
+    LoadDAG(GetDataDir().string());
     
 
     // ********************************************************* Step 8: load wallet

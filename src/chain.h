@@ -408,7 +408,7 @@ public:
     /** Find the last common block between this chain and a block index entry. */
     const CBlockIndex *FindFork(const CBlockIndex *pindex) const;
 
-    void loadDAG(std::string dataDir);
+    // void loadDAG(std::string dataDir);
 };
 
 #endif // BITCOIN_CHAIN_H

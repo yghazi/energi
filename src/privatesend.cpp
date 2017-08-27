@@ -412,7 +412,7 @@ void CPrivateSend::SyncTransaction(const CTransaction& tx, const CBlock* pblock)
     // When tx is 0-confirmed or conflicted, pblock is NULL and nConfirmedHeight should be set to -1
     CBlockIndex* pblockindex = NULL;
     if(pblock) {
-        uint256 blockHash = pblock->GetHash();
+        uint256 blockHash = pblock->GetHash(chainActive.Tip()->nHeight);
         BlockMap::iterator mi = mapBlockIndex.find(blockHash);
         if(mi == mapBlockIndex.end() || !mi->second) {
             // shouldn't happen

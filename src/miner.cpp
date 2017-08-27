@@ -384,7 +384,7 @@ static bool ProcessBlockFound(const CBlock* pblock, const CChainParams& chainpar
     }
 
     // Inform about the new block
-    GetMainSignals().BlockFound(pblock->GetHash());
+    GetMainSignals().BlockFound(pblock->GetHash(chainActive.Tip()->nHeight));
 
     // Process this block the same as if we had received it from another node
     CValidationState state;
@@ -461,7 +461,7 @@ void static BitcoinMiner(const CChainParams& chainparams)
                 uint256 hash;
                 while (true)
                 {
-                    hash = pblock->GetHash();
+                    hash = pblock->GetHash(chainActive.Tip()->nHeight);
                     if (UintToArith256(hash) <= hashTarget)
                     {
                         // Found a solution
