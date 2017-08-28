@@ -4,7 +4,6 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "primitives/block.h"
-
 #include "hash.h"
 #include "tinyformat.h"
 #include "utilstrencodings.h"
@@ -22,11 +21,11 @@ uint256 CBlockHeader::GetHash(uint32_t blockHeight) const
     return uint256(val);
 }
 
-std::string CBlock::ToString() const
+std::string CBlock::ToString(uint32_t blockHeight) const
 {
     std::stringstream s;
     s << strprintf("CBlock(hash=%s, ver=%d, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%u, hashMix=%s, vtx=%u)\n",
-        GetHash().ToString(),
+        GetHash(blockHeight).ToString(),
         nVersion,
         hashPrevBlock.ToString(),
         hashMerkleRoot.ToString(),

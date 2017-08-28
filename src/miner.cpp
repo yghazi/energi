@@ -373,7 +373,11 @@ void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned
 
 static bool ProcessBlockFound(const CBlock* pblock, const CChainParams& chainparams)
 {
-    LogPrintf("%s\n", pblock->ToString());
+    auto const prevBlock = mapBlockIndex.find(pblock->hashPrevBlock);
+    if (prevBlock == mapBlockIndex.end())
+         throw std::runtime_error("Previous block not found in chain");
+    auto const chainHeight = prevBlock->second->nHeight + 1;
+    LogPrintf("%s\n", pblock->ToString(chainHeight));
     LogPrintf("generated %s\n", FormatMoney(pblock->vtx[0].vout[0].nValue));
 
     // Found a solution

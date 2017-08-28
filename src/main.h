@@ -853,6 +853,11 @@ int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Para
 bool GetBlockHash(uint256& hashRet, int nBlockHeight = -1);
 
 /**
+* Returns block height
+*/
+uint32_t GetBlockHeight(const CBlockHeader* header);
+
+/**
 * Load DAG for calculating EgiHash
 */
 void LoadDAG(std::string dataDir);

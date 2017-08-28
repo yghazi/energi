@@ -123,7 +123,7 @@ public:
         return block;
     }
 
-    std::string ToString() const;
+    std::string ToString(uint32_t blockHeight) const;
 };
 
 
