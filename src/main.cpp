@@ -1614,7 +1614,7 @@ bool GetTransaction(const uint256 &hash, CTransaction &txOut, const Consensus::P
             } catch (const std::exception& e) {
                 return error("%s: Deserialize or I/O error - %s", __func__, e.what());
             }
-            hashBlock = header.GetHash(GetHeight());
+            hashBlock = header.GetHash(GetBlockHeight(&header));
             if (txOut.GetHash() != hash)
                 return error("%s: txid mismatch", __func__);
             return true;
@@ -1697,8 +1697,10 @@ bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus:
         return error("%s: Deserialize or I/O error - %s at %s", __func__, e.what(), pos.ToString());
     }
 
+    auto blockHeader = block.GetBlockHeader();
+
     // Check the header
-    if (!CheckProofOfWork(block.GetHash(GetHeight()), block.nBits, consensusParams))
+    if (!CheckProofOfWork(block.GetHash(GetBlockHeight(&blockHeader)), block.nBits, consensusParams))
         return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
 
     return true;
@@ -1708,7 +1710,8 @@ bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex, const Consensus
 {
     if (!ReadBlockFromDisk(block, pindex->GetBlockPos(), consensusParams))
         return false;
-    if (block.GetHash(GetHeight()) != pindex->GetBlockHash())
+
+    if (block.GetHash(pindex->nHeight) != pindex->GetBlockHash())
         return error("ReadBlockFromDisk(CBlock&, CBlockIndex*): GetHash() doesn't match index for %s at %s",
                 pindex->ToString(), pindex->GetBlockPos().ToString());
     return true;
@@ -2554,7 +2557,8 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
 
     // Special case for the genesis block, skipping connection of its transactions
     // (its coinbase is unspendable)
-    if (block.GetHash(GetHeight()) == chainparams.GetConsensus().hashGenesisBlock) {
+    auto blockHeader = block.GetBlockHeader();
+    if (block.GetHash(GetBlockHeight(&blockHeader)) == chainparams.GetConsensus().hashGenesisBlock) {
         if (!fJustCheck)
             view.SetBestBlock(pindex->GetBlockHash());
         return true;
@@ -2795,7 +2799,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     }
 
     if (!IsBlockPayeeValid(block.vtx[0], pindex->nHeight, blockReward)) {
-        mapRejectedBlocks.insert(make_pair(block.GetHash(GetHeight()), GetTime()));
+        mapRejectedBlocks.insert(make_pair(block.GetHash(pindex->nHeight), GetTime()));
         return state.DoS(0, error("ConnectBlock(EGI): couldn't find masternode or superblock payments"),
                                 REJECT_INVALID, "bad-cb-payee");
     }
@@ -3401,7 +3405,8 @@ bool ActivateBestChain(CValidationState &state, const CChainParams& chainparams,
                 return true;
 
             bool fInvalidFound = false;
-            if (!ActivateBestChainStep(state, chainparams, pindexMostWork, pblock && pblock->GetHash(GetHeight()) == pindexMostWork->GetBlockHash() ? pblock : NULL, fInvalidFound))
+            auto blockHeader = pblock->GetBlockHeader();
+            if (!ActivateBestChainStep(state, chainparams, pindexMostWork, pblock && pblock->GetHash(GetBlockHeight(&blockHeader)) == pindexMostWork->GetBlockHash() ? pblock : NULL, fInvalidFound))
                 return false;
 
             if (fInvalidFound) {
@@ -3539,7 +3544,7 @@ bool ReconsiderBlock(CValidationState& state, CBlockIndex *pindex) {
 CBlockIndex* AddToBlockIndex(const CBlockHeader& block)
 {
     // Check for duplicate
-    uint256 hash = block.GetHash(GetHeight());
+    uint256 hash = block.GetHash(GetBlockHeight(&block));
     BlockMap::iterator it = mapBlockIndex.find(hash);
     if (it != mapBlockIndex.end())
         return it->second;
@@ -3707,7 +3712,7 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
 bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, bool fCheckPOW)
 {
     // Check proof of work matches claimed amount
-    if (fCheckPOW && !CheckProofOfWork(block.GetHash(GetHeight()), block.nBits, Params().GetConsensus()))
+    if (fCheckPOW && !CheckProofOfWork(block.GetHash(GetBlockHeight(&block)), block.nBits, Params().GetConsensus()))
         return state.DoS(50, error("CheckBlockHeader(): proof of work failed"),
                          REJECT_INVALID, "high-hash");
 
@@ -3785,7 +3790,8 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                     // to let other nodes complete the lock.
                     instantsend.Relay(hashLocked);
                     LOCK(cs_main);
-                    mapRejectedBlocks.insert(make_pair(block.GetHash(GetHeight()), GetTime()));
+                    auto blockHeader = block.GetBlockHeader();
+                    mapRejectedBlocks.insert(make_pair(block.GetHash(GetBlockHeight(&blockHeader)), GetTime()));
                     return state.DoS(0, error("CheckBlock(EGI): transaction %s conflicts with transaction lock %s",
                                                 tx.GetHash().ToString(), hashLocked.ToString()),
                                      REJECT_INVALID, "conflict-tx-lock");
@@ -3917,7 +3923,7 @@ static bool AcceptBlockHeader(const CBlockHeader& block, CValidationState& state
 {
     AssertLockHeld(cs_main);
     // Check for duplicate
-    uint256 hash = block.GetHash(GetHeight());
+    uint256 hash = block.GetHash(GetBlockHeight(&block));
     BlockMap::iterator miSelf = mapBlockIndex.find(hash);
     CBlockIndex *pindex = NULL;
 
@@ -4046,7 +4052,8 @@ bool ProcessNewBlock(CValidationState& state, const CChainParams& chainparams, C
 {
     {
         LOCK(cs_main);
-        bool fRequested = MarkBlockAsReceived(pblock->GetHash(GetHeight()));
+        auto blockHeader = pblock->GetBlockHeader();
+        bool fRequested = MarkBlockAsReceived(pblock->GetHash(GetBlockHeight(&blockHeader)));
         fRequested |= fForceProcessing;
 
         // Store to disk
@@ -4077,7 +4084,8 @@ bool TestBlockValidity(CValidationState& state, const CChainParams& chainparams,
 {
     AssertLockHeld(cs_main);
     assert(pindexPrev && pindexPrev == chainActive.Tip());
-    if (fCheckpointsEnabled && !CheckIndexAgainstCheckpoint(pindexPrev, state, chainparams, block.GetHash(GetHeight())))
+    auto blockHeader = block.GetBlockHeader();
+    if (fCheckpointsEnabled && !CheckIndexAgainstCheckpoint(pindexPrev, state, chainparams, block.GetHash(GetBlockHeight(&blockHeader))))
         return error("%s: CheckIndexAgainstCheckpoint(): %s", __func__, state.GetRejectReason().c_str());
 
     CCoinsViewCache viewNew(pcoinsTip);
@@ -4623,8 +4631,11 @@ bool LoadExternalBlockFile(const CChainParams& chainparams, FILE* fileIn, CDiskB
                 blkdat >> block;
                 nRewind = blkdat.GetPos();
 
+
+
                 // detect out of order blocks, and store them for later
-                uint256 hash = block.GetHash(GetHeight());
+                auto blockHeader = block.GetBlockHeader();
+                uint256 hash = block.GetHash(GetBlockHeight(&blockHeader));
                 if (hash != chainparams.GetConsensus().hashGenesisBlock && mapBlockIndex.find(block.hashPrevBlock) == mapBlockIndex.end()) {
                     LogPrint("reindex", "%s: Out of order block %s, parent %s not known\n", __func__, hash.ToString(),
                             block.hashPrevBlock.ToString());
@@ -4666,14 +4677,15 @@ bool LoadExternalBlockFile(const CChainParams& chainparams, FILE* fileIn, CDiskB
                         std::multimap<uint256, CDiskBlockPos>::iterator it = range.first;
                         if (ReadBlockFromDisk(block, it->second, chainparams.GetConsensus()))
                         {
-                            LogPrint("reindex", "%s: Processing out of order child %s of %s\n", __func__, block.GetHash(GetHeight()).ToString(),
+                            auto blockHeader = block.GetBlockHeader();
+                            LogPrint("reindex", "%s: Processing out of order child %s of %s\n", __func__, block.GetHash(GetBlockHeight(&blockHeader)).ToString(),
                                     head.ToString());
                             LOCK(cs_main);
                             CValidationState dummy;
                             if (AcceptBlock(block, dummy, chainparams, NULL, true, &it->second, NULL))
                             {
                                 nLoaded++;
-                                queue.push_back(block.GetHash(GetHeight()));
+                                queue.push_back(block.GetHash(GetBlockHeight(&blockHeader)));
                             }
                         }
                         range.first++;
@@ -6040,7 +6052,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                 if (state.IsInvalid(nDoS)) {
                     if (nDoS > 0)
                         Misbehaving(pfrom->GetId(), nDoS);
-                    std::string strError = "invalid header received " + header.GetHash(GetHeight()).ToString();
+                    std::string strError = "invalid header received " + header.GetHash(GetBlockHeight(&header)).ToString();
                     return error(strError.c_str());
                 }
             }
@@ -6115,7 +6127,9 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         CBlock block;
         vRecv >> block;
 
-        CInv inv(MSG_BLOCK, block.GetHash(GetHeight()));
+        auto blockHeader = block.GetBlockHeader();
+
+        CInv inv(MSG_BLOCK, block.GetHash(GetBlockHeight(&blockHeader)));
         LogPrint("net", "received block %s peer=%d\n", inv.hash.ToString(), pfrom->id);
 
         pfrom->AddInventoryKnown(inv);
@@ -6747,14 +6761,17 @@ bool SendMessages(CNode* pto)
                     }
                 }
             } else if (!vHeaders.empty()) {
+                auto frontHeader = vHeaders.front().GetBlockHeader();
+                auto backHeader = vHeaders.back().GetBlockHeader();
                 if (vHeaders.size() > 1) {
+                        
                     LogPrint("net", "%s: %u headers, range (%s, %s), to peer=%d\n", __func__,
                             vHeaders.size(),
-                            vHeaders.front().GetHash(GetHeight()).ToString(),
-                            vHeaders.back().GetHash(GetHeight()).ToString(), pto->id);
+                            vHeaders.front().GetHash(GetBlockHeight(&frontHeader)).ToString(),
+                            vHeaders.back().GetHash(GetBlockHeight(&backHeader)).ToString(), pto->id);
                 } else {
                     LogPrint("net", "%s: sending header %s to peer=%d\n", __func__,
-                            vHeaders.front().GetHash(GetHeight()).ToString(), pto->id);
+                            vHeaders.front().GetHash(GetBlockHeight(&frontHeader)).ToString(), pto->id);
                 }
                 pto->PushMessage(NetMsgType::HEADERS, vHeaders);
                 state.pindexBestHeaderSent = pBestIndex;
@@ -6896,7 +6913,17 @@ bool SendMessages(CNode* pto)
 }
 
 /**
-*
+*TODO
+*/
+uint32_t GetBlockHeight(const CBlockHeader* header) {
+    auto const prevBlock = mapBlockIndex.find(header->hashPrevBlock);
+    if (prevBlock == mapBlockIndex.end())
+        throw runtime_error("Previous block not found in chain");
+    return prevBlock->second->nHeight + 1;
+}
+
+/**
+*TODO
 */
 void LoadDAG(std::string dataDir) {
     auto filename = dataDir + std::string("epoch") 

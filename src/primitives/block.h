@@ -28,6 +28,7 @@ public:
     uint32_t nTime;
     uint32_t nBits;
     uint32_t nNonce;
+    uint256 hashMix; // TODO: use this correctly
 
     CBlockHeader()
     {
@@ -122,7 +123,7 @@ public:
         return block;
     }
 
-    std::string ToString() const;
+    std::string ToString(uint32_t blockHeight) const;
 };
 
 
