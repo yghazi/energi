@@ -14,9 +14,12 @@ uint256 CBlockHeader::GetHash(uint32_t blockHeight) const
 {
     // BEGIN(a) = ((char*)&(a))
     // END(a)   = ((char*)&((&(a))[1]))
-    return egihash::full::hash(egihash::dag_t(blockHeight/egihash::constants::EPOCH_LENGTH), 
-                                nVersion,
+    auto egihash_result = egihash::full::hash(egihash::dag_t(blockHeight/egihash::constants::EPOCH_LENGTH),
+                                egihash::h256_t(&nVersion, sizeof(nVersion)), // TODO: this is not right, should be hash of serialized block header without mixhash + nonce
                                 nNonce);
+    std::vector<uint8_t> val(32, 0);
+    std::memcpy(&val[0], &(egihash_result.value.b[0]), 32);
+    return uint256(val);
 }
 
 std::string CBlock::ToString() const
