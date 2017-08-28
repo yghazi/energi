@@ -182,7 +182,6 @@ BOOST_AUTO_TEST_CASE(bloom_match)
     BOOST_CHECK_MESSAGE(!filter.IsRelevantAndUpdate(tx), "Simple Bloom filter matched COutPoint for an output we didn't care about");
 }
 
-#if 0
 BOOST_AUTO_TEST_CASE(merkle_block_1)
 {
     // Random real block (0000000000013b8ab2cd513b0261a14096412195a72a0c4827d229dcc7e0f7af)
@@ -196,19 +195,8 @@ BOOST_AUTO_TEST_CASE(merkle_block_1)
     filter.insert(uint256S("0x74d681e0e03bafa802c8aa084379aa98d9fcd632ddc2ed9782b586ec87451f20"));
 
     CMerkleBlock merkleBlock(block, filter);
-    //for merkleBlock
-    auto const prevBlock = mapBlockIndex.find(merkleBlock.header.hashPrevBlock);
-    if (prevBlock == mapBlockIndex.end())
-        throw runtime_error("Previous block not found in chain");
-    auto const blockHeight = prevBlock->second->nHeight + 1;
 
-    //for block
-    prevBlock = mapBlockIndex.find(block->header->hashPrevBlock)
-    if (prevBlock == mapBlockIndex.end())
-        throw runtime_error("Previous block not found in chain");
-    auto const chainHeight = prevBlock->second->nHeight + 1;
-
-    BOOST_CHECK(merkleBlock.header.GetHash(blockHeight) == block.GetHash(chainHeight));
+    BOOST_CHECK(merkleBlock.header.GetHash(0) == block.GetHash(0));
 
     BOOST_CHECK(merkleBlock.vMatchedTxn.size() == 1);
     pair<unsigned int, uint256> pair = merkleBlock.vMatchedTxn[0];
@@ -225,18 +213,8 @@ BOOST_AUTO_TEST_CASE(merkle_block_1)
     // Also match the 8th transaction
     filter.insert(uint256S("0xdd1fd2a6fc16404faf339881a90adbde7f4f728691ac62e8f168809cdfae1053"));
     merkleBlock = CMerkleBlock(block, filter);
-    //for merkleBlock
-    auto const prevBlock = mapBlockIndex.find(merkleBlock.header.hashPrevBlock);
-    if (prevBlock == mapBlockIndex.end())
-        throw runtime_error("Previous block not found in chain");
-    auto const blockHeight = prevBlock->second->nHeight + 1;
 
-    //for block
-    prevBlock = mapBlockIndex.find(block->header->hashPrevBlock)
-    if (prevBlock == mapBlockIndex.end())
-        throw runtime_error("Previous block not found in chain");
-    auto const chainHeight = prevBlock->second->nHeight + 1;
-    BOOST_CHECK(merkleBlock.header.GetHash(blockHeight) == block.GetHash(chainHeight));
+    BOOST_CHECK(merkleBlock.header.GetHash(0) == block.GetHash(0));
 
     BOOST_CHECK(merkleBlock.vMatchedTxn.size() == 2);
 
@@ -264,19 +242,8 @@ BOOST_AUTO_TEST_CASE(merkle_block_2)
     filter.insert(uint256S("0xe980fe9f792d014e73b95203dc1335c5f9ce19ac537a419e6df5b47aecb93b70"));
 
     CMerkleBlock merkleBlock(block, filter);
-    //for merkleBlock
-    auto const prevBlock = mapBlockIndex.find(merkleBlock.header.hashPrevBlock);
-    if (prevBlock == mapBlockIndex.end())
-        throw runtime_error("Previous block not found in chain");
-    auto const blockHeight = prevBlock->second->nHeight + 1;
 
-    //for block
-    prevBlock = mapBlockIndex.find(block.header.hashPrevBlock)
-    if (prevBlock == mapBlockIndex.end())
-        throw runtime_error("Previous block not found in chain");
-    auto const chainHeight = prevBlock->second->nHeight + 1;
-    BOOST_CHECK(merkleBlock.header.GetHash(blockHeight) == block.GetHash(chainHeight
-        ));
+    BOOST_CHECK(merkleBlock.header.GetHash(0) == block.GetHash(0));
 
     BOOST_CHECK(merkleBlock.vMatchedTxn.size() == 1);
     pair<unsigned int, uint256> pair = merkleBlock.vMatchedTxn[0];
@@ -296,7 +263,7 @@ BOOST_AUTO_TEST_CASE(merkle_block_2)
     filter.insert(ParseHex("044a656f065871a353f216ca26cef8dde2f03e8c16202d2e8ad769f02032cb86a5eb5e56842e92e19141d60a01928f8dd2c875a390f67c1f6c94cfc617c0ea45af"));
 
     merkleBlock = CMerkleBlock(block, filter);
-    BOOST_CHECK(merkleBlock.header.GetHash() == block.GetHash());
+    BOOST_CHECK(merkleBlock.header.GetHash(0) == block.GetHash(0));
 
     BOOST_CHECK(merkleBlock.vMatchedTxn.size() == 4);
 
@@ -331,7 +298,7 @@ BOOST_AUTO_TEST_CASE(merkle_block_2_with_update_none)
     filter.insert(uint256S("0xe980fe9f792d014e73b95203dc1335c5f9ce19ac537a419e6df5b47aecb93b70"));
 
     CMerkleBlock merkleBlock(block, filter);
-    BOOST_CHECK(merkleBlock.header.GetHash() == block.GetHash());
+    BOOST_CHECK(merkleBlock.header.GetHash(0) == block.GetHash(0));
 
     BOOST_CHECK(merkleBlock.vMatchedTxn.size() == 1);
     pair<unsigned int, uint256> pair = merkleBlock.vMatchedTxn[0];
@@ -351,7 +318,7 @@ BOOST_AUTO_TEST_CASE(merkle_block_2_with_update_none)
     filter.insert(ParseHex("044a656f065871a353f216ca26cef8dde2f03e8c16202d2e8ad769f02032cb86a5eb5e56842e92e19141d60a01928f8dd2c875a390f67c1f6c94cfc617c0ea45af"));
 
     merkleBlock = CMerkleBlock(block, filter);
-    BOOST_CHECK(merkleBlock.header.GetHash() == block.GetHash());
+    BOOST_CHECK(merkleBlock.header.GetHash(0) == block.GetHash(0));
 
     BOOST_CHECK(merkleBlock.vMatchedTxn.size() == 3);
 
@@ -382,7 +349,7 @@ BOOST_AUTO_TEST_CASE(merkle_block_3_and_serialize)
     filter.insert(uint256S("0x63194f18be0af63f2c6bc9dc0f777cbefed3d9415c4af83f3ee3a3d669c00cb5"));
 
     CMerkleBlock merkleBlock(block, filter);
-    BOOST_CHECK(merkleBlock.header.GetHash() == block.GetHash());
+    BOOST_CHECK(merkleBlock.header.GetHash(0) == block.GetHash(0));
 
     BOOST_CHECK(merkleBlock.vMatchedTxn.size() == 1);
 
@@ -420,7 +387,7 @@ BOOST_AUTO_TEST_CASE(merkle_block_4)
     filter.insert(uint256S("0x0a2a92f0bda4727d0a13eaddf4dd9ac6b5c61a1429e6b2b818f19b15df0ac154"));
 
     CMerkleBlock merkleBlock(block, filter);
-    BOOST_CHECK(merkleBlock.header.GetHash() == block.GetHash());
+    BOOST_CHECK(merkleBlock.header.GetHash(0) == block.GetHash(0));
 
     BOOST_CHECK(merkleBlock.vMatchedTxn.size() == 1);
     pair<unsigned int, uint256> pair = merkleBlock.vMatchedTxn[0];
@@ -437,7 +404,7 @@ BOOST_AUTO_TEST_CASE(merkle_block_4)
     // Also match the 4th transaction
     filter.insert(uint256S("0x02981fa052f0481dbc5868f4fc2166035a10f27a03cfd2de67326471df5bc041"));
     merkleBlock = CMerkleBlock(block, filter);
-    BOOST_CHECK(merkleBlock.header.GetHash() == block.GetHash());
+    BOOST_CHECK(merkleBlock.header.GetHash(0) == block.GetHash(0));
 
     BOOST_CHECK(merkleBlock.vMatchedTxn.size() == 2);
 
@@ -467,7 +434,7 @@ BOOST_AUTO_TEST_CASE(merkle_block_4_test_p2pubkey_only)
     filter.insert(ParseHex("b6efd80d99179f4f4ff6f4dd0a007d018c385d21"));
 
     CMerkleBlock merkleBlock(block, filter);
-    BOOST_CHECK(merkleBlock.header.GetHash() == block.GetHash());
+    BOOST_CHECK(merkleBlock.header.GetHash(0) == block.GetHash(0));
 
     // We should match the generation outpoint
     BOOST_CHECK(filter.contains(COutPoint(uint256S("0x147caa76786596590baa4e98f5d9f48b86c7765e489f7a6ff3360fe5c674360b"), 0)));
@@ -490,25 +457,13 @@ BOOST_AUTO_TEST_CASE(merkle_block_4_test_update_none)
     filter.insert(ParseHex("b6efd80d99179f4f4ff6f4dd0a007d018c385d21"));
 
     CMerkleBlock merkleBlock(block, filter);
-    //for merkleBlock
-    auto const prevBlock = mapBlockIndex.find(merkleBlock.header.hashPrevBlock);
-    if (prevBlock == mapBlockIndex.end())
-        throw runtime_error("Previous block not found in chain");
-    auto const blockHeight = prevBlock->second->nHeight + 1;
 
-    //for block
-    prevBlock = mapBlockIndex.find(block->header->hashPrevBlock)
-    if (prevBlock == mapBlockIndex.end())
-        throw runtime_error("Previous block not found in chain");
-    auto const chainHeight = prevBlock->second->nHeight + 1;
-
-    BOOST_CHECK(merkleBlock.header.GetHash(blockHeight) == block.GetHash(chainHeight));
+    BOOST_CHECK(merkleBlock.header.GetHash(0) == block.GetHash(0));
 
     // We shouldn't match any outpoints (UPDATE_NONE)
     BOOST_CHECK(!filter.contains(COutPoint(uint256S("0x147caa76786596590baa4e98f5d9f48b86c7765e489f7a6ff3360fe5c674360b"), 0)));
     BOOST_CHECK(!filter.contains(COutPoint(uint256S("0x02981fa052f0481dbc5868f4fc2166035a10f27a03cfd2de67326471df5bc041"), 0)));
 }
-#endif //TODO: fix me
 
 static std::vector<unsigned char> RandomData()
 {
