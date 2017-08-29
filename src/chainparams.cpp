@@ -72,28 +72,68 @@ class CMainParams : public CChainParams {
 public:
     CMainParams() {
         strNetworkID = "main";
-        consensus.nSubsidyHalvingInterval = 210240; // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
+        // 30 days *24 hours *60 minutes * 25 Energi/block
+        // 1080000 at a rate of 25 energi per and 1 block per minute
+        consensus.EnergiPerBlock = 25;
+        // total 100 parts
+        // 10% to creator
+        consensus.FoundersEnergiPerBlock = 3;
+        // 20% miners
+        consensus.MinersEnergiPerBlock = 5;
+        // 30% masternodes
+        // each masternode is paid serially.. more the master nodes more is the wait for the payment
+        // masternode payment gap is masternodes minutes
+        consensus.MasterNodesEnergiPerBlock = 7;
+        // 40% treasury
+        consensus.TreasuryEnergiPerBlock = 10;
+        //
+        consensus.MinerPlusMasterNode = consensus.MasterNodesEnergiPerBlock + consensus.MinersEnergiPerBlock;
+
+        consensus.nSubsidyHalvingInterval = 210240; /* Older value */ // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
+        consensus.nSubsidyHalvingInterval = 41540; /*  */
+
+        /*does not matter for ENERGI.. payment is consistent forever*/
         consensus.nMasternodePaymentsStartBlock = 100000; // not true, but it's ok as long as it's less then nMasternodePaymentsIncreaseBlock
         consensus.nMasternodePaymentsIncreaseBlock = 158000; // actual historical value
         consensus.nMasternodePaymentsIncreasePeriod = 576*30; // 17280 - actual historical value
         consensus.nInstantSendKeepLock = 24;
+
+        /*
         consensus.nBudgetPaymentsStartBlock = 328008; // actual historical value
         consensus.nBudgetPaymentsCycleBlocks = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nBudgetPaymentsWindowBlocks = 100;
         consensus.nBudgetProposalEstablishingTime = 60*60*24;
         consensus.nSuperblockStartBlock = 614820; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
+        consensus.nBudgetPaymentsCycleBlocks = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
+        consensus.nBudgetPaymentsWindowBlocks = 100;
+        consensus.nBudgetProposalEstablishingTime = 60*60*24; // 1 day
+        consensus.nSuperblockStartBlock = 0; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
         consensus.nSuperblockCycle = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
+
+        Dash data for reference
+        TODO : push changes for governance [40%]
+        TODO : add owner' 10% .. generate 20 addresses for that
+        */
+        consensus.nBudgetPaymentsStartBlock = 0; // actual historical value
+        consensus.nBudgetPaymentsCycleBlocks = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
+        consensus.nBudgetPaymentsWindowBlocks = 100;
+        consensus.nBudgetProposalEstablishingTime = 60*60*24; // 1 day
+        consensus.nSuperblockStartBlock = 0; //
+        consensus.nSuperblockCycle = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
+
         consensus.nGovernanceMinQuorum = 10;
         consensus.nGovernanceFilterElements = 20000;
+
         consensus.nMasternodeMinimumConfirmations = 15;
         consensus.nMajorityEnforceBlockUpgrade = 750;
         consensus.nMajorityRejectBlockOutdated = 950;
         consensus.nMajorityWindow = 1000;
-        consensus.BIP34Height = 1;
+        consensus.BIP34Height = 0;
         consensus.BIP34Hash = uint256S("0x000007d91d1254d60e2dd1ae580383070a4ddffa4c64c2eeb4a2f9ecc0414343");
         consensus.powLimit = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
+
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Dash: 1 day
-        consensus.nPowTargetSpacing = 2.5 * 60; // Dash: 2.5 minutes
+        consensus.nPowTargetSpacing = 60; // Energi: 1 minute // Dash: 2.5 minutes
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
@@ -156,6 +196,7 @@ public:
 
         nPoolMaxTransactions = 3;
         nFulfilledRequestExpireTime = 60*60; // fulfilled requests expire in 1 hour
+        // TODO change the public keys
         strSporkPubKey = "04549ac134f694c0243f503e8c8a9a986f5de6610049c40b07816809b0d1d06a21b07be27b9bb555931773f62ba6cf35a25fd52f694d4e1106ccd237a7bb899fdd";
 
         checkpointData = (CCheckpointData) {

@@ -1741,6 +1741,11 @@ NOTE:   unlike bitcoin we are using PREVIOUS block height here,
 */
 CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
 {
+    // No decline of emission. Set to 1 million per month till PoS
+
+    CAmount blockSubsidy = consensusParams.MinerPlusMasterNode;
+    return blockSubsidy;
+
     double dDiff;
     CAmount nSubsidyBase;
 
@@ -1775,9 +1780,10 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     CAmount nSubsidy = nSubsidyBase * COIN;
 
     // yearly decline of production by ~7.1% per year, projected ~18M coins max by year 2050+.
-    for (int i = consensusParams.nSubsidyHalvingInterval; i <= nPrevHeight; i += consensusParams.nSubsidyHalvingInterval) {
-        nSubsidy -= nSubsidy/14;
-    }
+    //for (int i = consensusParams.nSubsidyHalvingInterval; i <= nPrevHeight; i += consensusParams.nSubsidyHalvingInterval) {
+    //    nSubsidy -= nSubsidy/14;
+    //}
+
 
     // Hard fork to reduce the block reward by 10 extra percent (allowing budget/superblocks)
     CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
@@ -1787,6 +1793,9 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
 
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
 {
+    return Params().GetConsensus().MasterNodesEnergiPerBlock;
+    // everything below does not matter
+
     CAmount ret = blockValue/5; // start at 20%
 
     int nMNPIBlock = Params().GetConsensus().nMasternodePaymentsIncreaseBlock;
