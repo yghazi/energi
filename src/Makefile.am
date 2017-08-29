@@ -334,6 +334,7 @@ crypto_libbitcoin_crypto_a_SOURCES += \
   crypto/sph_skein.h \
   crypto/sph_types.h \
   crypto/sha512.cpp \
+  crypto/secure_memzero.h \
   crypto/egihash.cpp \
   crypto/egihash.h \
   crypto/keccak-tiny.h \
