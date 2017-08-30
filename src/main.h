@@ -858,9 +858,14 @@ bool GetBlockHash(uint256& hashRet, int nBlockHeight = -1);
 uint32_t GetBlockHeight(const CBlockHeader* header);
 
 /**
-* Load DAG for calculating EgiHash
+* Load DAG for calculating EgiHash for the current chain height
 */
 void LoadDAG(std::string dataDir);
+
+/**
+* Load DAG for calculating EgiHash for a given block height
+*/
+void LoadDAG(std::string dataDir, int blockHeight);
 
 /** Reject codes greater or equal to this can be returned by AcceptToMemPool
  * for transactions, to signal internal conditions. They cannot and should not

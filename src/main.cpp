@@ -6923,11 +6923,18 @@ uint32_t GetBlockHeight(const CBlockHeader* header) {
 }
 
 /**
-*TODO
+* Load DAG for calculating EgiHash for the current chain height
 */
-void LoadDAG(std::string dataDir) {
+void LoadDAG(std::string dataDir){
+    LoadDAG(dataDir, GetHeight())
+}
+
+/**
+* Load DAG for calculating EgiHash for a given block height
+*/
+void LoadDAG(std::string dataDir, int blockHeight) {
     auto filename = dataDir + std::string("epoch") 
-                            + std::to_string(GetHeight() / egihash::constants::EPOCH_LENGTH) + ".dag";
+                            + std::to_string(blockHeight / egihash::constants::EPOCH_LENGTH) + ".dag";
 
     try
     {
@@ -6938,7 +6945,7 @@ void LoadDAG(std::string dataDir) {
         // unable to load the dag, must be generated
         try
         {
-            egihash::dag_t newDAG(GetHeight());
+            egihash::dag_t newDAG(blockHeight);
             newDAG.save(filename);
         }
         catch (egihash::hash_exception const & e)
