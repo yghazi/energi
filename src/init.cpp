@@ -987,6 +987,9 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 #endif
 
     // ********************************************************* Step 2: parameter interactions
+    // Load or generate DAG for genesysis block
+    LoadDAG(GetDataDir().string(), 0);
+
     const CChainParams& chainparams = Params();
 
     // also see: InitParameterInteraction()
