@@ -6926,7 +6926,7 @@ uint32_t GetBlockHeight(const CBlockHeader* header) {
 * Load DAG for calculating EgiHash for the current chain height
 */
 void LoadDAG(std::string dataDir){
-    LoadDAG(dataDir, GetHeight())
+    LoadDAG(dataDir, GetHeight());
 }
 
 /**
