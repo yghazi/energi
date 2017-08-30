@@ -661,8 +661,24 @@ namespace egihash
 		data_type data;
 	};
 
-	static dag_t::impl_t::dag_cache_map dag_cache;
-	static ::std::mutex dag_cache_mutex;
+	// construct on first use mutex ensures safe static initialization order
+	std::mutex & get_dag_cache_mutex()
+	{
+		static std::mutex mutex;
+		return mutex;
+	}
+	// ensures single threaded construction
+	std::mutex & dag_cache_mutex = get_dag_cache_mutex();
+
+	// construct on first use dag_cache_map ensures safe static initialization order
+	dag_t::impl_t::dag_cache_map & get_dag_cache()
+	{
+		std::lock_guard<std::mutex> lock(get_dag_cache_mutex());
+		static dag_t::impl_t::dag_cache_map dag_cache;
+		return dag_cache;
+	}
+	// ensures single threaded construction
+	dag_t::impl_t::dag_cache_map & dag_cache = get_dag_cache();
 
 	::std::shared_ptr<dag_t::impl_t> get_dag(uint64_t block_number, progress_callback_type callback)
 	{
@@ -671,9 +687,9 @@ namespace egihash
 
 		// if we have the correct DAG already loaded, return it from the cache
 		{
-			lock_guard<mutex> lock(dag_cache_mutex);
-			auto const dag_cache_iterator = dag_cache.find(epoch_number);
-			if (dag_cache_iterator != dag_cache.end())
+			lock_guard<mutex> lock(get_dag_cache_mutex());
+			auto const dag_cache_iterator = get_dag_cache().find(epoch_number);
+			if (dag_cache_iterator != get_dag_cache().end())
 			{
 				return dag_cache_iterator->second;
 			}
@@ -683,8 +699,8 @@ namespace egihash
 		// this is not locked as it can be a lengthy process and we don't want to block access to the dag cache
 		shared_ptr<dag_t::impl_t> impl(new dag_t::impl_t(block_number, callback));
 
-		lock_guard<mutex> lock(dag_cache_mutex);
-		auto insert_pair = dag_cache.insert(make_pair(epoch_number, impl));
+		lock_guard<mutex> lock(get_dag_cache_mutex());
+		auto insert_pair = get_dag_cache().insert(make_pair(epoch_number, impl));
 
 		// if insert succeded, return the dag
 		if (insert_pair.second)
@@ -693,8 +709,8 @@ namespace egihash
 		}
 
 		// if insert failed, it's probably already been inserted
-		auto const dag_cache_iterator = dag_cache.find(epoch_number);
-		if (dag_cache_iterator != dag_cache.end())
+		auto const dag_cache_iterator = get_dag_cache().find(epoch_number);
+		if (dag_cache_iterator != get_dag_cache().end())
 		{
 			return dag_cache_iterator->second;
 		}
@@ -782,9 +798,9 @@ namespace egihash
 
 		// if we have the correct DAG already loaded, return it from the cache
 		{
-			lock_guard<mutex> lock(dag_cache_mutex);
-			auto const dag_cache_iterator = dag_cache.find(header.epoch);
-			if (dag_cache_iterator != dag_cache.end())
+			lock_guard<mutex> lock(get_dag_cache_mutex());
+			auto const dag_cache_iterator = get_dag_cache().find(header.epoch);
+			if (dag_cache_iterator != get_dag_cache().end())
 			{
 				return dag_cache_iterator->second;
 			}
@@ -794,8 +810,8 @@ namespace egihash
 		// this is not locked as it can be a lengthy process and we don't want to block access to the dag cache
 		shared_ptr<dag_t::impl_t> impl(new dag_t::impl_t(read, header, callback));
 
-		lock_guard<mutex> lock(dag_cache_mutex);
-		auto insert_pair = dag_cache.insert(make_pair(header.epoch, impl));
+		lock_guard<mutex> lock(get_dag_cache_mutex());
+		auto insert_pair = get_dag_cache().insert(make_pair(header.epoch, impl));
 
 		// if insert succeded, return the dag
 		if (insert_pair.second)
@@ -804,8 +820,8 @@ namespace egihash
 		}
 
 		// if insert failed, it's probably already been inserted
-		auto const dag_cache_iterator = dag_cache.find(header.epoch);
-		if (dag_cache_iterator != dag_cache.end())
+		auto const dag_cache_iterator = get_dag_cache().find(header.epoch);
+		if (dag_cache_iterator != get_dag_cache().end())
 		{
 			return dag_cache_iterator->second;
 		}
@@ -852,7 +868,7 @@ namespace egihash
 
 	void dag_t::unload() const
 	{
-		auto const i = dag_cache.erase(epoch());
+		auto const i = get_dag_cache().erase(epoch());
 		if (i == 0)
 		{
 			throw hash_exception("Can not unload DAG - not loaded.");
@@ -1172,7 +1188,7 @@ namespace egihash
 		}
 
 		// clear the global dag cache
-		dag_cache.clear();
+		get_dag_cache().clear();
 
 		{
 			dag_t loaded("epoch0_generated.dag", progress);
