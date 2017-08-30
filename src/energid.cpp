@@ -14,6 +14,7 @@
 #include "masternodeconfig.h"
 #include "httpserver.h"
 #include "httprpc.h"
+#include "main.h"
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem.hpp>
@@ -192,6 +193,7 @@ bool AppInit(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
+    LoadDAG(GetDataDir().string(), 0);
     SetupEnvironment();
 
     // Connect energid signal handlers
