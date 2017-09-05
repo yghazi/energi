@@ -227,7 +227,7 @@ namespace egihash
 	{
 		/** \brief Default constructor
 		*/
-		constexpr result_t() = default;
+		constexpr result_t() {};
 
 		/** \brief Default copy constructor
 		*/
