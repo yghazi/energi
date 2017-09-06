@@ -67,7 +67,8 @@ uint256 CBlockHeader::GetHash() const
         ret = egihash::light::hash(egihash::cache_t(nHeight, egihash::get_seedhash(nHeight)), headerHash, nNonce);
     }
 
-    memcpy(hashMix, ret.mixhash, ret.mixhash.hash_size);
+    hashMix = ret.mixhash;
+    return ret.value;
 }
 
 std::string CBlock::ToString() const
