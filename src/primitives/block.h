@@ -27,7 +27,7 @@ public:
     uint32_t nTime;
     uint32_t nBits;
     uint32_t nHeight;
-    uint256 hashMix;
+    mutable uint256 hashMix;
     uint32_t nNonce;
 
     CBlockHeader()
@@ -68,6 +68,11 @@ public:
     }
 
     uint256 GetHash() const;
+
+    uint256 GetHashMix() const
+    {
+        return hashMix;
+    }
 
     int64_t GetBlockTime() const
     {
