@@ -10,10 +10,7 @@
 #include "utilstrencodings.h"
 #include "crypto/common.h"
 #include "compat/endian.h"
-
-#include "crypto/egihash.h"
-
-extern std::unique_ptr<egihash::dag_t> const & dagActive;
+#include "main.h"
 
 namespace
 {
