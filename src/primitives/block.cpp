@@ -10,7 +10,7 @@
 #include "utilstrencodings.h"
 #include "crypto/common.h"
 #include "compat/endian.h"
-#include "main.h"
+#include "dag_singleton.h"
 
 namespace
 {
@@ -54,9 +54,10 @@ uint256 CBlockHeader::GetHash() const
     egihash::h256_t headerHash(&truncatedBlockHeader, sizeof(truncatedBlockHeader));
     egihash::result_t ret;
     // if we have a DAG loaded, use it
-    if (dagActive && ((nHeight / egihash::constants::EPOCH_LENGTH) == dagActive->epoch()))
+    auto const & dag = ActiveDAG();
+    if (dag && ((nHeight / egihash::constants::EPOCH_LENGTH) == dag->epoch()))
     {
-        ret = egihash::full::hash(*dagActive, headerHash, nNonce);
+        ret = egihash::full::hash(*dag, headerHash, nNonce);
     }
     else // otherwise all we can do is generate a light hash
     {
