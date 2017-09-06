@@ -6,7 +6,7 @@
 
 #include <mutex>
 
-unique_ptr<egihash::dag_t> const & ActiveDAG(unique_ptr<egihash::dag_t> next_dag)
+std::unique_ptr<egihash::dag_t> const & ActiveDAG(std::unique_ptr<egihash::dag_t> next_dag)
 {
     using namespace std;
 
