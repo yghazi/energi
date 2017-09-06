@@ -370,6 +370,7 @@ libbitcoin_common_a_SOURCES = \
   script/sign.cpp \
   script/standard.cpp \
   spork.cpp \
+  dag_singleton.cpp \
   $(BITCOIN_CORE_H)
 
 # util: shared between all executables.
