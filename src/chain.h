@@ -214,7 +214,7 @@ public:
         block.hashMerkleRoot = hashMerkleRoot;
         block.nTime          = nTime;
         block.nBits          = nBits;
-        block.nBlockHeight   = nHeight;
+        block.nHeight        = nHeight;
         block.hashMix        = hashMix;
         block.nNonce         = nNonce;
         return block;
@@ -341,7 +341,7 @@ public:
         block.hashMerkleRoot  = hashMerkleRoot;
         block.nTime           = nTime;
         block.nBits           = nBits;
-        block.nBlockHeight    = nHeight;
+        block.nHeight         = nHeight;
         block.hashMix         = hashMix;
         block.nNonce          = nNonce;
         return block.GetHash();

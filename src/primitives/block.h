@@ -26,7 +26,7 @@ public:
     uint256 hashMerkleRoot;
     uint32_t nTime;
     uint32_t nBits;
-    uint32_t nBlockHeight;
+    uint32_t nHeight;
     uint256 hashMix;
     uint32_t nNonce;
 
@@ -45,7 +45,7 @@ public:
         READWRITE(hashMerkleRoot);
         READWRITE(nTime);
         READWRITE(nBits);
-        READWRITE(nBlockHeight);
+        READWRITE(nHeight);
         READWRITE(hashMix);
         READWRITE(nNonce);
     }
@@ -57,7 +57,7 @@ public:
         hashMerkleRoot.SetNull();
         nTime = 0;
         nBits = 0;
-        nBlockHeight = 0;
+        nHeight = 0;
         hashMix.SetNull();
         nNonce = 0;
     }
@@ -123,7 +123,7 @@ public:
         block.hashMerkleRoot = hashMerkleRoot;
         block.nTime          = nTime;
         block.nBits          = nBits;
-        block.nBlockHeight   = nBlockHeight;
+        block.nHeight        = nHeight;
         block.hashMix        = hashMix;
         block.nNonce         = nNonce;
         return block;
