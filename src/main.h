@@ -19,10 +19,12 @@
 #include "sync.h"
 #include "versionbits.h"
 #include "spentindex.h"
+#include "crypto/egihash.h"
 
 #include <algorithm>
 #include <exception>
 #include <map>
+#include <memory>
 #include <set>
 #include <stdint.h>
 #include <string>
@@ -825,6 +827,9 @@ bool ReconsiderBlock(CValidationState& state, CBlockIndex *pindex);
 
 /** The currently-connected chain of blocks (protected by cs_main). */
 extern CChain chainActive;
+
+/** The currently active DAG (protected by cs_main). */
+extern std::unique_ptr<egihash::dag_t> dagActive;
 
 /** Global variable that points to the active CCoinsView (protected by cs_main) */
 extern CCoinsViewCache *pcoinsTip;
