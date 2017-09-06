@@ -9,12 +9,65 @@
 #include "tinyformat.h"
 #include "utilstrencodings.h"
 #include "crypto/common.h"
+#include "compat/endian.h"
+
+#include "crypto/egihash.h"
+
+extern std::unique_ptr<egihash::dag_t> const & dagActive;
+
+namespace
+{
+    #pragma pack(push, 1)
+    /**
+    *   The Keccak-256 hash of this structure is used as input for egihash
+    *   It is a truncated block header with a deterministic encoding
+    *   All integer values are little endian
+    *   Hashes are the nul-terminated hex encoded representation as if ToString() was called
+    */
+    struct CBlockHeaderTruncatedLE
+    {
+        int32_t nVersion;
+        char hashPrevBlock[65];
+        char hashMerkleRoot[65];
+        uint32_t nTime;
+        uint32_t nBits;
+        uint32_t nHeight;
+
+        CBlockHeaderTruncatedLE(CBlockHeader const & h)
+        : nVersion(htole32(h.nVersion))
+        , hashPrevBlock{0}
+        , hashMerkleRoot{0}
+        , nTime(htole32(h.nTime))
+        , nBits(htole32(h.nBits))
+        , nHeight(htole32(h.nHeight))
+        {
+            auto prevHash = h.hashPrevBlock.ToString();
+            memcpy(hashPrevBlock, prevHash.c_str(), (std::min)(prevHash.size(), sizeof(hashPrevBlock)));
+
+            auto merkleRoot = h.hashMerkleRoot.ToString();
+            memcpy(hashMerkleRoot, merkleRoot.c_str(), (std::min)(merkleRoot.size(), sizeof(hashMerkleRoot)));
+        }
+    };
+    #pragma pack(pop)
+}
 
 uint256 CBlockHeader::GetHash() const
 {
-    // BEGIN(a) = ((char*)&(a))
-    // END(a)   = ((char*)&((&(a))[1]))
-    return EgiHash(BEGIN(nVersion), END(nNonce));
+    CBlockHeaderTruncatedLE truncatedBlockHeader(*this);
+    egihash::h256_t headerHash(&truncatedBlockHeader, sizeof(truncatedBlockHeader));
+    egihash::result_t ret;
+    // if we have a DAG loaded, use it
+    if (dagActive && ((nHeight / egihash::constants::EPOCH_LENGTH) == dagActive->epoch()))
+    {
+        ret = egihash::full::hash(*dagActive, headerHash, nNonce);
+    }
+    else // otherwise all we can do is generate a light hash
+    {
+        // TODO: pre-load caches and seed hashes
+        ret = egihash::light::hash(egihash::cache_t(nHeight, egihash::get_seedhash(nHeight)), headerHash, nNonce);
+    }
+
+    memcpy(hashMix, ret.mixhash, ret.mixhash.hash_size);
 }
 
 std::string CBlock::ToString() const
