@@ -192,6 +192,7 @@ bool AppInit(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
+    InitDAG();
     SetupEnvironment();
 
     // Connect energid signal handlers
