@@ -583,7 +583,7 @@ void InitDAG(egihash::progress_callback_type callback)
     auto const & dag = ActiveDAG();
     if (!dag)
     {
-        auto const height = GetHeight();
+        auto const height = (max)(GetHeight(), 0);
         auto const epoch = height / constants::EPOCH_LENGTH;
         auto const seedhash = get_seedhash(height);
         stringstream ss;
