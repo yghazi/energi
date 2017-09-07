@@ -191,7 +191,7 @@ static const unsigned int DEFAULT_CHECKLEVEL = 3;
 static const uint64_t MIN_DISK_SPACE_FOR_BLOCK_FILES = 550 * 1024 * 1024;
 
 /** Initialize the DAG */
-void InitDAG(egihash::progress_callback_type callback = [](size_type, size_type, int){ return true; });
+void InitDAG(egihash::progress_callback_type callback = [](egihash::dag_t::size_type, egihash::dag_t::size_type, int){ return true; });
 
 /** Register with a network node to receive its signals */
 void RegisterNodeSignals(CNodeSignals& nodeSignals);
