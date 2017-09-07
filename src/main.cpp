@@ -608,6 +608,7 @@ void InitDAG(egihash::progress_callback_type callback)
         try
         {
             unique_ptr<dag_t> new_dag(new dag_t(height, callback));
+            boost::filesystem::create_directories(epoch_file.parent_path());
             new_dag->save(epoch_file.string());
             ActiveDAG(move(new_dag));
             LogPrint("dag", "DAG generated successfully. Saved to \"%s\".", epoch_file.string());
