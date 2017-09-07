@@ -206,7 +206,7 @@ namespace
 
 		deserialized_hash_t deserialize() const
 		{
-			deserialized_hash_t out(hash_size / 4, 0);
+			deserialized_hash_t out(hash_size / 4, node());
 			size_t j = 0;
 			for (auto const & i : data)
 			//for (size_t i = 0, j = 0; i < hash_size; i += constants::WORD_BYTES, j++)
@@ -231,7 +231,8 @@ namespace
 			// TODO: fast hex conversion
 			::std::stringstream ss;
 			ss << ::std::hex;
-			for (uint8_t const * i = reinterpret_cast<uint8_t const *>(data.data()), iEnd = reinterpret_cast<uint8_t const *>(data.data()) + (data.size() * sizeof(node)); i != iEnd; i++)
+			uint8_t const * iEnd = reinterpret_cast<uint8_t const *>(&data.back());
+			for (uint8_t const * i = reinterpret_cast<uint8_t const *>(data.data()); i != iEnd; i++)
 			{
 				ss << ::std::setw(2) << ::std::setfill('0') << static_cast<uint16_t>(i);
 			}
