@@ -590,6 +590,7 @@ void InitDAG(egihash::progress_callback_type callback)
         ss << hex << setw(4) << setfill('0') << epoch << "-" << seedhash.substr(0, 12) << ".dag";
         auto const epoch_file = GetDataDir() / "dag" / ss.str();
 
+        LogPrint("dag", "DAG file for epoch %u is \"%s\"", epoch, epoch_file.string());
         // try to load the DAG from disk
         try
         {
