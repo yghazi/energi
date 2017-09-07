@@ -183,6 +183,7 @@ public:
         hashMerkleRoot = block.hashMerkleRoot;
         nTime          = block.nTime;
         nBits          = block.nBits;
+        nHeight        = block.nHeight;
         hashMix        = block.hashMix;
         nNonce         = block.nNonce;
     }
