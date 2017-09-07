@@ -127,7 +127,7 @@ namespace egihash
 		{}
 	};
 	#pragma pack(pop)
-	static_assert(sizeof(node) == sizeof(uint32_t));
+	static_assert(sizeof(node) == sizeof(uint32_t), "Invalid hash node size");
 
 
 	/** \brief hash_exception indicates an error or cancellation when performing a task within egihash.
