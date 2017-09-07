@@ -585,7 +585,7 @@ void InitDAG(egihash::progress_callback_type callback)
     {
         auto const height = (max)(GetHeight(), 0);
         auto const epoch = height / constants::EPOCH_LENGTH;
-        auto const seedhash = get_seedhash(height);
+        auto const & seedhash = get_seedhash(height);
         stringstream ss;
         ss << hex << setw(4) << setfill('0') << epoch << "-" << seedhash.substr(0, 12) << ".dag";
         auto const epoch_file = GetDataDir() / "dag" / ss.str();
