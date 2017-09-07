@@ -14,6 +14,7 @@
 #include "masternodeconfig.h"
 #include "httpserver.h"
 #include "httprpc.h"
+#include "main.h"
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem.hpp>
