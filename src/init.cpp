@@ -1250,6 +1250,44 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
             return InitError(_("Unable to sign spork message, wrong key?"));
     }
 
+    // initialize the DAG
+    InitDAG(
+        [](::std::size_t step, ::std::size_t max, int phase) -> bool
+        {
+            switch(phase)
+            {
+                case egihash::cache_seeding:
+                    std::cout << "\rSeeding cache...";
+                    break;
+                case egihash::cache_generation:
+                    std::cout << "\rGenerating cache...";
+                    break;
+                case egihash::cache_saving:
+                    std::cout << "\rSaving cache...";
+                    break;
+                case egihash::cache_loading:
+                    std::cout << "\rLoading cache...";
+                    break;
+                case egihash::dag_generation:
+                    std::cout << "\rGenerating DAG...";
+                    break;
+                case egihash::dag_saving:
+                    std::cout << "\rSaving DAG...";
+                    break;
+                case egihash::dag_loading:
+                    std::cout << "\rLoading DAG...";
+                    break;
+                default:
+                    break;
+            }
+            std::cout << std::fixed << std::setprecision(2)
+            << static_cast<double>(step) / static_cast<double>(max) * 100.0 << "%"
+            << std::setfill(' ') << std::setw(80) << std::flush;
+
+            return true;
+        }
+    );
+
     // Start the lightweight task scheduler thread
     CScheduler::Function serviceLoop = boost::bind(&CScheduler::serviceQueue, &scheduler);
     threadGroup.create_thread(boost::bind(&TraceThread<CScheduler::Function>, "scheduler", serviceLoop));
