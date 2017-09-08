@@ -73,6 +73,16 @@ struct Params {
     int64_t nPowTargetSpacing;
     int64_t nPowTargetTimespan;
     int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }
+
+    /**
+    * Energi specific parameters
+    */
+    int EnergiPerBlock;
+    int FoundersEnergiPerBlock;
+    int MinersEnergiPerBlock;
+    int MasterNodesEnergiPerBlock;
+    int TreasuryEnergiPerBlock;
+    int MinerPlusMasterNode;
 };
 } // namespace Consensus
 
