@@ -75,7 +75,7 @@ public:
     CMainParams() {
         strNetworkID = "main";
         // 30 days *24 hours *60 minutes * 25 Energi/block
-        // 1080000 at a rate of 25 energi per and 1 block per minute
+        // 1080000 at a rate of 25 energi per block and 1 block per minute
         consensus.EnergiPerBlock = 25;
         // total 100 parts
         // 10% to creator
@@ -241,17 +241,39 @@ class CTestNetParams : public CChainParams {
 public:
     CTestNetParams() {
         strNetworkID = "test";
-        consensus.nSubsidyHalvingInterval = 210240;
-        consensus.nMasternodePaymentsStartBlock = 10000; // not true, but it's ok as long as it's less then nMasternodePaymentsIncreaseBlock
-        consensus.nMasternodePaymentsIncreaseBlock = 46000;
-        consensus.nMasternodePaymentsIncreasePeriod = 576;
+        // 30 days *24 hours *60 minutes * 25 Energi/block
+        // 1080000 at a rate of 25 energi per block and 1 block per minute
+        consensus.EnergiPerBlock = 25;
+        // total 100 parts
+        // 10% to creator
+        consensus.FoundersEnergiPerBlock = 3;
+        // 20% miners
+        consensus.MinersEnergiPerBlock = 5;
+        // 30% masternodes
+        // each masternode is paid serially.. more the master nodes more is the wait for the payment
+        // masternode payment gap is masternodes minutes
+        consensus.MasterNodesEnergiPerBlock = 7;
+        // 40% treasury
+        consensus.TreasuryEnergiPerBlock = 10;
+        //
+        consensus.MinerPlusMasterNode = consensus.MasterNodesEnergiPerBlock + consensus.MinersEnergiPerBlock;
+
+        consensus.nSubsidyHalvingInterval = 210240; /* Older value */ // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
+        consensus.nSubsidyHalvingInterval = 41540; /*  */
+
+        /*does not matter for ENERGI.. payment is consistent forever*/
+        consensus.nMasternodePaymentsStartBlock = 0; // not true, but it's ok as long as it's less then nMasternodePaymentsIncreaseBlock
+        consensus.nMasternodePaymentsIncreaseBlock =  16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
+        consensus.nMasternodePaymentsIncreasePeriod = 576*30; // 17280 - actual historical value
+        consensus.nInstantSendKeepLock = 24;
+
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetPaymentsStartBlock = 60000;
         consensus.nBudgetPaymentsCycleBlocks = 50;
         consensus.nBudgetPaymentsWindowBlocks = 10;
         consensus.nBudgetProposalEstablishingTime = 60*20;
-        consensus.nSuperblockStartBlock = 61000; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPeymentsStartBlock
-        consensus.nSuperblockCycle = 24; // Superblocks can be issued hourly on testnet
+        consensus.nSuperblockStartBlock = 0; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPeymentsStartBlock
+        consensus.nSuperblockCycle = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725t
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
         consensus.nMasternodeMinimumConfirmations = 1;
