@@ -173,20 +173,20 @@
 
 #elif SMZ_PREFERENCE == SMZ_ASM_BARRIER
 #define secure_memzero(ptr,len) do { \
-	memset((ptr),0,(len)); \
-	__asm__ __volatile__("" ::"r"(ptr): "memory"); \
+    memset((ptr),0,(len)); \
+    __asm__ __volatile__("" ::"r"(ptr): "memory"); \
 } while (0)
 
 #elif SMZ_PREFERENCE == SMZ_VDATAPTR
 static void secure_memzero(void * ptr, size_t len) {
-	volatile char * p = ptr;
-	while (len--) *p++ = 0;
+    volatile char * p = ptr;
+    while (len--) *p++ = 0;
 }
 
 #elif SMZ_PREFERENCE == SMZ_VFUNCPTR
 static void * (* volatile _smz_memset_fptr)(void*,int,size_t) = &memset;
 static void secure_memzero(void * ptr, size_t len) {
-	_smz_memset_fptr(ptr, 0, len);
+    _smz_memset_fptr(ptr, 0, len);
 }
 
 #endif

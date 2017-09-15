@@ -585,7 +585,7 @@ void InitDAG(egihash::progress_callback_type callback)
     {
         auto const height = (max)(GetHeight(), 0);
         auto const epoch = height / constants::EPOCH_LENGTH;
-        auto const & seedhash = get_seedhash(height);
+        auto const & seedhash = seedhash_to_filename(get_seedhash(height));
         stringstream ss;
         ss << hex << setw(4) << setfill('0') << epoch << "-" << seedhash.substr(0, 12) << ".dag";
         auto const epoch_file = GetDataDir() / "dag" / ss.str();
@@ -1660,7 +1660,7 @@ bool GetTransaction(const uint256 &hash, CTransaction &txOut, const Consensus::P
             } catch (const std::exception& e) {
                 return error("%s: Deserialize or I/O error - %s", __func__, e.what());
             }
-            hashBlock = header.GetHash(GetBlockHeight(&header));
+            hashBlock = header.GetHash();
             if (txOut.GetHash() != hash)
                 return error("%s: txid mismatch", __func__);
             return true;
@@ -1743,10 +1743,8 @@ bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus:
         return error("%s: Deserialize or I/O error - %s at %s", __func__, e.what(), pos.ToString());
     }
 
-    auto blockHeader = block.GetBlockHeader();
-
     // Check the header
-    if (!CheckProofOfWork(block.GetHash(GetBlockHeight(&blockHeader)), block.nBits, consensusParams))
+    if (!CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
         return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
 
     return true;
@@ -1756,22 +1754,9 @@ bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex, const Consensus
 {
     if (!ReadBlockFromDisk(block, pindex->GetBlockPos(), consensusParams))
         return false;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-    if (block.GetHash(pindex->nHeight) != pindex->GetBlockHash())
-        return error("ReadBlockFromDisk(CBlock&, CBlockIndex*): GetHash() doesn't match index for %s at %s",
-                pindex->ToString(), pindex->GetBlockPos().ToString());
-=======
     if (block.GetHash() != pindex->GetBlockHash())
         return error("ReadBlockFromDisk(CBlock&, CBlockIndex*): GetHash() doesn't match index for %s at %s of block %s",
                 pindex->ToString(), pindex->GetBlockPos().ToString(), block.ToString());
->>>>>>> upstream/energi_v0
-=======
-    if (block.GetHash() != pindex->GetBlockHash())
-        return error("ReadBlockFromDisk(CBlock&, CBlockIndex*): GetHash() doesn't match index for %s at %s of block %s",
-                pindex->ToString(), pindex->GetBlockPos().ToString(), block.ToString());
->>>>>>> upstream/energi_v0
     return true;
 }
 
@@ -2624,8 +2609,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
 
     // Special case for the genesis block, skipping connection of its transactions
     // (its coinbase is unspendable)
-    auto blockHeader = block.GetBlockHeader();
-    if (block.GetHash(GetBlockHeight(&blockHeader)) == chainparams.GetConsensus().hashGenesisBlock) {
+    if (block.GetHash() == chainparams.GetConsensus().hashGenesisBlock) {
         if (!fJustCheck)
             view.SetBestBlock(pindex->GetBlockHash());
         return true;
@@ -2866,7 +2850,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     }
 
     if (!IsBlockPayeeValid(block.vtx[0], pindex->nHeight, blockReward)) {
-        mapRejectedBlocks.insert(make_pair(block.GetHash(pindex->nHeight), GetTime()));
+        mapRejectedBlocks.insert(make_pair(block.GetHash(), GetTime()));
         return state.DoS(0, error("ConnectBlock(EGI): couldn't find masternode or superblock payments"),
                                 REJECT_INVALID, "bad-cb-payee");
     }
@@ -3472,8 +3456,7 @@ bool ActivateBestChain(CValidationState &state, const CChainParams& chainparams,
                 return true;
 
             bool fInvalidFound = false;
-            auto blockHeader = pblock->GetBlockHeader();
-            if (!ActivateBestChainStep(state, chainparams, pindexMostWork, pblock && pblock->GetHash(GetBlockHeight(&blockHeader)) == pindexMostWork->GetBlockHash() ? pblock : NULL, fInvalidFound))
+            if (!ActivateBestChainStep(state, chainparams, pindexMostWork, pblock && pblock->GetHash() == pindexMostWork->GetBlockHash() ? pblock : NULL, fInvalidFound))
                 return false;
 
             if (fInvalidFound) {
@@ -3611,7 +3594,7 @@ bool ReconsiderBlock(CValidationState& state, CBlockIndex *pindex) {
 CBlockIndex* AddToBlockIndex(const CBlockHeader& block)
 {
     // Check for duplicate
-    uint256 hash = block.GetHash(GetBlockHeight(&block));
+    uint256 hash = block.GetHash();
     BlockMap::iterator it = mapBlockIndex.find(hash);
     if (it != mapBlockIndex.end())
         return it->second;
@@ -3779,7 +3762,7 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
 bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, bool fCheckPOW)
 {
     // Check proof of work matches claimed amount
-    if (fCheckPOW && !CheckProofOfWork(block.GetHash(GetBlockHeight(&block)), block.nBits, Params().GetConsensus()))
+    if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, Params().GetConsensus()))
         return state.DoS(50, error("CheckBlockHeader(): proof of work failed"),
                          REJECT_INVALID, "high-hash");
 
@@ -3857,8 +3840,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                     // to let other nodes complete the lock.
                     instantsend.Relay(hashLocked);
                     LOCK(cs_main);
-                    auto blockHeader = block.GetBlockHeader();
-                    mapRejectedBlocks.insert(make_pair(block.GetHash(GetBlockHeight(&blockHeader)), GetTime()));
+                    mapRejectedBlocks.insert(make_pair(block.GetHash(), GetTime()));
                     return state.DoS(0, error("CheckBlock(EGI): transaction %s conflicts with transaction lock %s",
                                                 tx.GetHash().ToString(), hashLocked.ToString()),
                                      REJECT_INVALID, "conflict-tx-lock");
@@ -3990,7 +3972,7 @@ static bool AcceptBlockHeader(const CBlockHeader& block, CValidationState& state
 {
     AssertLockHeld(cs_main);
     // Check for duplicate
-    uint256 hash = block.GetHash(GetBlockHeight(&block));
+    uint256 hash = block.GetHash();
     BlockMap::iterator miSelf = mapBlockIndex.find(hash);
     CBlockIndex *pindex = NULL;
 
@@ -4119,8 +4101,7 @@ bool ProcessNewBlock(CValidationState& state, const CChainParams& chainparams, C
 {
     {
         LOCK(cs_main);
-        auto blockHeader = pblock->GetBlockHeader();
-        bool fRequested = MarkBlockAsReceived(pblock->GetHash(GetBlockHeight(&blockHeader)));
+        bool fRequested = MarkBlockAsReceived(pblock->GetHash());
         fRequested |= fForceProcessing;
 
         // Store to disk
@@ -4151,8 +4132,7 @@ bool TestBlockValidity(CValidationState& state, const CChainParams& chainparams,
 {
     AssertLockHeld(cs_main);
     assert(pindexPrev && pindexPrev == chainActive.Tip());
-    auto blockHeader = block.GetBlockHeader();
-    if (fCheckpointsEnabled && !CheckIndexAgainstCheckpoint(pindexPrev, state, chainparams, block.GetHash(GetBlockHeight(&blockHeader))))
+    if (fCheckpointsEnabled && !CheckIndexAgainstCheckpoint(pindexPrev, state, chainparams, block.GetHash()))
         return error("%s: CheckIndexAgainstCheckpoint(): %s", __func__, state.GetRejectReason().c_str());
 
     CCoinsViewCache viewNew(pcoinsTip);
@@ -4698,11 +4678,8 @@ bool LoadExternalBlockFile(const CChainParams& chainparams, FILE* fileIn, CDiskB
                 blkdat >> block;
                 nRewind = blkdat.GetPos();
 
-
-
                 // detect out of order blocks, and store them for later
-                auto blockHeader = block.GetBlockHeader();
-                uint256 hash = block.GetHash(GetBlockHeight(&blockHeader));
+                uint256 hash = block.GetHash();
                 if (hash != chainparams.GetConsensus().hashGenesisBlock && mapBlockIndex.find(block.hashPrevBlock) == mapBlockIndex.end()) {
                     LogPrint("reindex", "%s: Out of order block %s, parent %s not known\n", __func__, hash.ToString(),
                             block.hashPrevBlock.ToString());
@@ -4744,15 +4721,14 @@ bool LoadExternalBlockFile(const CChainParams& chainparams, FILE* fileIn, CDiskB
                         std::multimap<uint256, CDiskBlockPos>::iterator it = range.first;
                         if (ReadBlockFromDisk(block, it->second, chainparams.GetConsensus()))
                         {
-                            auto blockHeader = block.GetBlockHeader();
-                            LogPrint("reindex", "%s: Processing out of order child %s of %s\n", __func__, block.GetHash(GetBlockHeight(&blockHeader)).ToString(),
+                            LogPrint("reindex", "%s: Processing out of order child %s of %s\n", __func__, block.GetHash().ToString(),
                                     head.ToString());
                             LOCK(cs_main);
                             CValidationState dummy;
                             if (AcceptBlock(block, dummy, chainparams, NULL, true, &it->second, NULL))
                             {
                                 nLoaded++;
-                                queue.push_back(block.GetHash(GetBlockHeight(&blockHeader)));
+                                queue.push_back(block.GetHash());
                             }
                         }
                         range.first++;
@@ -6119,7 +6095,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                 if (state.IsInvalid(nDoS)) {
                     if (nDoS > 0)
                         Misbehaving(pfrom->GetId(), nDoS);
-                    std::string strError = "invalid header received " + header.GetHash(GetBlockHeight(&header)).ToString();
+                    std::string strError = "invalid header received " + header.GetHash().ToString();
                     return error(strError.c_str());
                 }
             }
@@ -6194,9 +6170,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         CBlock block;
         vRecv >> block;
 
-        auto blockHeader = block.GetBlockHeader();
-
-        CInv inv(MSG_BLOCK, block.GetHash(GetBlockHeight(&blockHeader)));
+        CInv inv(MSG_BLOCK, block.GetHash());
         LogPrint("net", "received block %s peer=%d\n", inv.hash.ToString(), pfrom->id);
 
         pfrom->AddInventoryKnown(inv);
@@ -6828,17 +6802,14 @@ bool SendMessages(CNode* pto)
                     }
                 }
             } else if (!vHeaders.empty()) {
-                auto frontHeader = vHeaders.front().GetBlockHeader();
-                auto backHeader = vHeaders.back().GetBlockHeader();
                 if (vHeaders.size() > 1) {
-                        
                     LogPrint("net", "%s: %u headers, range (%s, %s), to peer=%d\n", __func__,
                             vHeaders.size(),
-                            vHeaders.front().GetHash(GetBlockHeight(&frontHeader)).ToString(),
-                            vHeaders.back().GetHash(GetBlockHeight(&backHeader)).ToString(), pto->id);
+                            vHeaders.front().GetHash().ToString(),
+                            vHeaders.back().GetHash().ToString(), pto->id);
                 } else {
                     LogPrint("net", "%s: sending header %s to peer=%d\n", __func__,
-                            vHeaders.front().GetHash(GetBlockHeight(&frontHeader)).ToString(), pto->id);
+                            vHeaders.front().GetHash().ToString(), pto->id);
                 }
                 pto->PushMessage(NetMsgType::HEADERS, vHeaders);
                 state.pindexBestHeaderSent = pBestIndex;
@@ -6977,49 +6948,6 @@ bool SendMessages(CNode* pto)
 
     }
     return true;
-}
-
-/**
-*TODO
-*/
-uint32_t GetBlockHeight(const CBlockHeader* header) {
-    auto const prevBlock = mapBlockIndex.find(header->hashPrevBlock);
-    if (prevBlock == mapBlockIndex.end())
-        throw runtime_error("Previous block not found in chain");
-    return prevBlock->second->nHeight + 1;
-}
-
-/**
-* Load DAG for calculating EgiHash for the current chain height
-*/
-void LoadDAG(std::string dataDir){
-    LoadDAG(dataDir, GetHeight());
-}
-
-/**
-* Load DAG for calculating EgiHash for a given block height
-*/
-void LoadDAG(std::string dataDir, int blockHeight) {
-    auto filename = dataDir + std::string("epoch") 
-                            + std::to_string(blockHeight / egihash::constants::EPOCH_LENGTH) + ".dag";
-
-    try
-    {
-        egihash::dag_t load(filename);
-    }
-    catch (egihash::hash_exception const & e)
-    {
-        // unable to load the dag, must be generated
-        try
-        {
-            egihash::dag_t newDAG(blockHeight);
-            newDAG.save(filename);
-        }
-        catch (egihash::hash_exception const & e)
-        {
-            // error generating dag, log it and quit
-        }
-    }
 }
 
  std::string CBlockFileInfo::ToString() const {

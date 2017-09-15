@@ -789,11 +789,7 @@ void CInstantSend::SyncTransaction(const CTransaction& tx, const CBlock* pblock)
     // When tx is 0-confirmed or conflicted, pblock is NULL and nHeightNew should be set to -1
     CBlockIndex* pblockindex = NULL;
     if(pblock) {
-        auto const prevBlock = mapBlockIndex.find(pblock->hashPrevBlock);
-        if (prevBlock == mapBlockIndex.end())
-            throw std::runtime_error("Previous block not found in chain!");
-        auto const chainHeight = prevBlock->second->nHeight + 1;
-        uint256 blockHash = pblock->GetHash(chainHeight);
+        uint256 blockHash = pblock->GetHash();
         BlockMap::iterator mi = mapBlockIndex.find(blockHash);
         if(mi == mapBlockIndex.end() || !mi->second) {
             // shouldn't happen

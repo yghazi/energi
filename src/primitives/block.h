@@ -9,7 +9,6 @@
 #include "primitives/transaction.h"
 #include "serialize.h"
 #include "uint256.h"
-#include "crypto/egihash.h"
 
 /** Nodes collect new transactions into a block, hash them into a hash tree,
  * and scan through nonce values to make the block's hash satisfy proof-of-work
@@ -30,7 +29,6 @@ public:
     uint32_t nHeight;
     mutable uint256 hashMix;
     uint32_t nNonce;
-    uint256 hashMix; // TODO: use this correctly
 
     CBlockHeader()
     {
@@ -69,12 +67,7 @@ public:
         return (nBits == 0);
     }
 
-    uint256 GetHash(uint32_t blockHeight) const;
-
-    uint256 GetHashMix() const
-    {
-        return hashMix;
-    }
+    uint256 GetHash() const;
 
     uint256 GetHashMix() const
     {
@@ -141,7 +134,7 @@ public:
         return block;
     }
 
-    std::string ToString(uint32_t blockHeight) const;
+    std::string ToString() const;
 };
 
 

@@ -1023,18 +1023,14 @@ bool CWallet::AddToWalletIfInvolvingMe(const CTransaction& tx, const CBlock* pbl
 {
     {
         AssertLockHeld(cs_wallet);
-        auto const prevBlock = mapBlockIndex.find(pblock->hashPrevBlock);
-        if (prevBlock == mapBlockIndex.end())
-            throw std::runtime_error("Previous block not found in chain!");
-        auto const chainHeight = prevBlock->second->nHeight + 1;
 
         if (pblock) {
             BOOST_FOREACH(const CTxIn& txin, tx.vin) {
                 std::pair<TxSpends::const_iterator, TxSpends::const_iterator> range = mapTxSpends.equal_range(txin.prevout);
                 while (range.first != range.second) {
                     if (range.first->second != tx.GetHash()) {
-                        LogPrintf("Transaction %s (in block %s) conflicts with wallet transaction %s (both spend %s:%i)\n", tx.GetHash().ToString(), pblock->GetHash(chainHeight).ToString(), range.first->second.ToString(), range.first->first.hash.ToString(), range.first->first.n);
-                        MarkConflicted(pblock->GetHash(chainHeight), range.first->second);
+                        LogPrintf("Transaction %s (in block %s) conflicts with wallet transaction %s (both spend %s:%i)\n", tx.GetHash().ToString(), pblock->GetHash().ToString(), range.first->second.ToString(), range.first->first.hash.ToString(), range.first->first.n);
+                        MarkConflicted(pblock->GetHash(), range.first->second);
                     }
                     range.first++;
                 }
@@ -4384,13 +4380,9 @@ int CMerkleTx::SetMerkleBranch(const CBlock& block)
 {
     AssertLockHeld(cs_main);
     CBlock blockTmp;
-    auto const prevBlock = mapBlockIndex.find(block.hashPrevBlock);
-    if (prevBlock == mapBlockIndex.end())
-        throw std::runtime_error("Previous block not found in chain!");
-    auto const chainHeight = prevBlock->second->nHeight + 1;
 
     // Update the tx's hashBlock
-    hashBlock = block.GetHash(chainHeight);
+    hashBlock = block.GetHash();
 
     // Locate the transaction
     for (nIndex = 0; nIndex < (int)block.vtx.size(); nIndex++)

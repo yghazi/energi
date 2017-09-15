@@ -73,7 +73,6 @@ bool TestSequenceLocks(const CTransaction &tx, int flags)
 }
 
 // NOTE: These tests rely on CreateNewBlock doing its own self-validation!
-
 BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
 {
     const CChainParams& chainparams = Params(CBaseChainParams::MAIN);
@@ -121,7 +120,7 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
         CValidationState state;
         BOOST_CHECK(ProcessNewBlock(state, chainparams, NULL, pblock, true, NULL));
         BOOST_CHECK(state.IsValid());
-        pblock->hashPrevBlock = pblock->GetHash(chainActive.Height()-1);
+        pblock->hashPrevBlock = pblock->GetHash();
     }
     delete pblocktemplate;
 
@@ -390,4 +389,5 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
 
     fCheckpointsEnabled = true;
 }
+
 BOOST_AUTO_TEST_SUITE_END()

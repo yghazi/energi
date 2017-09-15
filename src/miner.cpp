@@ -375,11 +375,7 @@ void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned
 
 static bool ProcessBlockFound(const CBlock* pblock, const CChainParams& chainparams)
 {
-    auto const prevBlock = mapBlockIndex.find(pblock->hashPrevBlock);
-    if (prevBlock == mapBlockIndex.end())
-         throw std::runtime_error("Previous block not found in chain");
-    auto const chainHeight = prevBlock->second->nHeight + 1;
-    LogPrintf("%s\n", pblock->ToString(chainHeight));
+    LogPrintf("%s\n", pblock->ToString());
     LogPrintf("generated %s\n", FormatMoney(pblock->vtx[0].vout[0].nValue));
 
     // Found a solution
@@ -390,7 +386,7 @@ static bool ProcessBlockFound(const CBlock* pblock, const CChainParams& chainpar
     }
 
     // Inform about the new block
-    GetMainSignals().BlockFound(pblock->GetHash(chainActive.Tip()->nHeight));
+    GetMainSignals().BlockFound(pblock->GetHash());
 
     // Process this block the same as if we had received it from another node
     CValidationState state;
@@ -467,7 +463,7 @@ void static BitcoinMiner(const CChainParams& chainparams)
                 uint256 hash;
                 while (true)
                 {
-                    hash = pblock->GetHash(chainActive.Tip()->nHeight);
+                    hash = pblock->GetHash();
                     if (UintToArith256(hash) <= hashTarget)
                     {
                         // Found a solution

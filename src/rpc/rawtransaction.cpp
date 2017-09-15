@@ -337,12 +337,8 @@ UniValue verifytxoutproof(const UniValue& params, bool fHelp)
         return res;
 
     LOCK(cs_main);
-    auto const prevBlock = mapBlockIndex.find(merkleBlock.header.hashPrevBlock);
-    if (prevBlock == mapBlockIndex.end())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Previous block not found in chain");
-    auto const chainHeight = prevBlock->second->nHeight + 1;
 
-    if (!mapBlockIndex.count(merkleBlock.header.GetHash(chainHeight)) || !chainActive.Contains(mapBlockIndex[merkleBlock.header.GetHash(chainHeight)]))
+    if (!mapBlockIndex.count(merkleBlock.header.GetHash()) || !chainActive.Contains(mapBlockIndex[merkleBlock.header.GetHash()]))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Block not found in chain");
 
     BOOST_FOREACH(const uint256& hash, vMatch)

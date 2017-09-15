@@ -987,9 +987,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 #endif
 
     // ********************************************************* Step 2: parameter interactions
-    // Load or generate DAG for genesysis block
-    LoadDAG(GetDataDir().string(), 0);
-
     const CChainParams& chainparams = Params();
 
     // also see: InitParameterInteraction()
@@ -1651,10 +1648,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     if (!est_filein.IsNull())
         mempool.ReadFeeEstimates(est_filein);
     fFeeEstimatesInitialized = true;
-
-    // Load or generate DAG
-    LoadDAG(GetDataDir().string());
-    
 
     // ********************************************************* Step 8: load wallet
 #ifdef ENABLE_WALLET
