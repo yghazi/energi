@@ -26,8 +26,6 @@
 #include "crypto/sph_simd.h"
 #include "crypto/sph_echo.h"
 
-#include "crypto/egihash.h"
-
 #include <vector>
 
 typedef uint256 ChainCode;

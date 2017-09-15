@@ -142,6 +142,7 @@ public:
     uint256 hashMerkleRoot;
     unsigned int nTime;
     unsigned int nBits;
+    uint256 hashMix;
     unsigned int nNonce;
 
     //! (memory only) Sequential id assigned to distinguish order in which blocks are received.
@@ -166,6 +167,7 @@ public:
         hashMerkleRoot = uint256();
         nTime          = 0;
         nBits          = 0;
+        hashMix        = uint256();
         nNonce         = 0;
     }
 
@@ -182,6 +184,8 @@ public:
         hashMerkleRoot = block.hashMerkleRoot;
         nTime          = block.nTime;
         nBits          = block.nBits;
+        nHeight        = block.nHeight;
+        hashMix        = block.hashMix;
         nNonce         = block.nNonce;
     }
 
@@ -212,6 +216,8 @@ public:
         block.hashMerkleRoot = hashMerkleRoot;
         block.nTime          = nTime;
         block.nBits          = nBits;
+        block.nHeight        = nHeight;
+        block.hashMix        = hashMix;
         block.nNonce         = nNonce;
         return block;
     }
@@ -323,6 +329,7 @@ public:
         READWRITE(hashMerkleRoot);
         READWRITE(nTime);
         READWRITE(nBits);
+        READWRITE(hashMix);
         READWRITE(nNonce);
     }
 
@@ -336,6 +343,8 @@ public:
         block.hashMerkleRoot  = hashMerkleRoot;
         block.nTime           = nTime;
         block.nBits           = nBits;
+        block.nHeight         = nHeight;
+        block.hashMix         = hashMix;
         block.nNonce          = nNonce;
         return block.GetHash( (uint32_t)nHeight );
     }

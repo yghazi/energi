@@ -338,7 +338,8 @@ crypto_libbitcoin_crypto_a_SOURCES += \
   crypto/egihash.cpp \
   crypto/egihash.h \
   crypto/keccak-tiny.h \
-  crypto/keccak-tiny.c
+  crypto/keccak-tiny.c \
+  crypto/secure_memzero.h
 
 # common: shared between energid, and energi-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
@@ -370,6 +371,7 @@ libbitcoin_common_a_SOURCES = \
   script/sign.cpp \
   script/standard.cpp \
   spork.cpp \
+  dag_singleton.cpp \
   $(BITCOIN_CORE_H)
 
 # util: shared between all executables.

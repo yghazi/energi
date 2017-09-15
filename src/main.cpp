@@ -37,6 +37,7 @@
 #include "utilstrencodings.h"
 #include "validationinterface.h"
 #include "versionbits.h"
+#include "dag_singleton.h"
 
 #include "governance.h"
 #include "instantx.h"
@@ -573,6 +574,51 @@ bool GetNodeStateStats(NodeId nodeid, CNodeStateStats &stats) {
             stats.vHeightInFlight.push_back(queue.pindex->nHeight);
     }
     return true;
+}
+
+void InitDAG(egihash::progress_callback_type callback)
+{
+    using namespace egihash;
+
+    auto const & dag = ActiveDAG();
+    if (!dag)
+    {
+        auto const height = (max)(GetHeight(), 0);
+        auto const epoch = height / constants::EPOCH_LENGTH;
+        auto const & seedhash = get_seedhash(height);
+        stringstream ss;
+        ss << hex << setw(4) << setfill('0') << epoch << "-" << seedhash.substr(0, 12) << ".dag";
+        auto const epoch_file = GetDataDir() / "dag" / ss.str();
+
+        LogPrint("dag", "DAG file for epoch %u is \"%s\"", epoch, epoch_file.string());
+        // try to load the DAG from disk
+        try
+        {
+            unique_ptr<dag_t> new_dag(new dag_t(epoch_file.string(), callback));
+            ActiveDAG(move(new_dag));
+            LogPrint("dag", "DAG file \"%s\" loaded successfully.", epoch_file.string());
+            return;
+        }
+        catch (hash_exception const & e)
+        {
+            LogPrint("dag", "DAG file \"%s\" not loaded, will be generated instead. Message: %s", epoch_file.string(), e.what());
+        }
+
+        // try to generate the DAG
+        try
+        {
+            unique_ptr<dag_t> new_dag(new dag_t(height, callback));
+            boost::filesystem::create_directories(epoch_file.parent_path());
+            new_dag->save(epoch_file.string());
+            ActiveDAG(move(new_dag));
+            LogPrint("dag", "DAG generated successfully. Saved to \"%s\".", epoch_file.string());
+        }
+        catch (hash_exception const & e)
+        {
+            error("DAG for epoch %u could not be generated: %s", epoch, e.what());
+        }
+    }
+    LogPrint("dag", "DAG has been initialized already. Use ActiveDAG() to swap.");
 }
 
 void RegisterNodeSignals(CNodeSignals& nodeSignals)
@@ -1710,10 +1756,16 @@ bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex, const Consensus
 {
     if (!ReadBlockFromDisk(block, pindex->GetBlockPos(), consensusParams))
         return false;
+<<<<<<< HEAD
 
     if (block.GetHash(pindex->nHeight) != pindex->GetBlockHash())
         return error("ReadBlockFromDisk(CBlock&, CBlockIndex*): GetHash() doesn't match index for %s at %s",
                 pindex->ToString(), pindex->GetBlockPos().ToString());
+=======
+    if (block.GetHash() != pindex->GetBlockHash())
+        return error("ReadBlockFromDisk(CBlock&, CBlockIndex*): GetHash() doesn't match index for %s at %s of block %s",
+                pindex->ToString(), pindex->GetBlockPos().ToString(), block.ToString());
+>>>>>>> upstream/energi_v0
     return true;
 }
 
@@ -1744,6 +1796,11 @@ NOTE:   unlike bitcoin we are using PREVIOUS block height here,
 */
 CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
 {
+    // No decline of emission. Set to 1 million per month till PoS
+
+    CAmount blockSubsidy = consensusParams.MinerPlusMasterNode;
+    return blockSubsidy;
+
     double dDiff;
     CAmount nSubsidyBase;
 
@@ -1778,9 +1835,10 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     CAmount nSubsidy = nSubsidyBase * COIN;
 
     // yearly decline of production by ~7.1% per year, projected ~18M coins max by year 2050+.
-    for (int i = consensusParams.nSubsidyHalvingInterval; i <= nPrevHeight; i += consensusParams.nSubsidyHalvingInterval) {
-        nSubsidy -= nSubsidy/14;
-    }
+    //for (int i = consensusParams.nSubsidyHalvingInterval; i <= nPrevHeight; i += consensusParams.nSubsidyHalvingInterval) {
+    //    nSubsidy -= nSubsidy/14;
+    //}
+
 
     // Hard fork to reduce the block reward by 10 extra percent (allowing budget/superblocks)
     CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
@@ -1790,6 +1848,9 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
 
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
 {
+    return Params().GetConsensus().MasterNodesEnergiPerBlock;
+    // everything below does not matter
+
     CAmount ret = blockValue/5; // start at 20%
 
     int nMNPIBlock = Params().GetConsensus().nMasternodePaymentsIncreaseBlock;
@@ -4531,7 +4592,7 @@ bool LoadBlockIndex()
     return true;
 }
 
-bool InitBlockIndex(const CChainParams& chainparams) 
+bool InitBlockIndex(const CChainParams& chainparams)
 {
     LOCK(cs_main);
 
@@ -4992,12 +5053,12 @@ bool static AlreadyHave(const CInv& inv) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
     case MSG_BLOCK:
         return mapBlockIndex.count(inv.hash);
 
-    /* 
+    /*
         Energi Related Inventory Messages
 
         --
 
-        We shouldn't update the sync times for each of the messages when we already have it. 
+        We shouldn't update the sync times for each of the messages when we already have it.
         We're going to be asking many nodes upfront for the full inventory list, so we'll get duplicates of these.
         We want to only update the time on new hits, so that we can time out appropriately if needed.
     */
