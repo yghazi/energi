@@ -230,7 +230,11 @@ namespace egihash
 		/** \brief Default constructor
 		*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 		constexpr result_t() {};
+=======
+		constexpr result_t() = default;
+>>>>>>> upstream/energi_v0
 =======
 		constexpr result_t() = default;
 >>>>>>> upstream/energi_v0

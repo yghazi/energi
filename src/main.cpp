@@ -1757,10 +1757,16 @@ bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex, const Consensus
     if (!ReadBlockFromDisk(block, pindex->GetBlockPos(), consensusParams))
         return false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     if (block.GetHash(pindex->nHeight) != pindex->GetBlockHash())
         return error("ReadBlockFromDisk(CBlock&, CBlockIndex*): GetHash() doesn't match index for %s at %s",
                 pindex->ToString(), pindex->GetBlockPos().ToString());
+=======
+    if (block.GetHash() != pindex->GetBlockHash())
+        return error("ReadBlockFromDisk(CBlock&, CBlockIndex*): GetHash() doesn't match index for %s at %s of block %s",
+                pindex->ToString(), pindex->GetBlockPos().ToString(), block.ToString());
+>>>>>>> upstream/energi_v0
 =======
     if (block.GetHash() != pindex->GetBlockHash())
         return error("ReadBlockFromDisk(CBlock&, CBlockIndex*): GetHash() doesn't match index for %s at %s of block %s",

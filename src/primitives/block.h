@@ -76,6 +76,11 @@ public:
         return hashMix;
     }
 
+    uint256 GetHashMix() const
+    {
+        return hashMix;
+    }
+
     int64_t GetBlockTime() const
     {
         return (int64_t)nTime;
