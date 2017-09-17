@@ -185,6 +185,7 @@ BITCOIN_CORE_H = \
   validationinterface.h \
   version.h \
   versionbits.h \
+  dag_singleton.h \
   wallet/crypter.h \
   wallet/db.h \
   wallet/wallet.h \
