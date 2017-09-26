@@ -3160,7 +3160,63 @@ static int64_t nTimePostConnect = 0;
  */
 bool static ConnectTip(CValidationState& state, const CChainParams& chainparams, CBlockIndex* pindexNew, const CBlock* pblock)
 {
+    using namespace egihash;
+
     assert(pindexNew->pprev == chainActive.Tip());
+    auto const height = pindexNew->nHeight;
+    auto const epoch = height / constants::EPOCH_LENGTH;
+
+    // if there have been EPOCH_LENGTH number of blocks since the last DAG was generated, 
+    // generate a new one
+    if (epoch > ActiveDAG()->epoch()) {
+        // TODO: should make a separate function for DAG generation
+        auto const & seedhash = seedhash_to_filename(get_seedhash(height));
+        stringstream ss;
+        ss << hex << setw(4) << setfill('0') << epoch << "-" << seedhash.substr(0, 12) << ".dag";
+        auto const epoch_file = GetDataDir() / "dag" / ss.str();
+        try {
+            unique_ptr<dag_t> new_dag(new dag_t(height, [](::std::size_t step, ::std::size_t max, int phase) -> bool
+        {
+            double progress = static_cast<double>(step) / static_cast<double>(max) * 100.0;
+            switch(phase)
+            {
+                case egihash::cache_seeding:
+                    LogPrintf("Seeding cache... %3.2lf\n", progress);
+                    break;
+                case egihash::cache_generation:
+                    LogPrintf("Generating cache... %3.2lf\n", progress);
+                    break;
+                case egihash::cache_saving:
+                    LogPrintf("Saving cache... %3.2lf\n", progress);
+                    break;
+                case egihash::cache_loading:
+                    LogPrintf("Loading cache... %3.2lf\n", progress);
+                    break;
+                case egihash::dag_generation:
+                    LogPrintf("Generating DAG... %3.2lf\n", progress);
+                    break;
+                case egihash::dag_saving:
+                    LogPrintf("Saving DAG... %3.2lf\n", progress);
+                    break;
+                case egihash::dag_loading:
+                    LogPrintf("Loading DAG... %3.2lf\n", progress);
+                    break;
+                default:
+                    break;
+            }
+            return true;
+        }));
+            boost::filesystem::create_directories(epoch_file.parent_path());
+            new_dag->save(epoch_file.string());
+            ActiveDAG(move(new_dag));
+            LogPrint("dag", "DAG generated successfully. Saved to \"%s\".", epoch_file.string());
+        }
+        catch (hash_exception const & e)
+        {
+            error("DAG for epoch %u could not be generated: %s", epoch, e.what());
+        }
+    }
+
     // Read block from disk.
     int64_t nTime1 = GetTimeMicros();
     CBlock block;
