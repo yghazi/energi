@@ -1839,6 +1839,9 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
 
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
 {
+    /* Commented out by Amer Mufti
+       Github Issue #79: Changing coin emission and distribution
+
     return Params().GetConsensus().MasterNodesEnergiPerBlock;
     // everything below does not matter
 
@@ -1857,6 +1860,10 @@ CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
     if(nHeight > nMNPIBlock+(nMNPIPeriod* 6)) ret += blockValue / 40; // 261680 - 45.0% - 2015-05-01
     if(nHeight > nMNPIBlock+(nMNPIPeriod* 7)) ret += blockValue / 40; // 278960 - 47.5% - 2015-06-01
     if(nHeight > nMNPIBlock+(nMNPIPeriod* 9)) ret += blockValue / 40; // 313520 - 50.0% - 2015-08-03
+    */
+    
+    CAmount ret = blockValue * 0.6; // 60% of value goes to master node after coinbase deduction
+                                    // for founders and budget/treasury
 
     return ret;
 }
