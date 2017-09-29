@@ -1839,6 +1839,9 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
 
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
 {
+    /* Commented out by Amer Mufti
+       Github Issue #79: Changing coin emission and distribution
+
     return Params().GetConsensus().MasterNodesEnergiPerBlock;
     // everything below does not matter
 
@@ -1857,6 +1860,10 @@ CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
     if(nHeight > nMNPIBlock+(nMNPIPeriod* 6)) ret += blockValue / 40; // 261680 - 45.0% - 2015-05-01
     if(nHeight > nMNPIBlock+(nMNPIPeriod* 7)) ret += blockValue / 40; // 278960 - 47.5% - 2015-06-01
     if(nHeight > nMNPIBlock+(nMNPIPeriod* 9)) ret += blockValue / 40; // 313520 - 50.0% - 2015-08-03
+    */
+    
+    CAmount ret = blockValue * 0.6; // 60% of value goes to master node after coinbase deduction
+                                    // for founders and budget/treasury
 
     return ret;
 }
@@ -2639,9 +2646,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     // Now that the whole chain is irreversibly beyond that time it is applied to all blocks except the
     // two in the chain that violate it. This prevents exploiting the issue against nodes during their
     // initial block download.
-    bool fEnforceBIP30 = (!pindex->phashBlock) || // Enforce on CreateNewBlock invocations which don't have a hash.
-                          !((pindex->nHeight==91842 && pindex->GetBlockHash() == uint256S("0x00000000000a4d0a398161ffc163c503763b1f4360639393e0e4c8e300e0caec")) ||
-                           (pindex->nHeight==91880 && pindex->GetBlockHash() == uint256S("0x00000000000743f190a18c5577a3c2d2a1f610ae9601ac046a38084ccb7cd721")));
+    bool fEnforceBIP30 = (!pindex->phashBlock); // Enforce on CreateNewBlock invocations which don't have a hash.
 
     // Once BIP34 activated it was not possible to create new duplicate coinbases and thus other than starting
     // with the 2 existing duplicate coinbase pairs, not possible to create overwriting txs.  But by the
@@ -2651,8 +2656,8 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     // If we're on the known chain at height greater than where BIP34 activated, we can save the db accesses needed for the BIP30 check.
     CBlockIndex *pindexBIP34height = pindex->pprev->GetAncestor(chainparams.GetConsensus().BIP34Height);
     //Only continue to enforce if we're below BIP34 activation height or the block hash at that height doesn't correspond.
-    fEnforceBIP30 = fEnforceBIP30 && (!pindexBIP34height || !(pindexBIP34height->GetBlockHash() == chainparams.GetConsensus().BIP34Hash));
-
+    fEnforceBIP30 = fEnforceBIP30 || (!pindexBIP34height || !(pindexBIP34height->GetBlockHash() == chainparams.GetConsensus().BIP34Hash));
+    // Do we even need these checks if we're always going to enforce?
     if (fEnforceBIP30) {
         BOOST_FOREACH(const CTransaction& tx, block.vtx) {
             const CCoins* coins = view.AccessCoins(tx.GetHash());
@@ -3162,7 +3167,63 @@ static int64_t nTimePostConnect = 0;
  */
 bool static ConnectTip(CValidationState& state, const CChainParams& chainparams, CBlockIndex* pindexNew, const CBlock* pblock)
 {
+    using namespace egihash;
+
     assert(pindexNew->pprev == chainActive.Tip());
+    auto const height = pindexNew->nHeight;
+    auto const epoch = height / constants::EPOCH_LENGTH;
+
+    // if there have been EPOCH_LENGTH number of blocks since the last DAG was generated, 
+    // generate a new one
+    if (epoch > ActiveDAG()->epoch()) {
+        // TODO: should make a separate function for DAG generation
+        auto const & seedhash = seedhash_to_filename(get_seedhash(height));
+        stringstream ss;
+        ss << hex << setw(4) << setfill('0') << epoch << "-" << seedhash.substr(0, 12) << ".dag";
+        auto const epoch_file = GetDataDir() / "dag" / ss.str();
+        try {
+            unique_ptr<dag_t> new_dag(new dag_t(height, [](::std::size_t step, ::std::size_t max, int phase) -> bool
+        {
+            double progress = static_cast<double>(step) / static_cast<double>(max) * 100.0;
+            switch(phase)
+            {
+                case egihash::cache_seeding:
+                    LogPrintf("Seeding cache... %3.2lf\n", progress);
+                    break;
+                case egihash::cache_generation:
+                    LogPrintf("Generating cache... %3.2lf\n", progress);
+                    break;
+                case egihash::cache_saving:
+                    LogPrintf("Saving cache... %3.2lf\n", progress);
+                    break;
+                case egihash::cache_loading:
+                    LogPrintf("Loading cache... %3.2lf\n", progress);
+                    break;
+                case egihash::dag_generation:
+                    LogPrintf("Generating DAG... %3.2lf\n", progress);
+                    break;
+                case egihash::dag_saving:
+                    LogPrintf("Saving DAG... %3.2lf\n", progress);
+                    break;
+                case egihash::dag_loading:
+                    LogPrintf("Loading DAG... %3.2lf\n", progress);
+                    break;
+                default:
+                    break;
+            }
+            return true;
+        }));
+            boost::filesystem::create_directories(epoch_file.parent_path());
+            new_dag->save(epoch_file.string());
+            ActiveDAG(move(new_dag));
+            LogPrint("dag", "DAG generated successfully. Saved to \"%s\".", epoch_file.string());
+        }
+        catch (hash_exception const & e)
+        {
+            error("DAG for epoch %u could not be generated: %s", epoch, e.what());
+        }
+    }
+
     // Read block from disk.
     int64_t nTime1 = GetTimeMicros();
     CBlock block;
