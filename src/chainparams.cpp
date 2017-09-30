@@ -80,7 +80,7 @@ public:
         consensus.nBlockSubsidy = 2314814814;
         // 10% founders reward
         consensus.nBlockSubsidyFounders = 231481481;
-        consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY";
+        consensus.foundersAddress = "TODO: IMPLEMENT ME";
         // 20% miners
         consensus.nBlockSubsidyMiners = 462962963;
         // 30% masternodes
@@ -246,6 +246,7 @@ public:
         consensus.nBlockSubsidy = 2314814814;
         // 10% founders reward
         consensus.nBlockSubsidyFounders = 231481481;
+        consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY";
         // 20% miners
         consensus.nBlockSubsidyMiners = 462962963;
         // 30% masternodes
@@ -368,6 +369,7 @@ public:
         consensus.nBlockSubsidy = 2314814814;
         // 10% founders reward
         consensus.nBlockSubsidyFounders = 231481481;
+        consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY"; // TODO: make different than testnet address
         // 20% miners
         consensus.nBlockSubsidyMiners = 462962963;
         // 30% masternodes
