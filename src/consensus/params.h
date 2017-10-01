@@ -6,6 +6,7 @@
 #ifndef BITCOIN_CONSENSUS_PARAMS_H
 #define BITCOIN_CONSENSUS_PARAMS_H
 
+#include "amount.h"
 #include "uint256.h"
 #include <map>
 #include <string>
@@ -16,6 +17,7 @@ enum DeploymentPos
 {
     DEPLOYMENT_TESTDUMMY,
     DEPLOYMENT_CSV, // Deployment of BIP68, BIP112, and BIP113.
+    // NOTE: Also add new deployments to VersionBitsDeploymentInfo in versionbits.cpp
     MAX_VERSION_BITS_DEPLOYMENTS
 };
 
@@ -72,6 +74,16 @@ struct Params {
     int64_t nPowTargetSpacing;
     int64_t nPowTargetTimespan;
     int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }
+
+    /**
+    * Energi specific parameters
+    */
+    CAmount nBlockSubsidy;
+    CAmount nBlockSubsidyFounders;
+    CAmount nBlockSubsidyMiners;
+    CAmount nBlockSubsidyMasternodes;
+    CAmount nBlockSubsidyTreasury;
+    std::string foundersAddress;
 };
 } // namespace Consensus
 
