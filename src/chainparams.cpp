@@ -53,8 +53,8 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-    const char* pszTimestamp = "Tommy World Power";
-    const CScript genesisOutputScript = CScript() << ParseHex("04c3660259aa76854c135c5b5b0a668cecc7ca81b531dbbb212353c90132ba32cf1a11309eec989856bbf1748d047b69590279633f15e5e9835d263acdedad2400") << OP_CHECKSIG;
+    const char* pszTimestamp = "World Power";
+    const CScript genesisOutputScript = CScript() << ParseHex("04494295bcacec9dad5aa01f28183f1f27e088cf7e950e21160d2f5eaad024a34eff1112f5cf3bd0fc80754e5cd4a26fde9c6866959e449a5990782c8b60d5f4f5") << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
 
@@ -99,22 +99,6 @@ public:
         consensus.nMasternodePaymentsIncreasePeriod = 576*30; // 17280 - actual historical value
         consensus.nInstantSendKeepLock = 24;
 
-        /*
-        consensus.nBudgetPaymentsStartBlock = 328008; // actual historical value
-        consensus.nBudgetPaymentsCycleBlocks = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
-        consensus.nBudgetPaymentsWindowBlocks = 100;
-        consensus.nBudgetProposalEstablishingTime = 60*60*24;
-        consensus.nSuperblockStartBlock = 614820; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
-        consensus.nBudgetPaymentsCycleBlocks = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
-        consensus.nBudgetPaymentsWindowBlocks = 100;
-        consensus.nBudgetProposalEstablishingTime = 60*60*24; // 1 day
-        consensus.nSuperblockStartBlock = 0; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
-        consensus.nSuperblockCycle = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
-
-        Dash data for reference
-        TODO : push changes for governance [40%]
-        TODO : add owner' 10% .. generate 20 addresses for that
-        */
         consensus.nBudgetPaymentsStartBlock = 0; // actual historical value
         consensus.nBudgetPaymentsCycleBlocks = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nBudgetPaymentsWindowBlocks = 100;
@@ -155,7 +139,7 @@ public:
         pchMessageStart[1] = 0x2d;
         pchMessageStart[2] = 0x9a;
         pchMessageStart[3] = 0xaf;
-        vAlertPubKey = ParseHex("048240a8748a80a286b270ba126705ced4f2ce5a7847b3610ea3c06513150dade2a8512ed5ea86320824683fc0818f0ac019214973e677acd1244f6d0571fc5103");
+        vAlertPubKey = ParseHex("0466e98d9fe73af302d93ead0a7637834837e04c04fd67c9f100b278b53f004737b944f7caf8d32e6a2e1e368df31a44992b93569726d795bdc65dca439c8eec47");
         nDefaultPort = 9797;
         nMaxTipAge = 6 * 60 * 60; // ~144 blocks behind -> 2 x fork detection time, was 24 * 60 * 60 in bitcoin
         nPruneAfterHeight = 100000;
@@ -197,7 +181,8 @@ public:
         nPoolMaxTransactions = 3;
         nFulfilledRequestExpireTime = 60*60; // fulfilled requests expire in 1 hour
         // TODO change the public keys
-        strSporkPubKey = "04549ac134f694c0243f503e8c8a9a986f5de6610049c40b07816809b0d1d06a21b07be27b9bb555931773f62ba6cf35a25fd52f694d4e1106ccd237a7bb899fdd";
+        strSporkPubKey = "049b34e6fb9eb999228f984a96d05ca6556e0d09f1c2fc069fecc514dac885cf13012324531acbb07be1c517359abd3855e98ebc133edbda47e2449292eac47325";
+        strMasternodePaymentsPubKey = "04ead8cb682e9df4d464539821b43e9a4a14015d5402f6884e632b6a4a2338ee3970d0513620e2686dc8261b4c64c427dc8563edcbcfbd3382ad295e8fa71e1e5f";
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
@@ -239,36 +224,38 @@ public:
         strNetworkID = "test";
 
         // Energi distribution parameters
-        // 23.15 EnergiPerBlock should result in 1 million coins per month at a rate of 1 block per minute
-        consensus.nBlockSubsidy = 2314814814;
-        // 10% founders reward
-        consensus.nBlockSubsidyFounders = 231481481;
         consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY";
+
+        // ~22.18 EnergiPerBlock should result in 1 million coins per month at a rate of 1 block per minute
+        // https://www.grc.nasa.gov/www/k-12/Numbers/Math/Mathematical_Thinking/calendar_calculations.htm
+        // 365.2422 -> 3652422 / 10000
+        //decltype(consensus.nBlockSubsidy) nBlocksPerMonth = 24 * 60 * 3652422 / ( 12 * 10000LL ); // with 1 block/min
+        consensus.nBlockSubsidy = ( 12000000 * 10000LL / ( 24 * 60 * 3652422LL ) ) * 100000000;
+        // 10% founders reward
+        consensus.nBlockSubsidyFounders = consensus.nBlockSubsidy * 10 / 100;
         // 20% miners
-        consensus.nBlockSubsidyMiners = 462962963;
+        consensus.nBlockSubsidyMiners = consensus.nBlockSubsidy * 20 / 100;
         // 30% masternodes
         // each masternode is paid serially.. more the master nodes more is the wait for the payment
         // masternode payment gap is masternodes minutes
-        consensus.nBlockSubsidyMasternodes = 694444444;
+        consensus.nBlockSubsidyMasternodes = consensus.nBlockSubsidy * 30 / 100;
         // 40% treasury
-        consensus.nBlockSubsidyTreasury = 925925926;
-
-        consensus.nSubsidyHalvingInterval = 210240; /* Older value */ // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
-        consensus.nSubsidyHalvingInterval = 41540; /*  */
+        consensus.nBlockSubsidyTreasury = consensus.nBlockSubsidy -
+        		( consensus.nBlockSubsidyMasternodes
+        		+ consensus.nBlockSubsidyFounders
+				+ consensus.nBlockSubsidyMiners );
 
         /*does not matter for ENERGI.. payment is consistent forever*/
         consensus.nMasternodePaymentsStartBlock = 0; // not true, but it's ok as long as it's less then nMasternodePaymentsIncreaseBlock
-        consensus.nMasternodePaymentsIncreaseBlock =  16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
-        consensus.nMasternodePaymentsIncreasePeriod = 576*30; // 17280 - actual historical value
-        consensus.nInstantSendKeepLock = 24;
-
+        consensus.nMasternodePaymentsIncreaseBlock =  46000;
+        consensus.nMasternodePaymentsIncreasePeriod = 576;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetPaymentsStartBlock = 60000;
         consensus.nBudgetPaymentsCycleBlocks = 50;
         consensus.nBudgetPaymentsWindowBlocks = 10;
         consensus.nBudgetProposalEstablishingTime = 60*20;
-        consensus.nSuperblockStartBlock = 0; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPeymentsStartBlock
-        consensus.nSuperblockCycle = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725t
+        consensus.nSuperblockStartBlock = 61000; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPeymentsStartBlock
+        consensus.nSuperblockCycle = 24;
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
         consensus.nMasternodeMinimumConfirmations = 1;
@@ -276,8 +263,8 @@ public:
         consensus.nMajorityRejectBlockOutdated = 75;
         consensus.nMajorityWindow = 100;
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.nPowTargetTimespan = 24 * 60 * 60; // Dash: 1 day
-        consensus.nPowTargetSpacing = 2.5 * 60; // Dash: 2.5 minutes
+        consensus.nPowTargetTimespan = 24 * 60 * 60; // in seconds -> Energi: 1 day
+        consensus.nPowTargetSpacing = 60; // in seconds Energi: 1 minute
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
@@ -295,15 +282,16 @@ public:
         pchMessageStart[1] = 0x2a;
         pchMessageStart[2] = 0xab;
         pchMessageStart[3] = 0x6e;
-        vAlertPubKey = ParseHex("04517d8a699cb43d3938d7b24faaff7cda448ca4ea267723ba614784de661949bf632d6304316b244646dea079735b9a6fc4af804efb4752075b9fe2245e14e412");
+        vAlertPubKey = ParseHex("04c3660259aa76854c135c5b5b0a668cecc7ca81b531dbbb212353c90132ba32cf1a11309eec989856bbf1748d047b69590279633f15e5e9835d263acdedad2400");
         nDefaultPort = 19797;
         nMaxTipAge = 0x7fffffff; // allow mining on top of old blocks for testnet
         nPruneAfterHeight = 1000;
 
+
         genesis = CreateGenesisBlock(1506586761UL, 0, 0x207fffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x53af2b5120c42831a4fd5eceb1d945295bd7d6ad8c8c094b8a1ac4eac8533ad4"));
-        assert(genesis.hashMerkleRoot == uint256S("0x06195ba198cc767e6e78659b434b50c73668f3177fe1ba52893a1b33cdc7c790"));
+        assert(consensus.hashGenesisBlock == uint256S("0x440cbbe939adba25e9e41b976d3daf8fb46b5f6ac0967b0a9ed06a749e7cf1e2"));
+        assert(genesis.hashMerkleRoot == uint256S("0x6a4855e61ae0da5001564cee6ba8dcd7bc361e9bb12e76b62993390d6db25bca"));
 
         // BIP34 is always active in Energi
         consensus.BIP34Height = 0;
@@ -337,11 +325,12 @@ public:
 
         nPoolMaxTransactions = 3;
         nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
-        strSporkPubKey = "046f78dcf911fbd61910136f7f0f8d90578f68d0b3ac973b5040fb7afb501b5939f39b108b0569dca71488f5bbf498d92e4d1194f6f941307ffd95f75e76869f0e";
+        strSporkPubKey = "046f8bd5301f95b88d75f3557c732785e12916930506406e8919389f5360e7dffefbe6d6e45144b9ab837d65e21ab93b67d4af30d27ba38c5e5622d31903338039";
+        strMasternodePaymentsPubKey = "040c342b5f1a50c6b29adb92c5105eb8a1bea5151c7d353d30b85314a86bd577f1a76e27372220233a54afbb61b7c8f0e7e7dc6a030dc1b801b71369618ba59961";
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
-            ( 0, uint256S("0x53af2b5120c42831a4fd5eceb1d945295bd7d6ad8c8c094b8a1ac4eac8533ad4")),
+            ( 0, uint256S("0x440cbbe939adba25e9e41b976d3daf8fb46b5f6ac0967b0a9ed06a749e7cf1e2")),
 			0, // * UNIX timestamp of last checkpoint block
             0,     // * total number of transactions between genesis and last checkpoint
                         //   (the tx=... number in the SetBestChain debug.log lines)
@@ -360,22 +349,25 @@ public:
     CRegTestParams() {
         strNetworkID = "regtest";
 
-        // Energi distribution parameters
-        // 23.15 EnergiPerBlock should result in 1 million coins per month at a rate of 1 block per minute
-        consensus.nBlockSubsidy = 2314814814;
+	// ~22.18 EnergiPerBlock should result in 1 million coins per month at a rate of 1 block per minute
+        // https://www.grc.nasa.gov/www/k-12/Numbers/Math/Mathematical_Thinking/calendar_calculations.htm
+        // 365.2422 -> 3652422 / 10000
+        //decltype(consensus.nBlockSubsidy) nBlocksPerMonth = 24 * 60 * 3652422 / ( 12 * 10000LL ); // with 1 block/min
+        consensus.nBlockSubsidy = ( 12000000 * 10000LL / ( 24 * 60 * 3652422LL ) ) * 100000000;
         // 10% founders reward
-        consensus.nBlockSubsidyFounders = 231481481;
-        consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY"; // TODO: make different than testnet address
+        consensus.nBlockSubsidyFounders = consensus.nBlockSubsidy * 10 / 100;
         // 20% miners
-        consensus.nBlockSubsidyMiners = 462962963;
-        // 30% masternodes
+        consensus.nBlockSubsidyMiners = consensus.nBlockSubsidy * 20 / 100;
+	   // 30% masternodes
         // each masternode is paid serially.. more the master nodes more is the wait for the payment
         // masternode payment gap is masternodes minutes
-        consensus.nBlockSubsidyMasternodes = 694444444;
+        consensus.nBlockSubsidyMasternodes = consensus.nBlockSubsidy * 30 / 100;
         // 40% treasury
-        consensus.nBlockSubsidyTreasury = 925925926;
+        consensus.nBlockSubsidyTreasury = consensus.nBlockSubsidy -
+        		( consensus.nBlockSubsidyMasternodes
+        		+ consensus.nBlockSubsidyFounders
+			+ consensus.nBlockSubsidyMiners );
 
-        consensus.nSubsidyHalvingInterval = 150;
         consensus.nMasternodePaymentsStartBlock = 240;
         consensus.nMasternodePaymentsIncreaseBlock = 350;
         consensus.nMasternodePaymentsIncreasePeriod = 10;
@@ -418,8 +410,8 @@ public:
 
         genesis = CreateGenesisBlock(1506586761UL, 0, 0x207fffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x53af2b5120c42831a4fd5eceb1d945295bd7d6ad8c8c094b8a1ac4eac8533ad4"));
-        assert(genesis.hashMerkleRoot == uint256S("0x06195ba198cc767e6e78659b434b50c73668f3177fe1ba52893a1b33cdc7c790"));
+        assert(consensus.hashGenesisBlock == uint256S("0x440cbbe939adba25e9e41b976d3daf8fb46b5f6ac0967b0a9ed06a749e7cf1e2"));
+        assert(genesis.hashMerkleRoot == uint256S("0x6a4855e61ae0da5001564cee6ba8dcd7bc361e9bb12e76b62993390d6db25bca"));
 
         vFixedSeeds.clear(); //! Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();  //! Regtest mode doesn't have any DNS seeds.
@@ -434,7 +426,7 @@ public:
 
         checkpointData = (CCheckpointData){
             boost::assign::map_list_of
-            ( 0, uint256S("0x53af2b5120c42831a4fd5eceb1d945295bd7d6ad8c8c094b8a1ac4eac8533ad4")),
+            ( 0, uint256S("0x440cbbe939adba25e9e41b976d3daf8fb46b5f6ac0967b0a9ed06a749e7cf1e2")),
             0,
             0,
             0
