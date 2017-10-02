@@ -311,7 +311,7 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("energi.world",  "seed.energi.world"));
+        // vSeeds.push_back(CDNSSeedData("energi.world",  "seed.energi.world"));
 
         // Testnet Energi addresses start with 't'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127);
