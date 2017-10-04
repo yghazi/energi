@@ -425,7 +425,7 @@ void static BitcoinMiner(const CChainParams& chainparams)
                         LOCK(cs_vNodes);
                         fvNodesEmpty = vNodes.empty();
                     }
-                    if (!fvNodesEmpty && !IsInitialBlockDownload() && ((chainActive.Tip()->nHeight < chainparams.GetConsensus().nMasternodePaymentsIncreaseBlock) || masternodeSync.IsSynced()))
+                    if (!fvNodesEmpty && !IsInitialBlockDownload() && ((chainActive.Tip()->nHeight < chainparams.GetConsensus().nMasternodePaymentsStartBlock) || masternodeSync.IsSynced()))
                         break;
                     MilliSleep(1000);
                 } while (true);
