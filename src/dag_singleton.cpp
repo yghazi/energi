@@ -4,14 +4,16 @@
 
 #include "dag_singleton.h"
 
-#include <mutex>
+#include <boost/thread/locks.hpp>
+#include <boost/thread/mutex.hpp>
+//#include <mutex>
 
 std::unique_ptr<egihash::dag_t> const & ActiveDAG(std::unique_ptr<egihash::dag_t> next_dag)
 {
     using namespace std;
 
-    static mutex m;
-    lock_guard<mutex> lock(m);
+    static boost::mutex m;
+    boost::lock_guard<boost::mutex> lock(m);
     static unique_ptr<egihash::dag_t> active; // only keep one DAG in memory at once
 
     // if we have a next_dag swap it
