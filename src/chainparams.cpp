@@ -93,8 +93,7 @@ public:
         consensus.nSubsidyHalvingInterval = 210240; /* Older value */ // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
         consensus.nSubsidyHalvingInterval = 41540; /*  */
 
-        /*does not matter for ENERGI.. payment is consistent forever*/
-        consensus.nMasternodePaymentsStartBlock = 100000; // not true, but it's ok as long as it's less then nMasternodePaymentsIncreaseBlock
+        consensus.nMasternodePaymentsStartBlock = 87600; // should be about 2 months after genesis
         consensus.nMasternodePaymentsIncreaseBlock = 158000; // actual historical value
         consensus.nMasternodePaymentsIncreasePeriod = 576*30; // 17280 - actual historical value
         consensus.nInstantSendKeepLock = 24;
@@ -246,7 +245,7 @@ public:
 				+ consensus.nBlockSubsidyMiners );
 
         /*does not matter for ENERGI.. payment is consistent forever*/
-        consensus.nMasternodePaymentsStartBlock = 0; // not true, but it's ok as long as it's less then nMasternodePaymentsIncreaseBlock
+        consensus.nMasternodePaymentsStartBlock = 87600; // should be about 2 months after genesis
         consensus.nMasternodePaymentsIncreaseBlock =  46000;
         consensus.nMasternodePaymentsIncreasePeriod = 576;
         consensus.nInstantSendKeepLock = 6;
