@@ -48,7 +48,7 @@ static const int MAX_URI_LENGTH = 255;
 #define SPINNER_FRAMES 36
 
 #define QAPP_ORG_NAME "Energi"
-#define QAPP_ORG_DOMAIN "energi.org"
+#define QAPP_ORG_DOMAIN "energi.world"
 #define QAPP_APP_NAME_DEFAULT "Energi-Qt"
 #define QAPP_APP_NAME_TESTNET "Energi-Qt-testnet"
 

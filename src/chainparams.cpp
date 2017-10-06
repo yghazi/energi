@@ -76,19 +76,24 @@ public:
         strNetworkID = "main";
 
         // Energi distribution parameters
-        // 23.15 EnergiPerBlock should result in 1 million coins per month at a rate of 1 block per minute
-        consensus.nBlockSubsidy = 2314814814;
+        consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY";
+        // ~23.15 energi = 23.148148148148148 = 1000_000 / ( 30 * 24 * 60 )
+        // 23.15  energi = 23.15 * 30 * 24 * 60 -> 1000080
+        // 23.15 * 10% = 2.315
+        // 23.15 * 20% = 4.630
+        // 23.15 * 30% = 6.945
+        // 23.15 * 40% = 9.260
+        consensus.nBlockSubsidy = 2315000000;
         // 10% founders reward
-        consensus.nBlockSubsidyFounders = 231481481;
-        consensus.foundersAddress = "TODO: IMPLEMENT ME";
+        consensus.nBlockSubsidyFounders = consensus.nBlockSubsidy * 10 / 100;
         // 20% miners
-        consensus.nBlockSubsidyMiners = 462962963;
+        consensus.nBlockSubsidyMiners = consensus.nBlockSubsidy * 20 / 100;
         // 30% masternodes
         // each masternode is paid serially.. more the master nodes more is the wait for the payment
         // masternode payment gap is masternodes minutes
-        consensus.nBlockSubsidyMasternodes = 694444444;
+        consensus.nBlockSubsidyMasternodes = consensus.nBlockSubsidy * 30 / 100;
         // 40% treasury
-        consensus.nBlockSubsidyTreasury = 925925926;
+        consensus.nBlockSubsidyTreasury = consensus.nBlockSubsidy * 40 / 100;
 
         consensus.nSubsidyHalvingInterval = 210240; /* Older value */ // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
         consensus.nSubsidyHalvingInterval = 41540; /*  */
@@ -224,12 +229,13 @@ public:
 
         // Energi distribution parameters
         consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY";
-
-        // ~22.18 EnergiPerBlock should result in 1 million coins per month at a rate of 1 block per minute
-        // https://www.grc.nasa.gov/www/k-12/Numbers/Math/Mathematical_Thinking/calendar_calculations.htm
-        // 365.2422 -> 3652422 / 10000
-        //decltype(consensus.nBlockSubsidy) nBlocksPerMonth = 24 * 60 * 3652422 / ( 12 * 10000LL ); // with 1 block/min
-        consensus.nBlockSubsidy = ( 12000000 * 10000LL / ( 24 * 60 * 3652422LL ) ) * 100000000;
+        // ~23.15 energi = 23.148148148148148 = 1000_000 / ( 30 * 24 * 60 )
+        // 23.15  energi = 23.15 * 30 * 24 * 60 -> 1000080
+        // 23.15 * 10% = 2.315
+        // 23.15 * 20% = 4.630
+        // 23.15 * 30% = 6.945
+        // 23.15 * 40% = 9.260
+        consensus.nBlockSubsidy = 2315000000;
         // 10% founders reward
         consensus.nBlockSubsidyFounders = consensus.nBlockSubsidy * 10 / 100;
         // 20% miners
@@ -239,10 +245,9 @@ public:
         // masternode payment gap is masternodes minutes
         consensus.nBlockSubsidyMasternodes = consensus.nBlockSubsidy * 30 / 100;
         // 40% treasury
-        consensus.nBlockSubsidyTreasury = consensus.nBlockSubsidy -
-        		( consensus.nBlockSubsidyMasternodes
-        		+ consensus.nBlockSubsidyFounders
-				+ consensus.nBlockSubsidyMiners );
+        consensus.nBlockSubsidyTreasury = consensus.nBlockSubsidy * 40 / 100;
+
+
 
         /*does not matter for ENERGI.. payment is consistent forever*/
         consensus.nMasternodePaymentsStartBlock = 87600; // should be about 2 months after genesis
@@ -348,24 +353,25 @@ public:
     CRegTestParams() {
         strNetworkID = "regtest";
 
-	// ~22.18 EnergiPerBlock should result in 1 million coins per month at a rate of 1 block per minute
-        // https://www.grc.nasa.gov/www/k-12/Numbers/Math/Mathematical_Thinking/calendar_calculations.htm
-        // 365.2422 -> 3652422 / 10000
-        //decltype(consensus.nBlockSubsidy) nBlocksPerMonth = 24 * 60 * 3652422 / ( 12 * 10000LL ); // with 1 block/min
-        consensus.nBlockSubsidy = ( 12000000 * 10000LL / ( 24 * 60 * 3652422LL ) ) * 100000000;
+        // Energi distribution parameters
+        consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY";
+        // ~23.15 energi = 23.148148148148148 = 1000_000 / ( 30 * 24 * 60 )
+        // 23.15  energi = 23.15 * 30 * 24 * 60 -> 1000080
+        // 23.15 * 10% = 2.315
+        // 23.15 * 20% = 4.630
+        // 23.15 * 30% = 6.945
+        // 23.15 * 40% = 9.260
+        consensus.nBlockSubsidy = 2315000000;
         // 10% founders reward
         consensus.nBlockSubsidyFounders = consensus.nBlockSubsidy * 10 / 100;
         // 20% miners
         consensus.nBlockSubsidyMiners = consensus.nBlockSubsidy * 20 / 100;
-	   // 30% masternodes
+        // 30% masternodes
         // each masternode is paid serially.. more the master nodes more is the wait for the payment
         // masternode payment gap is masternodes minutes
         consensus.nBlockSubsidyMasternodes = consensus.nBlockSubsidy * 30 / 100;
         // 40% treasury
-        consensus.nBlockSubsidyTreasury = consensus.nBlockSubsidy -
-        		( consensus.nBlockSubsidyMasternodes
-        		+ consensus.nBlockSubsidyFounders
-			+ consensus.nBlockSubsidyMiners );
+        consensus.nBlockSubsidyTreasury = consensus.nBlockSubsidy * 40 / 100;
 
         consensus.nMasternodePaymentsStartBlock = 240;
         consensus.nMasternodePaymentsIncreaseBlock = 350;
