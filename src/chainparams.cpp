@@ -153,7 +153,7 @@ public:
         consensus.BIP34Height = 0;
         consensus.BIP34Hash = consensus.hashGenesisBlock;
 
-        vSeeds.push_back(CDNSSeedData("energi.world", "seed.energi.world"));
+        vSeeds.push_back(CDNSSeedData("energi.network", "seed.energi.network"));
 
         // Energi addresses start with 'E'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,33);
@@ -298,7 +298,7 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        // vSeeds.push_back(CDNSSeedData("energi.world",  "seed.energi.world"));
+        vSeeds.push_back(CDNSSeedData("energi.world",  "testnet-seed.energi.world"));
 
         // Testnet Energi addresses start with 't'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127);
