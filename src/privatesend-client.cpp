@@ -1179,16 +1179,16 @@ bool CPrivateSendClient::MakeCollateralAmounts(const CompactTallyItem& tallyItem
         coinControl.Select(txin.prevout);
 
     bool fSuccess = pwalletMain->CreateTransaction(vecSend, wtx, reservekeyChange,
-            nFeeRet, nChangePosRet, strFail, &coinControl, true, ONLY_NONDENOMINATED_NOT1000IFMN);
+            nFeeRet, nChangePosRet, strFail, &coinControl, true, ONLY_NONDENOMINATED_NOT10000IFMN);
     if(!fSuccess) {
-        LogPrintf("CPrivateSendClient::MakeCollateralAmounts -- ONLY_NONDENOMINATED_NOT1000IFMN Error: %s\n", strFail);
+        LogPrintf("CPrivateSendClient::MakeCollateralAmounts -- ONLY_NONDENOMINATED_NOT10000IFMN Error: %s\n", strFail);
         // If we failed then most likeky there are not enough funds on this address.
         if(fTryDenominated) {
             // Try to also use denominated coins (we can't mix denominated without collaterals anyway).
             // MN-like funds should not be touched in any case.
             if(!pwalletMain->CreateTransaction(vecSend, wtx, reservekeyChange,
-                                nFeeRet, nChangePosRet, strFail, &coinControl, true, ONLY_NOT1000IFMN)) {
-                LogPrintf("CPrivateSendClient::MakeCollateralAmounts -- ONLY_NOT1000IFMN Error: %s\n", strFail);
+                                nFeeRet, nChangePosRet, strFail, &coinControl, true, ONLY_NOT10000IFMN)) {
+                LogPrintf("CPrivateSendClient::MakeCollateralAmounts -- ONLY_NOT10000IFMN Error: %s\n", strFail);
                 reservekeyCollateral.ReturnKey();
                 return false;
             }
@@ -1336,7 +1336,7 @@ bool CPrivateSendClient::CreateDenominated(const CompactTallyItem& tallyItem, bo
     CReserveKey reservekeyChange(pwalletMain);
 
     bool fSuccess = pwalletMain->CreateTransaction(vecSend, wtx, reservekeyChange,
-            nFeeRet, nChangePosRet, strFail, &coinControl, true, ONLY_NONDENOMINATED_NOT1000IFMN);
+            nFeeRet, nChangePosRet, strFail, &coinControl, true, ONLY_NONDENOMINATED_NOT10000IFMN);
     if(!fSuccess) {
         LogPrintf("CPrivateSendClient::CreateDenominated -- Error: %s\n", strFail);
         for(auto key : reservekeyDenomVec)
