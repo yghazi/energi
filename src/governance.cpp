@@ -133,7 +133,7 @@ void CGovernanceManager::ProcessMessage(CNode* pfrom, std::string& strCommand, C
             if(netfulfilledman.HasFulfilledRequest(pfrom->addr, NetMsgType::MNGOVERNANCESYNC)) {
                 // Asking for the whole list multiple times in a short period of time is no good
                 LogPrint("gobject", "MNGOVERNANCESYNC -- peer already asked me for the list\n");
-                Misbehaving(pfrom->GetId(), 20);
+                // Misbehaving(pfrom->GetId(), 20);
                 return;
             }
             netfulfilledman.AddFulfilledRequest(pfrom->addr, NetMsgType::MNGOVERNANCESYNC);
