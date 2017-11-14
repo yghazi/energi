@@ -273,7 +273,7 @@ public:
         consensus.nMajorityEnforceBlockUpgrade = 51;
         consensus.nMajorityRejectBlockOutdated = 75;
         consensus.nMajorityWindow = 100;
-        consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.powLimit = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
         consensus.nPowTargetTimespan = 24 * 60 * 60; // in seconds -> Energi: 1 day
         consensus.nPowTargetSpacing = 60; // in seconds Energi: 1 minute
         consensus.fPowAllowMinDifficultyBlocks = true;
