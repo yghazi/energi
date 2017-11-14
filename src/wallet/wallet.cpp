@@ -2403,13 +2403,13 @@ void CWallet::AvailableCoins(vector<COutput>& vCoins, bool fOnlyConfirmed, const
                 if(nCoinType == ONLY_DENOMINATED) {
                     found = IsDenominatedAmount(pcoin->vout[i].nValue);
                 } else if(nCoinType == ONLY_NOTCOLLATERALIFMN) {
-                    found = !(fMasterNode && pcoin->vout[i].nValue == MASTERNODE_COLLATERAL_AMOUNT*COIN);
+                    found = !(fMasterNode && pcoin->vout[i].nValue == MASTERNODE_COLLATERAL_AMOUNT);
                 } else if(nCoinType == ONLY_NONDENOMINATED_NOTCOLLATERALIFMN) {
                     if (IsCollateralAmount(pcoin->vout[i].nValue)) continue; // do not use collateral amounts
                     found = !IsDenominatedAmount(pcoin->vout[i].nValue);
-                    if(found && fMasterNode) found = pcoin->vout[i].nValue != MASTERNODE_COLLATERAL_AMOUNT*COIN; // do not use Hot MN funds
+                    if(found && fMasterNode) found = pcoin->vout[i].nValue != MASTERNODE_COLLATERAL_AMOUNT; // do not use Hot MN funds
                 } else if(nCoinType == ONLY_MN_COLLATERAL) {
-                    found = pcoin->vout[i].nValue == MASTERNODE_COLLATERAL_AMOUNT*COIN;
+                    found = pcoin->vout[i].nValue == MASTERNODE_COLLATERAL_AMOUNT;
                 } else if(nCoinType == ONLY_PRIVATESEND_COLLATERAL) {
                     found = IsCollateralAmount(pcoin->vout[i].nValue);
                 } else {
@@ -2886,7 +2886,7 @@ bool CWallet::SelectCoinsGrouppedByAddresses(std::vector<CompactTallyItem>& vecT
             if(fAnonymizable) {
                 // ignore collaterals
                 if(IsCollateralAmount(wtx.vout[i].nValue)) continue;
-                if(fMasterNode && wtx.vout[i].nValue == MASTERNODE_COLLATERAL_AMOUNT*COIN) continue;
+                if(fMasterNode && wtx.vout[i].nValue == MASTERNODE_COLLATERAL_AMOUNT) continue;
                 // ignore outputs that are 10 times smaller then the smallest denomination
                 // otherwise they will just lead to higher fee / lower priority
                 if(wtx.vout[i].nValue <= nSmallestDenom/10) continue;
@@ -2950,7 +2950,7 @@ bool CWallet::SelectCoinsDark(CAmount nValueMin, CAmount nValueMax, std::vector<
         if(out.tx->vout[out.i].nValue < nValueMin/10) continue;
         //do not allow collaterals to be selected
         if(IsCollateralAmount(out.tx->vout[out.i].nValue)) continue;
-        if(fMasterNode && out.tx->vout[out.i].nValue == MASTERNODE_COLLATERAL_AMOUNT*COIN) continue; //masternode input
+        if(fMasterNode && out.tx->vout[out.i].nValue == MASTERNODE_COLLATERAL_AMOUNT) continue; //masternode input
 
         if(nValueRet + out.tx->vout[out.i].nValue <= nValueMax){
             CTxIn txin = CTxIn(out.tx->GetHash(),out.i);

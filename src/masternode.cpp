@@ -179,7 +179,7 @@ CMasternode::CollateralStatus CMasternode::CheckCollateral(CTxIn vin, int& nHeig
     }
 
     //10,000 EGI collateral for masternode
-    if(coins.vout[vin.prevout.n].nValue != MASTERNODE_COLLATERAL_AMOUNT * COIN) {
+    if(coins.vout[vin.prevout.n].nValue != MASTERNODE_COLLATERAL_AMOUNT) {
         return COLLATERAL_INVALID_AMOUNT;
     }
 
@@ -315,7 +315,7 @@ bool CMasternode::IsInputAssociatedWithPubkey()
     uint256 hash;
     if(GetTransaction(vin.prevout.hash, tx, Params().GetConsensus(), hash, true)) {
         BOOST_FOREACH(CTxOut out, tx.vout)
-            if(out.nValue == MASTERNODE_COLLATERAL_AMOUNT*COIN && out.scriptPubKey == payee) return true;
+            if(out.nValue == MASTERNODE_COLLATERAL_AMOUNT && out.scriptPubKey == payee) return true;
     }
 
     return false;
@@ -669,7 +669,7 @@ bool CMasternodeBroadcast::CheckOutpoint(int& nDos)
             LogPrint("masternode", "CMasternodeBroadcast::CheckOutpoint -- Failed to find Masternode UTXO, masternode=%s\n", vin.prevout.ToStringShort());
             return false;
         }
-        if(coins.vout[vin.prevout.n].nValue != MASTERNODE_COLLATERAL_AMOUNT * COIN) {
+        if(coins.vout[vin.prevout.n].nValue != MASTERNODE_COLLATERAL_AMOUNT) {
             LogPrint("masternode", "CMasternodeBroadcast::CheckOutpoint -- Masternode UTXO should have 10,000 EGI, masternode=%s\n", vin.prevout.ToStringShort());
             return false;
         }
