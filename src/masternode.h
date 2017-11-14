@@ -24,6 +24,8 @@ static const int MASTERNODE_NEW_START_REQUIRED_SECONDS  = 180 * 60;
 
 static const int MASTERNODE_POSE_BAN_MAX_SCORE          = 5;
 
+static const int MASTERNODE_COLLATERAL_AMOUNT = 10000*COIN;
+
 //
 // The Masternode Ping Class : Contains a different serialize method for sending pings from masternodes throughout the network
 //

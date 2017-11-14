@@ -220,7 +220,7 @@ void CActiveMasternode::ManageStateInitial()
         return;
     }
 
-    if(pwalletMain->GetBalance() < 10000*COIN) {
+    if(pwalletMain->GetBalance() < MASTERNODE_COLLATERAL_AMOUNT*COIN) {
         LogPrintf("CActiveMasternode::ManageStateInitial -- %s: Wallet balance is < 10,000 EGI\n", GetStateString());
         return;
     }
@@ -244,6 +244,8 @@ void CActiveMasternode::ManageStateRemote()
 
     mnodeman.CheckMasternode(pubKeyMasternode, true);
     masternode_info_t infoMn = mnodeman.GetMasternodeInfo(pubKeyMasternode);
+    LogPrint("masternode", "CActiveMasternode::ManageStateRemote -- Start status = %s, type = %s, pinger enabled = %d, pubKeyMasternode.GetID() = %s\n", 
+             GetStatus(), GetTypeString(), fPingerEnabled, pubKeyMasternode.GetID().ToString());
     if(infoMn.fInfoValid) {
         if(infoMn.nProtocolVersion != PROTOCOL_VERSION) {
             nState = ACTIVE_MASTERNODE_NOT_CAPABLE;
