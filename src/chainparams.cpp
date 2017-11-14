@@ -76,7 +76,7 @@ public:
         strNetworkID = "main";
 
         // Energi distribution parameters
-        consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY";
+        consensus.foundersAddress = "TODO: implement me";
         // ~23.15 energi = 23.148148148148148 = 1000_000 / ( 30 * 24 * 60 )
         // 23.15  energi = 23.15 * 30 * 24 * 60 -> 1000080
         // 23.15 * 10% = 2.315
@@ -85,15 +85,18 @@ public:
         // 23.15 * 40% = 9.260
         consensus.nBlockSubsidy = 2315000000;
         // 10% founders reward
-        consensus.nBlockSubsidyFounders = consensus.nBlockSubsidy * 10 / 100;
+        consensus.nBlockSubsidyFounders = 231500000;
         // 20% miners
-        consensus.nBlockSubsidyMiners = consensus.nBlockSubsidy * 20 / 100;
+        consensus.nBlockSubsidyMiners = 463000000;
         // 30% masternodes
         // each masternode is paid serially.. more the master nodes more is the wait for the payment
         // masternode payment gap is masternodes minutes
-        consensus.nBlockSubsidyMasternodes = consensus.nBlockSubsidy * 30 / 100;
+        consensus.nBlockSubsidyMasternodes = 694500000;
         // 40% treasury
-        consensus.nBlockSubsidyTreasury = consensus.nBlockSubsidy * 40 / 100;
+        consensus.nBlockSubsidyTreasury = 926000000;
+
+        // ensure the sum of the block subsidy parts equals the whole block subsidy
+        assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes + consensus.nBlockSubsidyTreasury == consensus.nBlockSubsidy);
 
         consensus.nSubsidyHalvingInterval = 210240; /* Older value */ // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
         consensus.nSubsidyHalvingInterval = 41540; /*  */
@@ -120,7 +123,7 @@ public:
         consensus.powLimit = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
 
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Dash: 1 day
-        consensus.nPowTargetSpacing = 60; // Energi: 1 minute // Dash: 2.5 minutes
+        consensus.nPowTargetSpacing = 60; // Energi: 1 minute
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
@@ -237,19 +240,23 @@ public:
         // 23.15 * 40% = 9.260
         consensus.nBlockSubsidy = 2315000000;
         // 10% founders reward
-        consensus.nBlockSubsidyFounders = consensus.nBlockSubsidy * 10 / 100;
+        consensus.nBlockSubsidyFounders = 231500000;
         // 20% miners
-        consensus.nBlockSubsidyMiners = consensus.nBlockSubsidy * 20 / 100;
+        consensus.nBlockSubsidyMiners = 463000000;
         // 30% masternodes
         // each masternode is paid serially.. more the master nodes more is the wait for the payment
         // masternode payment gap is masternodes minutes
-        consensus.nBlockSubsidyMasternodes = consensus.nBlockSubsidy * 30 / 100;
+        consensus.nBlockSubsidyMasternodes = 694500000;
         // 40% treasury
-        consensus.nBlockSubsidyTreasury = consensus.nBlockSubsidy * 40 / 100;
+        consensus.nBlockSubsidyTreasury = 926000000;
 
+        // ensure the sum of the block subsidy parts equals the whole block subsidy
+        assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes + consensus.nBlockSubsidyTreasury == consensus.nBlockSubsidy);
 
+        // TODO: fix value for this parameter
+        consensus.nSubsidyHalvingInterval = 210240; /* Older value */ // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
+        consensus.nSubsidyHalvingInterval = 41540; /*  */
 
-        /*does not matter for ENERGI.. payment is consistent forever*/
         consensus.nMasternodePaymentsStartBlock = 87600; // should be about 2 months after genesis
         consensus.nMasternodePaymentsIncreaseBlock =  46000;
         consensus.nMasternodePaymentsIncreasePeriod = 576;
@@ -279,8 +286,8 @@ public:
 
         // Deployment of BIP68, BIP112, and BIP113.
         consensus.vDeployments[Consensus::DEPLOYMENT_CSV].bit = 0;
-        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nStartTime = 1456790400; // March 1st, 2016
-        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nTimeout = 1493596800; // May 1st, 2017
+        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nStartTime = 1486252800; // Feb 5th, 2017
+        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nTimeout = 1517788800; // Feb 5th, 2018
 
         pchMessageStart[0] = 0xd9;
         pchMessageStart[1] = 0x2a;
@@ -303,6 +310,7 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
+        // TODO: re-enable seeding on the test net
         // vSeeds.push_back(CDNSSeedData("energi.world",  "seed.energi.world"));
 
         // Testnet Energi addresses start with 't'
@@ -363,15 +371,20 @@ public:
         // 23.15 * 40% = 9.260
         consensus.nBlockSubsidy = 2315000000;
         // 10% founders reward
-        consensus.nBlockSubsidyFounders = consensus.nBlockSubsidy * 10 / 100;
+        consensus.nBlockSubsidyFounders = 231500000;
         // 20% miners
-        consensus.nBlockSubsidyMiners = consensus.nBlockSubsidy * 20 / 100;
+        consensus.nBlockSubsidyMiners = 463000000;
         // 30% masternodes
         // each masternode is paid serially.. more the master nodes more is the wait for the payment
         // masternode payment gap is masternodes minutes
-        consensus.nBlockSubsidyMasternodes = consensus.nBlockSubsidy * 30 / 100;
+        consensus.nBlockSubsidyMasternodes = 694500000;
         // 40% treasury
-        consensus.nBlockSubsidyTreasury = consensus.nBlockSubsidy * 40 / 100;
+        consensus.nBlockSubsidyTreasury = 926000000;
+
+        // ensure the sum of the block subsidy parts equals the whole block subsidy
+        assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes + consensus.nBlockSubsidyTreasury == consensus.nBlockSubsidy);
+
+        // TODO: are consensus.nSubsidyHalvingInterval params needed?
 
         consensus.nMasternodePaymentsStartBlock = 240;
         consensus.nMasternodePaymentsIncreaseBlock = 350;
