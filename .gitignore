@@ -3,6 +3,8 @@
 .vscode
 todo.txt
 reset-files.bash
+tags
+TAGS
 
 *.tar.gz
 

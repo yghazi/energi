@@ -74,22 +74,17 @@ bool AppInit(int argc, char* argv[])
     ParseParameters(argc, argv);
 
     // Process help and version before taking care about datadir
-    if (mapArgs.count("-?") || mapArgs.count("-h") ||  mapArgs.count("-help") || mapArgs.count("-version"))
-    {
+    if (mapArgs.count("-?") || mapArgs.count("-h") ||  mapArgs.count("-help") || mapArgs.count("-version")) {
         std::string strUsage = _("Energi Core Daemon") + " " + _("version") + " " + FormatFullVersion() + "\n";
 
-        if (mapArgs.count("-version"))
-        {
+        if (mapArgs.count("-version")) {
             strUsage += LicenseInfo();
-        }
-        else
-        {
+        } else {
             strUsage += "\n" + _("Usage:") + "\n" +
                   "  energid [options]                     " + _("Start Energi Core Daemon") + "\n";
 
             strUsage += "\n" + HelpMessage(HMM_BITCOIND);
         }
-
         fprintf(stdout, "%s", strUsage.c_str());
         return true;
     }
