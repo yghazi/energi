@@ -220,7 +220,7 @@ void CActiveMasternode::ManageStateInitial()
         return;
     }
 
-    if(pwalletMain->GetBalance() < MASTERNODE_COLLATERAL_AMOUNT * COIN) {
+    if(pwalletMain->GetBalance() < MASTERNODE_COLLATERAL_AMOUNT) {
         LogPrintf("CActiveMasternode::ManageStateInitial -- %s: Wallet balance is < 10,000 EGI\n", GetStateString());
         return;
     }
