@@ -576,47 +576,52 @@ bool GetNodeStateStats(NodeId nodeid, CNodeStateStats &stats) {
     return true;
 }
 
-void InitDAG(egihash::progress_callback_type callback)
+void CreateDAG(int height, egihash::progress_callback_type callback)
 {
     using namespace egihash;
 
+    auto const epoch = height / constants::EPOCH_LENGTH;
+    auto const & seedhash = seedhash_to_filename(get_seedhash(height));
+    stringstream ss;
+    ss << hex << setw(4) << setfill('0') << epoch << "-" << seedhash.substr(0, 12) << ".dag";
+    auto const epoch_file = GetDataDir(false) / "dag" / ss.str();
+
+    LogPrint("dag", "DAG file for epoch %u is \"%s\"", epoch, epoch_file.string());
+    // try to load the DAG from disk
+    try
+    {
+        unique_ptr<dag_t> new_dag(new dag_t(epoch_file.string(), callback));
+        ActiveDAG(move(new_dag));
+        LogPrint("dag", "DAG file \"%s\" loaded successfully.", epoch_file.string());
+        return;
+    }
+    catch (hash_exception const & e)
+    {
+        LogPrint("dag", "DAG file \"%s\" not loaded, will be generated instead. Message: %s", epoch_file.string(), e.what());
+    }
+
+    // try to generate the DAG
+    try
+    {
+        unique_ptr<dag_t> new_dag(new dag_t(height, callback));
+        boost::filesystem::create_directories(epoch_file.parent_path());
+        new_dag->save(epoch_file.string());
+        ActiveDAG(move(new_dag));
+        LogPrint("dag", "DAG generated successfully. Saved to \"%s\".", epoch_file.string());
+    }
+    catch (hash_exception const & e)
+    {
+        error("DAG for epoch %u could not be generated: %s", epoch, e.what());
+    }
+}
+
+void InitDAG(egihash::progress_callback_type callback)
+{
     auto const & dag = ActiveDAG();
     if (!dag)
     {
         auto const height = (max)(GetHeight(), 0);
-        auto const epoch = height / constants::EPOCH_LENGTH;
-        auto const & seedhash = seedhash_to_filename(get_seedhash(height));
-        stringstream ss;
-        ss << hex << setw(4) << setfill('0') << epoch << "-" << seedhash.substr(0, 12) << ".dag";
-        auto const epoch_file = GetDataDir() / "dag" / ss.str();
-
-        LogPrint("dag", "DAG file for epoch %u is \"%s\"", epoch, epoch_file.string());
-        // try to load the DAG from disk
-        try
-        {
-            unique_ptr<dag_t> new_dag(new dag_t(epoch_file.string(), callback));
-            ActiveDAG(move(new_dag));
-            LogPrint("dag", "DAG file \"%s\" loaded successfully.", epoch_file.string());
-            return;
-        }
-        catch (hash_exception const & e)
-        {
-            LogPrint("dag", "DAG file \"%s\" not loaded, will be generated instead. Message: %s", epoch_file.string(), e.what());
-        }
-
-        // try to generate the DAG
-        try
-        {
-            unique_ptr<dag_t> new_dag(new dag_t(height, callback));
-            boost::filesystem::create_directories(epoch_file.parent_path());
-            new_dag->save(epoch_file.string());
-            ActiveDAG(move(new_dag));
-            LogPrint("dag", "DAG generated successfully. Saved to \"%s\".", epoch_file.string());
-        }
-        catch (hash_exception const & e)
-        {
-            error("DAG for epoch %u could not be generated: %s", epoch, e.what());
-        }
+        CreateDAG(height, callback);
     }
     LogPrint("dag", "DAG has been initialized already. Use ActiveDAG() to swap.");
 }
@@ -3177,13 +3182,7 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
     // if there have been EPOCH_LENGTH number of blocks since the last DAG was generated,
     // generate a new one
     if (epoch > ActiveDAG()->epoch()) {
-        // TODO: should make a separate function for DAG generation
-        auto const & seedhash = seedhash_to_filename(get_seedhash(height));
-        stringstream ss;
-        ss << hex << setw(4) << setfill('0') << epoch << "-" << seedhash.substr(0, 12) << ".dag";
-        auto const epoch_file = GetDataDir() / "dag" / ss.str();
-        try {
-            unique_ptr<dag_t> new_dag(new dag_t(height, [](::std::size_t step, ::std::size_t max, int phase) -> bool
+        CreateDAG(height, [](::std::size_t step, ::std::size_t max, int phase) -> bool
         {
             double progress = static_cast<double>(step) / static_cast<double>(max) * 100.0;
             switch(phase)
@@ -3213,16 +3212,7 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
                     break;
             }
             return true;
-        }));
-            boost::filesystem::create_directories(epoch_file.parent_path());
-            new_dag->save(epoch_file.string());
-            ActiveDAG(move(new_dag));
-            LogPrint("dag", "DAG generated successfully. Saved to \"%s\".", epoch_file.string());
-        }
-        catch (hash_exception const & e)
-        {
-            error("DAG for epoch %u could not be generated: %s", epoch, e.what());
-        }
+        });
     }
 
     // Read block from disk.
