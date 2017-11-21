@@ -10,7 +10,7 @@
 #include "governance-classes.h"
 #include "governance-validators.h"
 #include "init.h"
-#include "main.h"
+#include "validation.h"
 #include "masternode.h"
 #include "masternode-sync.h"
 #include "masternodeconfig.h"
@@ -91,7 +91,7 @@ UniValue gobject(const UniValue& params, bool fHelp)
 
         int nRevision = 1;
 
-        int64_t nTime = GetTime();
+        int64_t nTime = GetAdjustedTime();
         std::string strData = params[1].get_str();
 
         CGovernanceObject govobj(hashParent, nRevision, nTime, uint256(), strData);
@@ -168,7 +168,7 @@ UniValue gobject(const UniValue& params, bool fHelp)
         // -- make our change address
         CReserveKey reservekey(pwalletMain);
         // -- send the tx to the network
-        pwalletMain->CommitTransaction(wtx, reservekey, NetMsgType::TX);
+        pwalletMain->CommitTransaction(wtx, reservekey, g_connman.get(), NetMsgType::TX);
 
         DBG( cout << "gobject: prepare "
              << " strData = " << govobj.GetDataAsString()
@@ -190,11 +190,10 @@ UniValue gobject(const UniValue& params, bool fHelp)
             throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Must wait for client to sync with masternode network. Try again in a minute or so.");
         }
 
-        CMasternode mn;
-        bool fMnFound = mnodeman.Get(activeMasternode.vin, mn);
+        bool fMnFound = mnodeman.Has(activeMasternode.outpoint);
 
         DBG( cout << "gobject: submit activeMasternode.pubKeyMasternode = " << activeMasternode.pubKeyMasternode.GetHash().ToString()
-             << ", vin = " << activeMasternode.vin.prevout.ToStringShort()
+             << ", outpoint = " << activeMasternode.outpoint.ToStringShort()
              << ", params.size() = " << params.size()
              << ", fMnFound = " << fMnFound << endl; );
 
@@ -239,7 +238,7 @@ UniValue gobject(const UniValue& params, bool fHelp)
         if((govobj.GetObjectType() == GOVERNANCE_OBJECT_TRIGGER) ||
            (govobj.GetObjectType() == GOVERNANCE_OBJECT_WATCHDOG)) {
             if(fMnFound) {
-                govobj.SetMasternodeInfo(mn.vin);
+                govobj.SetMasternodeVin(activeMasternode.outpoint);
                 govobj.Sign(activeMasternode.keyMasternode, activeMasternode.pubKeyMasternode);
             }
             else {
@@ -273,19 +272,14 @@ UniValue gobject(const UniValue& params, bool fHelp)
             LogPrintf("gobject(submit) -- Object submission rejected because of rate check failure - hash = %s\n", strHash);
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Object creation rate limit exceeded");
         }
-        // This check should always pass, update buffer
-        if(!governance.MasternodeRateCheck(govobj, UPDATE_TRUE)) {
-            LogPrintf("gobject(submit) -- Object submission rejected because of rate check failure (buffer updated) - hash = %s\n", strHash);
-            throw JSONRPCError(RPC_INVALID_PARAMETER, "Object creation rate limit exceeded");
-        }
 
         LogPrintf("gobject(submit) -- Adding locally created governance object - %s\n", strHash);
 
         if(fMissingConfirmations) {
             governance.AddPostponedObject(govobj);
-            govobj.Relay();
+            govobj.Relay(*g_connman);
         } else {
-            governance.AddGovernanceObject(govobj);
+            governance.AddGovernanceObject(govobj, *g_connman);
         }
 
         return govobj.GetHash().ToString();
@@ -327,7 +321,7 @@ UniValue gobject(const UniValue& params, bool fHelp)
         UniValue returnObj(UniValue::VOBJ);
 
         CMasternode mn;
-        bool fMnFound = mnodeman.Get(activeMasternode.vin, mn);
+        bool fMnFound = mnodeman.Get(activeMasternode.outpoint, mn);
 
         if(!fMnFound) {
             nFailed++;
@@ -339,7 +333,7 @@ UniValue gobject(const UniValue& params, bool fHelp)
             return returnObj;
         }
 
-        CGovernanceVote vote(mn.vin, hash, eVoteSignal, eVoteOutcome);
+        CGovernanceVote vote(mn.vin.prevout, hash, eVoteSignal, eVoteOutcome);
         if(!vote.Sign(activeMasternode.keyMasternode, activeMasternode.pubKeyMasternode)) {
             nFailed++;
             statusObj.push_back(Pair("result", "failed"));
@@ -351,7 +345,7 @@ UniValue gobject(const UniValue& params, bool fHelp)
         }
 
         CGovernanceException exception;
-        if(governance.ProcessVoteAndRelay(vote, exception)) {
+        if(governance.ProcessVoteAndRelay(vote, exception, *g_connman)) {
             nSuccessful++;
             statusObj.push_back(Pair("result", "success"));
         }
@@ -430,10 +424,10 @@ UniValue gobject(const UniValue& params, bool fHelp)
                 continue;
             }
 
-            CTxIn vin(COutPoint(nTxHash, nOutputIndex));
+            COutPoint outpoint(nTxHash, nOutputIndex);
 
             CMasternode mn;
-            bool fMnFound = mnodeman.Get(vin, mn);
+            bool fMnFound = mnodeman.Get(outpoint, mn);
 
             if(!fMnFound) {
                 nFailed++;
@@ -443,7 +437,7 @@ UniValue gobject(const UniValue& params, bool fHelp)
                 continue;
             }
 
-            CGovernanceVote vote(mn.vin, hash, eVoteSignal, eVoteOutcome);
+            CGovernanceVote vote(mn.vin.prevout, hash, eVoteSignal, eVoteOutcome);
             if(!vote.Sign(keyMasternode, pubKeyMasternode)){
                 nFailed++;
                 statusObj.push_back(Pair("result", "failed"));
@@ -453,7 +447,7 @@ UniValue gobject(const UniValue& params, bool fHelp)
             }
 
             CGovernanceException exception;
-            if(governance.ProcessVoteAndRelay(vote, exception)) {
+            if(governance.ProcessVoteAndRelay(vote, exception, *g_connman)) {
                 nSuccessful++;
                 statusObj.push_back(Pair("result", "success"));
             }
@@ -551,10 +545,10 @@ UniValue gobject(const UniValue& params, bool fHelp)
                 continue;
             }
 
-            CTxIn vin(COutPoint(nTxHash, nOutputIndex));
+            COutPoint outpoint(nTxHash, nOutputIndex);
 
             CMasternode mn;
-            bool fMnFound = mnodeman.Get(vin, mn);
+            bool fMnFound = mnodeman.Get(outpoint, mn);
 
             if(!fMnFound) {
                 nFailed++;
@@ -566,7 +560,7 @@ UniValue gobject(const UniValue& params, bool fHelp)
 
             // CREATE NEW GOVERNANCE OBJECT VOTE WITH OUTCOME/SIGNAL
 
-            CGovernanceVote vote(vin, hash, eVoteSignal, eVoteOutcome);
+            CGovernanceVote vote(outpoint, hash, eVoteSignal, eVoteOutcome);
             if(!vote.Sign(keyMasternode, pubKeyMasternode)) {
                 nFailed++;
                 statusObj.push_back(Pair("result", "failed"));
@@ -578,7 +572,7 @@ UniValue gobject(const UniValue& params, bool fHelp)
             // UPDATE LOCAL DATABASE WITH NEW OBJECT SETTINGS
 
             CGovernanceException exception;
-            if(governance.ProcessVoteAndRelay(vote, exception)) {
+            if(governance.ProcessVoteAndRelay(vote, exception, *g_connman)) {
                 nSuccessful++;
                 statusObj.push_back(Pair("result", "success"));
             }
@@ -801,12 +795,12 @@ UniValue gobject(const UniValue& params, bool fHelp)
 
         uint256 hash = ParseHashV(params[1], "Governance hash");
 
-        CTxIn mnCollateralOutpoint;
+        COutPoint mnCollateralOutpoint;
         if (params.size() == 4) {
             uint256 txid = ParseHashV(params[2], "Masternode Collateral hash");
             std::string strVout = params[3].get_str();
             uint32_t vout = boost::lexical_cast<uint32_t>(strVout);
-            mnCollateralOutpoint = CTxIn(txid, vout);
+            mnCollateralOutpoint = COutPoint(txid, vout);
         }
 
         // FIND OBJECT USER IS LOOKING FOR
@@ -846,7 +840,7 @@ UniValue voteraw(const UniValue& params, bool fHelp)
 
     uint256 hashMnTx = ParseHashV(params[0], "mn tx hash");
     int nMnTxIndex = params[1].get_int();
-    CTxIn vin = CTxIn(hashMnTx, nMnTxIndex);
+    COutPoint outpoint = COutPoint(hashMnTx, nMnTxIndex);
 
     uint256 hashGovObj = ParseHashV(params[2], "Governance hash");
     std::string strVoteSignal = params[3].get_str();
@@ -874,13 +868,13 @@ UniValue voteraw(const UniValue& params, bool fHelp)
     }
 
     CMasternode mn;
-    bool fMnFound = mnodeman.Get(vin, mn);
+    bool fMnFound = mnodeman.Get(outpoint, mn);
 
     if(!fMnFound) {
-        throw JSONRPCError(RPC_INTERNAL_ERROR, "Failure to find masternode in list : " + vin.prevout.ToStringShort());
+        throw JSONRPCError(RPC_INTERNAL_ERROR, "Failure to find masternode in list : " + outpoint.ToStringShort());
     }
 
-    CGovernanceVote vote(vin, hashGovObj, eVoteSignal, eVoteOutcome);
+    CGovernanceVote vote(outpoint, hashGovObj, eVoteSignal, eVoteOutcome);
     vote.SetTime(nTime);
     vote.SetSignature(vchSig);
 
@@ -889,7 +883,7 @@ UniValue voteraw(const UniValue& params, bool fHelp)
     }
 
     CGovernanceException exception;
-    if(governance.ProcessVoteAndRelay(vote, exception)) {
+    if(governance.ProcessVoteAndRelay(vote, exception, *g_connman)) {
         return "Voted successfully";
     }
     else {
