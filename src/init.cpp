@@ -722,9 +722,10 @@ void ThreadImport(std::vector<boost::filesystem::path> vImportFiles)
 {
     const CChainParams& chainparams = Params();
     RenameThread("energi-loadblk");
+    CImportingNow imp;
+
     // -reindex
     if (fReindex) {
-	CImportingNow imp;
         int nFile = 0;
         while (true) {
             CDiskBlockPos pos(nFile, 0);
