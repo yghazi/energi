@@ -1283,7 +1283,7 @@ CAmount GetBlockSubsidy(int /*nPrevBits*/, int /*nPrevHeight*/, const Consensus:
 
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
 {
-    CAmount ret = blockValue * 0.6; // 60% of value goes to master node after coinbase deduction
+    CAmount ret = blockValue * 0.3; // 30% of value goes to master node after coinbase deduction
                                     // for founders and budget/treasury
 
     return ret;
