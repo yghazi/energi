@@ -137,6 +137,19 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nStartTime = 1486252800; // Feb 5th, 2017
         consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nTimeout = 1517788800; // Feb 5th, 2018
 
+        // Deployment of DIP0001
+        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].bit = 1;
+        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nStartTime = 1508025600; // Oct 15th, 2017
+        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nTimeout = 1539561600; // Oct 15th, 2018
+        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nWindowSize = 4032;
+        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nThreshold = 3226; // 80% of 4032
+
+        // The best chain should have at least this much work.
+        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000172210fe351643b3f1"); // 750000
+
+        // By default assume that the signatures in ancestors of this block are valid.
+        consensus.defaultAssumeValid = uint256S("0x00000000000000b4181bbbdddbae464ce11fede5d0292fb63fdede1e7c8ab21c"); //750000
+
         /**
          * The message start string is designed to be unlikely to occur in normal data.
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
@@ -149,6 +162,7 @@ public:
         vAlertPubKey = ParseHex("0466e98d9fe73af302d93ead0a7637834837e04c04fd67c9f100b278b53f004737b944f7caf8d32e6a2e1e368df31a44992b93569726d795bdc65dca439c8eec47");
         nDefaultPort = 9797;
         nMaxTipAge = 6 * 60 * 60; // ~144 blocks behind -> 2 x fork detection time, was 24 * 60 * 60 in bitcoin
+        nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 100000;
 
         genesis = CreateGenesisBlock(1390095618, 28917698, 0x1e0ffff0, 1, 50 * COIN);
@@ -212,11 +226,12 @@ public:
             ( 312645, uint256S("0x0000000000059dcb71ad35a9e40526c44e7aae6c99169a9e7017b7d84b1c2daf"))
             ( 407452, uint256S("0x000000000003c6a87e73623b9d70af7cd908ae22fee466063e4ffc20be1d2dbc"))
             ( 523412, uint256S("0x000000000000e54f036576a10597e0e42cc22a5159ce572f999c33975e121d4d"))
-            ( 523930, uint256S("0x0000000000000bccdb11c2b1cfb0ecab452abf267d89b7f46eaf2d54ce6e652c")),
-            1471809614, // * UNIX timestamp of last checkpoint block
-            1998064,    // * total number of transactions between genesis and last checkpoint
+            ( 523930, uint256S("0x0000000000000bccdb11c2b1cfb0ecab452abf267d89b7f46eaf2d54ce6e652c"))
+            ( 750000, uint256S("0x00000000000000b4181bbbdddbae464ce11fede5d0292fb63fdede1e7c8ab21c")),
+            1507424630, // * UNIX timestamp of last checkpoint block
+            3701128,    // * total number of transactions between genesis and last checkpoint
                         //   (the tx=... number in the SetBestChain debug.log lines)
-            2800        // * estimated number of transactions per day after checkpoint
+            5000        // * estimated number of transactions per day after checkpoint
         };
     }
 };
@@ -261,7 +276,7 @@ public:
         consensus.nMasternodePaymentsIncreaseBlock =  46000;
         consensus.nMasternodePaymentsIncreasePeriod = 576;
         consensus.nInstantSendKeepLock = 6;
-        consensus.nBudgetPaymentsStartBlock = 60000;
+        consensus.nBudgetPaymentsStartBlock = 4100;
         consensus.nBudgetPaymentsCycleBlocks = 50;
         consensus.nBudgetPaymentsWindowBlocks = 10;
         consensus.nBudgetProposalEstablishingTime = 60*20;
@@ -296,6 +311,7 @@ public:
         vAlertPubKey = ParseHex("04c3660259aa76854c135c5b5b0a668cecc7ca81b531dbbb212353c90132ba32cf1a11309eec989856bbf1748d047b69590279633f15e5e9835d263acdedad2400");
         nDefaultPort = 19797;
         nMaxTipAge = 0x7fffffff; // allow mining on top of old blocks for testnet
+        nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 1000;
 
 
@@ -417,12 +433,22 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_CSV].bit = 0;
         consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nStartTime = 0;
         consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nTimeout = 999999999999ULL;
+        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].bit = 1;
+        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nStartTime = 0;
+        consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nTimeout = 999999999999ULL;
+
+        // The best chain should have at least this much work.
+        consensus.nMinimumChainWork = uint256S("0x00");
+
+        // By default assume that the signatures in ancestors of this block are valid.
+        consensus.defaultAssumeValid = uint256S("0x00");
 
         pchMessageStart[0] = 0xef;
         pchMessageStart[1] = 0x89;
         pchMessageStart[2] = 0x6c;
         pchMessageStart[3] = 0x7f;
         nMaxTipAge = 6 * 60 * 60; // ~144 blocks behind -> 2 x fork detection time, was 24 * 60 * 60 in bitcoin
+        nDelayGetHeadersTime = 0; // never delay GETHEADERS in regtests
         nDefaultPort = 19994;
         nPruneAfterHeight = 1000;
 

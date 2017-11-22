@@ -7,7 +7,7 @@
 
 #include "base58.h"
 #include "consensus/consensus.h"
-#include "main.h"
+#include "validation.h"
 #include "timedata.h"
 #include "wallet/wallet.h"
 
@@ -92,7 +92,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
         BOOST_FOREACH(const CTxIn& txin, wtx.vin)
         {
             if(wallet->IsMine(txin)) {
-                fAllFromMeDenom = fAllFromMeDenom && wallet->IsDenominated(txin);
+                fAllFromMeDenom = fAllFromMeDenom && wallet->IsDenominated(txin.prevout);
                 nFromMe++;
             }
             isminetype mine = wallet->IsMine(txin);
@@ -301,6 +301,8 @@ void TransactionRecord::updateStatus(const CWalletTx &wtx)
         else if (status.depth == 0)
         {
             status.status = TransactionStatus::Unconfirmed;
+            if (wtx.isAbandoned())
+                status.status = TransactionStatus::Abandoned;
         }
         else if (status.depth < RecommendedNumConfirmations)
         {

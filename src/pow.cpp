@@ -173,14 +173,14 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 {
     unsigned int retarget = DIFF_DGW;
 
-    // mainnet/regtest share a configuration 
+    // mainnet/regtest share a configuration
     if (Params().NetworkIDString() == CBaseChainParams::MAIN || Params().NetworkIDString() == CBaseChainParams::REGTEST) {
         if (pindexLast->nHeight + 1 >= 34140) retarget = DIFF_DGW;
         else if (pindexLast->nHeight + 1 >= 15200) retarget = DIFF_KGW;
         else retarget = DIFF_BTC;
-    // testnet -- we want a lot of coins in existance early on 
+    // testnet -- we want a lot of coins in existance early on
     } else {
-        if (pindexLast->nHeight + 1 >= 3000) retarget = DIFF_DGW;
+        if (pindexLast->nHeight + 1 >= 4001) retarget = DIFF_DGW;
         else retarget = DIFF_BTC;
     }
 
@@ -244,12 +244,6 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
     bnTarget.SetCompact(nBits, &fNegative, &fOverflow);
 
     // Check range
-    LogPrintf("HASH %s\n", hash.ToString().c_str());
-    LogPrintf("UintToArith256(hash) %s\n", UintToArith256(hash).ToString().c_str());
-    LogPrintf("POW LIMIT %s\n", params.powLimit.ToString().c_str());
-    LogPrintf("BNTarget %s\n", bnTarget.ToString().c_str());
-    LogPrintf("UintToArith256(params.powLimit) %s\n", UintToArith256(params.powLimit).ToString().c_str());
-    LogPrintf("fNegative %d\n", fNegative);
     if (fNegative || bnTarget == 0 || fOverflow || bnTarget > UintToArith256(params.powLimit))
         return error("CheckProofOfWork(): nBits below minimum work");
 

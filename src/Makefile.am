@@ -70,6 +70,7 @@ endif
 .PHONY: FORCE check-symbols check-security
 # energi core #
 BITCOIN_CORE_H = \
+  addrdb.h \
   activemasternode.h \
   addressindex.h \
   spentindex.h \
@@ -106,6 +107,7 @@ BITCOIN_CORE_H = \
   privatesend.h \
   privatesend-client.h \
   privatesend-server.h \
+  privatesend-util.h \
   dsnotificationinterface.h \
   governance.h \
   governance-classes.h \
@@ -126,7 +128,6 @@ BITCOIN_CORE_H = \
   keystore.h \
   dbwrapper.h \
   limitedmap.h \
-  main.h \
   masternode.h \
   masternode-payments.h \
   masternode-sync.h \
@@ -137,6 +138,8 @@ BITCOIN_CORE_H = \
   messagesigner.h \
   miner.h \
   net.h \
+  net_processing.h \
+  netaddress.h \
   netbase.h \
   netfulfilledman.h \
   noui.h \
@@ -170,6 +173,7 @@ BITCOIN_CORE_H = \
   support/pagelocker.h \
   sync.h \
   threadsafety.h \
+  threadinterrupt.h \
   timedata.h \
   tinyformat.h \
   torcontrol.h \
@@ -182,6 +186,7 @@ BITCOIN_CORE_H = \
   utilmoneystr.h \
   utilstrencodings.h \
   utiltime.h \
+  validation.h \
   validationinterface.h \
   version.h \
   versionbits.h \
@@ -208,6 +213,7 @@ libbitcoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(MINIUPNPC_CP
 libbitcoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_server_a_SOURCES = \
   addrman.cpp \
+  addrdb.cpp \
   alert.cpp \
   bloom.cpp \
   chain.cpp \
@@ -222,12 +228,12 @@ libbitcoin_server_a_SOURCES = \
   governance-validators.cpp \
   governance-vote.cpp \
   governance-votedb.cpp \
-  main.cpp \
   merkleblock.cpp \
   messagesigner.cpp \
   miner.cpp \
   net.cpp \
   netfulfilledman.cpp \
+  net_processing.cpp \
   noui.cpp \
   policy/fees.cpp \
   policy/policy.cpp \
@@ -249,6 +255,7 @@ libbitcoin_server_a_SOURCES = \
   torcontrol.cpp \
   txdb.cpp \
   txmempool.cpp \
+  validation.cpp \
   validationinterface.cpp \
   versionbits.cpp \
   $(BITCOIN_CORE_H)
@@ -280,6 +287,7 @@ libbitcoin_wallet_a_SOURCES = \
   masternodeman.cpp \
   keepass.cpp \
   privatesend-client.cpp \
+  privatesend-util.cpp \
   wallet/crypter.cpp \
   wallet/db.cpp \
   wallet/rpcdump.cpp \
@@ -359,6 +367,7 @@ libbitcoin_common_a_SOURCES = \
   hdchain.cpp \
   key.cpp \
   keystore.cpp \
+  netaddress.cpp \
   netbase.cpp \
   primitives/block.cpp \
   primitives/transaction.cpp \
@@ -391,6 +400,7 @@ libbitcoin_util_a_SOURCES = \
   support/cleanse.cpp \
   sync.cpp \
   uint256.cpp \
+  threadinterrupt.cpp \
   util.cpp \
   utilmoneystr.cpp \
   utilstrencodings.cpp \

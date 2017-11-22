@@ -10,7 +10,7 @@
 #include "checkpoints.h"
 #include "coins.h"
 #include "consensus/validation.h"
-#include "main.h"
+#include "validation.h"
 #include "policy/policy.h"
 #include "primitives/transaction.h"
 #include "rpc/server.h"
@@ -804,6 +804,7 @@ UniValue getblockchaininfo(const UniValue& params, bool fHelp)
     softforks.push_back(SoftForkDesc("bip66", 3, tip, consensusParams));
     softforks.push_back(SoftForkDesc("bip65", 4, tip, consensusParams));
     bip9_softforks.push_back(BIP9SoftForkDesc("csv", consensusParams, Consensus::DEPLOYMENT_CSV));
+    bip9_softforks.push_back(BIP9SoftForkDesc("dip0001", consensusParams, Consensus::DEPLOYMENT_DIP0001));
     obj.push_back(Pair("softforks",             softforks));
     obj.push_back(Pair("bip9_softforks", bip9_softforks));
 
@@ -1007,7 +1008,7 @@ UniValue invalidateblock(const UniValue& params, bool fHelp)
     }
 
     if (state.IsValid()) {
-        ActivateBestChain(state, Params());
+        ActivateBestChain(state, Params(), NULL);
     }
 
     if (!state.IsValid()) {
@@ -1046,7 +1047,7 @@ UniValue reconsiderblock(const UniValue& params, bool fHelp)
     }
 
     if (state.IsValid()) {
-        ActivateBestChain(state, Params());
+        ActivateBestChain(state, Params(), NULL);
     }
 
     if (!state.IsValid()) {

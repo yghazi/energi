@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Energi Core developers
+// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2017 The Energi Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,7 +15,6 @@
 #include "masternodeconfig.h"
 #include "httpserver.h"
 #include "httprpc.h"
-#include "main.h"
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem.hpp>
@@ -28,7 +28,7 @@
  *
  * \section intro_sec Introduction
  *
- * This is the developer documentation of the reference client for an experimental new digital currency called Energi (https://www.energi.org/),
+ * This is the developer documentation of the reference client for an experimental new digital currency called Energi (http://energi.world/),
  * which enables instant payments to anyone, anywhere in the world. Energi uses peer-to-peer technology to operate
  * with no central authority: managing transactions and issuing money are carried out collectively by the network.
  *

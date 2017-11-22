@@ -13,7 +13,7 @@
 #include "guiutil.h"
 #include "optionsmodel.h"
 
-#include "main.h" // for DEFAULT_SCRIPTCHECK_THREADS and MAX_SCRIPTCHECK_THREADS
+#include "validation.h" // for DEFAULT_SCRIPTCHECK_THREADS and MAX_SCRIPTCHECK_THREADS
 #include "netbase.h"
 #include "txdb.h" // for -dbcache defaults
 
@@ -91,6 +91,7 @@ OptionsDialog::OptionsDialog(QWidget *parent, bool enableWallet) :
     
     /* Theme selector */
     ui->theme->addItem(QString("ENERGI-light"), QVariant("light"));
+    ui->theme->addItem(QString("ENERGI-light-hires"), QVariant("light-hires"));
     ui->theme->addItem(QString("ENERGI-blue"), QVariant("drkblue"));
     ui->theme->addItem(QString("ENERGI-Crownium"), QVariant("crownium"));
     ui->theme->addItem(QString("ENERGI-traditional"), QVariant("trad"));
@@ -221,6 +222,7 @@ void OptionsDialog::setMapper()
 
     /* Window */
 #ifndef Q_OS_MAC
+    mapper->addMapping(ui->hideTrayIcon, OptionsModel::HideTrayIcon);
     mapper->addMapping(ui->minimizeToTray, OptionsModel::MinimizeToTray);
     mapper->addMapping(ui->minimizeOnClose, OptionsModel::MinimizeOnClose);
 #endif
@@ -269,6 +271,19 @@ void OptionsDialog::on_okButton_clicked()
 void OptionsDialog::on_cancelButton_clicked()
 {
     reject();
+}
+
+void OptionsDialog::on_hideTrayIcon_stateChanged(int fState)
+{
+    if(fState)
+    {
+        ui->minimizeToTray->setChecked(false);
+        ui->minimizeToTray->setEnabled(false);
+    }
+    else
+    {
+        ui->minimizeToTray->setEnabled(true);
+    }
 }
 
 void OptionsDialog::showRestartWarning(bool fPersistent)
@@ -341,7 +356,8 @@ QValidator::State ProxyAddressValidator::validate(QString &input, int &pos) cons
 {
     Q_UNUSED(pos);
     // Validate the proxy
-    proxyType addrProxy = proxyType(CService(input.toStdString(), 9050), true);
+    CService serv(LookupNumeric(input.toStdString().c_str(), 9050));
+    proxyType addrProxy = proxyType(serv, true);
     if (addrProxy.IsValid())
         return QValidator::Acceptable;
 

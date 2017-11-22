@@ -2,6 +2,9 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <assert>
+static_assert<false, "TODO: is this file still compiled?">
+
 #include "activemasternode.h"
 #include "coincontrol.h"
 #include "consensus/validation.h"
