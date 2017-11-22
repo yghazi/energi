@@ -237,8 +237,8 @@
     </message>
     <message>
         <location line="-57"/>
-        <source>Dash Core will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your dashs from being stolen by malware infecting your computer.</source>
-        <translation>Dash Core will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your dashs from being stolen by malware infecting your computer.</translation>
+        <source>Energi Core will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your EGI from being stolen by malware infecting your computer.</source>
+        <translation>Energi Core will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your EGI from being stolen by malware infecting your computer.</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -309,15 +309,15 @@
 <context>
     <name>BitcoinGUI</name>
     <message>
-        <location filename="../dash.cpp" line="+542"/>
+        <location filename="../energi.cpp" line="+542"/>
         <source>A fatal error occurred. Energi Core can no longer continue safely and will quit.</source>
         <translation>A fatal error occurred. Energi Core can no longer continue safely and will quit.</translation>
     </message>
     <message>
         <location filename="../bitcoingui.cpp" line="+130"/>
         <location line="+988"/>
-        <source>Dash Core</source>
-        <translation>Dash Core</translation>
+        <source>Energi Core</source>
+        <translation>Energi Core</translation>
     </message>
     <message>
         <location line="-979"/>
@@ -416,8 +416,8 @@
     </message>
     <message>
         <location line="+1"/>
-        <source>Modify configuration options for Dash Core</source>
-        <translation>Modify configuration options for Dash Core</translation>
+        <source>Modify configuration options for Energi Core</source>
+        <translation>Modify configuration options for Energi Core</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -651,8 +651,8 @@
     </message>
     <message>
         <location line="+168"/>
-        <source>Dash Core client</source>
-        <translation>Dash Core client</translation>
+        <source>Energi Core client</source>
+        <translation>Energi Core client</translation>
     </message>
     <message numerus="yes">
         <location line="+200"/>
@@ -1541,13 +1541,13 @@
     </message>
     <message>
         <location line="+117"/>
-        <source>Recent transactions may not yet be visible, and therefore your wallet&apos;s balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</source>
-        <translation>Recent transactions may not yet be visible, and therefore your wallet&apos;s balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Dash network, as detailed below.</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet&apos;s balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Energi network, as detailed below.</source>
+        <translation>Recent transactions may not yet be visible, and therefore your wallet&apos;s balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the Energi network, as detailed below.</translation>
     </message>
     <message>
         <location line="+19"/>
-        <source>Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>Attempting to spend Dash that are affected by not-yet-displayed transactions will not be accepted by the network.</translation>
+        <source>Attempting to spend Energi that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>Attempting to spend Energi that are affected by not-yet-displayed transactions will not be accepted by the network.</translation>
     </message>
     <message>
         <location line="+63"/>
@@ -2526,12 +2526,12 @@ https://www.transifex.com/projects/p/dash/</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../dash.cpp" line="+86"/>
+        <location filename="../energi.cpp" line="+86"/>
         <location line="+7"/>
         <location line="+15"/>
         <location line="+19"/>
-        <source>Dash Core</source>
-        <translation>Dash Core</translation>
+        <source>Energi Core</source>
+        <translation>Energi Core</translation>
     </message>
     <message>
         <location line="-40"/>
@@ -2555,8 +2555,8 @@ https://www.transifex.com/projects/p/dash/</translation>
     </message>
     <message>
         <location line="+48"/>
-        <source>Dash Core didn&apos;t yet exit safely...</source>
-        <translation>Dash Core didn&apos;t yet exit safely...</translation>
+        <source>Energi Core didn&apos;t yet exit safely...</source>
+        <translation>Energi Core didn&apos;t yet exit safely...</translation>
     </message>
     <message>
         <location filename="../bitcoinunits.cpp" line="+233"/>
