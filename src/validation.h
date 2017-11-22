@@ -213,7 +213,7 @@ static const uint64_t MIN_DISK_SPACE_FOR_BLOCK_FILES = 945 * 1024 * 1024;
  *
  * Note that we guarantee that either the proof-of-work is valid on pblock, or
  * (and possibly also) BlockChecked will have been called.
- * 
+ *
  * @param[in]   pblock  The block we want to process.
  * @param[in]   fForceProcessing Process this block even if unrequested; used for non-network block sources and whitelisted peers.
  * @param[out]  dbp     The already known disk position of pblock, or NULL if not yet stored.
@@ -221,6 +221,12 @@ static const uint64_t MIN_DISK_SPACE_FOR_BLOCK_FILES = 945 * 1024 * 1024;
  * @return True if state.IsValid()
  */
 bool ProcessNewBlock(const CChainParams& chainparams, const CBlock* pblock, bool fForceProcessing, const CDiskBlockPos* dbp, bool* fNewBlock);
+
+/** Create a next DAG */
+void CreateDAG(int height, egihash::progress_callback_type callback);
+
+/** Initialize the DAG */
+void InitDAG(egihash::progress_callback_type callback = [](egihash::dag_t::size_type, egihash::dag_t::size_type, int){ return true; });
 
 /**
  * Process incoming block headers.

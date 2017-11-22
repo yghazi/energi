@@ -2544,6 +2544,62 @@ static int64_t nTimeFlush = 0;
 static int64_t nTimeChainState = 0;
 static int64_t nTimePostConnect = 0;
 
+void CreateDAG(int height, egihash::progress_callback_type callback)
+{
+    using namespace egihash;
+
+    auto const epoch = height / constants::EPOCH_LENGTH;
+    auto const & seedhash = seedhash_to_filename(get_seedhash(height));
+    stringstream ss;
+    ss << hex << setw(4) << setfill('0') << epoch << "-" << seedhash.substr(0, 12) << ".dag";
+    auto const epoch_file = GetDataDir(false) / "dag" / ss.str();
+
+    LogPrint("dag", "DAG file for epoch %u is \"%s\"", epoch, epoch_file.string());
+    // try to load the DAG from disk
+    try
+    {
+        unique_ptr<dag_t> new_dag(new dag_t(epoch_file.string(), callback));
+        ActiveDAG(move(new_dag));
+        LogPrint("dag", "DAG file \"%s\" loaded successfully.", epoch_file.string());
+        return;
+    }
+    catch (hash_exception const & e)
+    {
+        LogPrint("dag", "DAG file \"%s\" not loaded, will be generated instead. Message: %s", epoch_file.string(), e.what());
+    }
+
+    // try to generate the DAG
+    try
+    {
+        unique_ptr<dag_t> new_dag(new dag_t(height, callback));
+        boost::filesystem::create_directories(epoch_file.parent_path());
+        new_dag->save(epoch_file.string());
+        ActiveDAG(move(new_dag));
+        LogPrint("dag", "DAG generated successfully. Saved to \"%s\".", epoch_file.string());
+    }
+    catch (hash_exception const & e)
+    {
+        error("DAG for epoch %u could not be generated: %s", epoch, e.what());
+    }
+}
+
+int GetHeight()
+{
+    LOCK(cs_main);
+    return chainActive.Height();
+}
+
+void InitDAG(egihash::progress_callback_type callback)
+{
+    auto const & dag = ActiveDAG();
+    if (!dag)
+    {
+        auto const height = (max)(GetHeight(), 0);
+        CreateDAG(height, callback);
+    }
+    LogPrint("dag", "DAG has been initialized already. Use ActiveDAG() to swap.");
+}
+
 /**
  * Connect a new block to chainActive. pblock is either NULL or a pointer to a CBlock
  * corresponding to pindexNew, to bypass loading it again from disk.
