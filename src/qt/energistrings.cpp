@@ -71,6 +71,8 @@ QT_TRANSLATE_NOOP("energi-core", ""
 "Enable use of automated PrivateSend for funds stored in this wallet (0-1, "
 "default: %u)"),
 QT_TRANSLATE_NOOP("energi-core", ""
+"Error loading %s: You can't enable HD on a already existing non-HD wallet"),
+QT_TRANSLATE_NOOP("energi-core", ""
 "Error reading wallet.dat! All keys read correctly, but transaction data or "
 "address book entries might be missing or incorrect."),
 QT_TRANSLATE_NOOP("energi-core", ""
@@ -112,6 +114,10 @@ QT_TRANSLATE_NOOP("energi-core", ""
 "If paytxfee is not set, include enough fee so transactions begin "
 "confirmation on average within n blocks (default: %u)"),
 QT_TRANSLATE_NOOP("energi-core", ""
+"If this block is in the chain assume that it and its ancestors are valid and "
+"potentially skip their script verification (0 to verify all, default: %s, "
+"testnet: %s)"),
+QT_TRANSLATE_NOOP("energi-core", ""
 "InstantSend doesn't support sending values that high yet. Transactions are "
 "currently limited to %1 ENERGI."),
 QT_TRANSLATE_NOOP("energi-core", ""
@@ -135,6 +141,9 @@ QT_TRANSLATE_NOOP("energi-core", ""
 QT_TRANSLATE_NOOP("energi-core", ""
 "Maintain at most <n> connections to peers (temporary service connections "
 "excluded) (default: %u)"),
+QT_TRANSLATE_NOOP("energi-core", ""
+"Make sure to encrypt your wallet and delete all non-encrypted backups after "
+"you verified that wallet works!"),
 QT_TRANSLATE_NOOP("energi-core", ""
 "Maximum size of data in data carrier transactions we relay and mine "
 "(default: %u)"),
@@ -233,20 +242,26 @@ QT_TRANSLATE_NOOP("energi-core", ""
 QT_TRANSLATE_NOOP("energi-core", ""
 "Use UPnP to map the listening port (default: 1 when listening and no -proxy)"),
 QT_TRANSLATE_NOOP("energi-core", ""
+"Use hierarchical deterministic key generation (HD) after bip39/bip44. Only "
+"has effect during wallet creation/first start"),
+QT_TRANSLATE_NOOP("energi-core", ""
 "Use separate SOCKS5 proxy to reach peers via Tor hidden services (default: "
 "%s)"),
+QT_TRANSLATE_NOOP("energi-core", ""
+"User defined mnemonic for HD wallet (bip39). Only has effect during wallet "
+"creation/first start (default: randomly generated)"),
+QT_TRANSLATE_NOOP("energi-core", ""
+"User defined mnemonic passphrase for HD wallet (bip39). Only has effect "
+"during wallet creation/first start (default: empty string)"),
+QT_TRANSLATE_NOOP("energi-core", ""
+"User defined seed for HD wallet (should be in hex). Only has effect during "
+"wallet creation/first start (default: randomly generated)"),
 QT_TRANSLATE_NOOP("energi-core", ""
 "Username and hashed password for JSON-RPC connections. The field <userpw> "
 "comes in the format: <USERNAME>:<SALT>$<HASH>. A canonical python script is "
 "included in share/rpcuser. This option can be specified multiple times"),
 QT_TRANSLATE_NOOP("energi-core", ""
 "WARNING! Failed to replenish keypool, please unlock your wallet to do so."),
-QT_TRANSLATE_NOOP("energi-core", ""
-"WARNING: abnormally high number of blocks generated, %d blocks received in "
-"the last %d hours (%d expected)"),
-QT_TRANSLATE_NOOP("energi-core", ""
-"WARNING: check your network connection, %d blocks received in the last %d "
-"hours (%d expected)"),
 QT_TRANSLATE_NOOP("energi-core", ""
 "Wallet is locked, can't replenish keypool! Automatic backups and mixing are "
 "disabled, please unlock your wallet to replenish keypool."),
@@ -259,6 +274,9 @@ QT_TRANSLATE_NOOP("energi-core", ""
 QT_TRANSLATE_NOOP("energi-core", ""
 "Warning: We do not appear to fully agree with our peers! You may need to "
 "upgrade, or other nodes may need to upgrade."),
+QT_TRANSLATE_NOOP("energi-core", ""
+"Warning: incorrect parameter -walletbackupsdir, path must exist! Using "
+"default path."),
 QT_TRANSLATE_NOOP("energi-core", ""
 "Warning: wallet.dat corrupt, data salvaged! Original wallet.dat saved as "
 "wallet.{timestamp}.bak in %s; if your balance or transactions are incorrect "
@@ -288,7 +306,6 @@ QT_TRANSLATE_NOOP("energi-core", "<category> can be:"),
 QT_TRANSLATE_NOOP("energi-core", "Accept command line and JSON-RPC commands"),
 QT_TRANSLATE_NOOP("energi-core", "Accept connections from outside (default: 1 if no -proxy or -connect)"),
 QT_TRANSLATE_NOOP("energi-core", "Accept public REST requests (default: %u)"),
-QT_TRANSLATE_NOOP("energi-core", "Activating best chain..."),
 QT_TRANSLATE_NOOP("energi-core", "Add a node to connect to and attempt to keep the connection open"),
 QT_TRANSLATE_NOOP("energi-core", "Allow DNS lookups for -addnode, -seednode and -connect"),
 QT_TRANSLATE_NOOP("energi-core", "Already have that input."),
@@ -298,14 +315,15 @@ QT_TRANSLATE_NOOP("energi-core", "Attempt to recover private keys from a corrupt
 QT_TRANSLATE_NOOP("energi-core", "Automatic backups disabled"),
 QT_TRANSLATE_NOOP("energi-core", "Automatically create Tor hidden service (default: %d)"),
 QT_TRANSLATE_NOOP("energi-core", "Block creation options:"),
-QT_TRANSLATE_NOOP("energi-core", "Can't denominate: no compatible inputs left."),
 QT_TRANSLATE_NOOP("energi-core", "Can't find random Masternode."),
 QT_TRANSLATE_NOOP("energi-core", "Can't mix while sync in progress."),
+QT_TRANSLATE_NOOP("energi-core", "Can't mix: no compatible inputs found!"),
 QT_TRANSLATE_NOOP("energi-core", "Cannot downgrade wallet"),
 QT_TRANSLATE_NOOP("energi-core", "Cannot resolve -bind address: '%s'"),
 QT_TRANSLATE_NOOP("energi-core", "Cannot resolve -externalip address: '%s'"),
 QT_TRANSLATE_NOOP("energi-core", "Cannot resolve -whitebind address: '%s'"),
 QT_TRANSLATE_NOOP("energi-core", "Cannot write default address"),
+QT_TRANSLATE_NOOP("energi-core", "Chain selection options:"),
 QT_TRANSLATE_NOOP("energi-core", "Collateral not valid."),
 QT_TRANSLATE_NOOP("energi-core", "Connect only to the specified node(s)"),
 QT_TRANSLATE_NOOP("energi-core", "Connect through SOCKS5 proxy"),
@@ -313,7 +331,7 @@ QT_TRANSLATE_NOOP("energi-core", "Connect to KeePassHttp on port <port> (default
 QT_TRANSLATE_NOOP("energi-core", "Connect to a node to retrieve peer addresses, and disconnect"),
 QT_TRANSLATE_NOOP("energi-core", "Connection options:"),
 QT_TRANSLATE_NOOP("energi-core", "Copyright (C) 2009-%i The Bitcoin Core Developers"),
-QT_TRANSLATE_NOOP("energi-core", "Copyright (C) 2014-%i The Energi Core Developers"),
+QT_TRANSLATE_NOOP("energi-core", "Copyright (C) 2014-%i The energi Core Developers"),
 QT_TRANSLATE_NOOP("energi-core", "Corrupted block database detected"),
 QT_TRANSLATE_NOOP("energi-core", "Could not parse masternode.conf"),
 QT_TRANSLATE_NOOP("energi-core", "Debugging/Testing options:"),
@@ -330,13 +348,15 @@ QT_TRANSLATE_NOOP("energi-core", "Enable publish raw transaction in <address>"),
 QT_TRANSLATE_NOOP("energi-core", "Enable the client to act as a masternode (0-1, default: %u)"),
 QT_TRANSLATE_NOOP("energi-core", "Enable transaction replacement in the memory pool (default: %u)"),
 QT_TRANSLATE_NOOP("energi-core", "Entries are full."),
+QT_TRANSLATE_NOOP("energi-core", "Entry exceeds maximum size."),
 QT_TRANSLATE_NOOP("energi-core", "Error connecting to Masternode."),
 QT_TRANSLATE_NOOP("energi-core", "Error initializing block database"),
 QT_TRANSLATE_NOOP("energi-core", "Error initializing wallet database environment %s!"),
+QT_TRANSLATE_NOOP("energi-core", "Error loading %s: You can't disable HD on a already existing HD wallet"),
 QT_TRANSLATE_NOOP("energi-core", "Error loading block database"),
 QT_TRANSLATE_NOOP("energi-core", "Error loading wallet.dat"),
 QT_TRANSLATE_NOOP("energi-core", "Error loading wallet.dat: Wallet corrupted"),
-QT_TRANSLATE_NOOP("energi-core", "Error loading wallet.dat: Wallet requires newer version of Energi Core"),
+QT_TRANSLATE_NOOP("energi-core", "Error loading wallet.dat: Wallet requires newer version of energi Core"),
 QT_TRANSLATE_NOOP("energi-core", "Error opening block database"),
 QT_TRANSLATE_NOOP("energi-core", "Error reading from database, shutting down."),
 QT_TRANSLATE_NOOP("energi-core", "Error"),
@@ -346,6 +366,10 @@ QT_TRANSLATE_NOOP("energi-core", "Failed to create backup %s!"),
 QT_TRANSLATE_NOOP("energi-core", "Failed to create backup, error: %s"),
 QT_TRANSLATE_NOOP("energi-core", "Failed to delete backup, error: %s"),
 QT_TRANSLATE_NOOP("energi-core", "Failed to listen on any port. Use -listen=0 if you want this."),
+QT_TRANSLATE_NOOP("energi-core", "Failed to load fulfilled requests cache from"),
+QT_TRANSLATE_NOOP("energi-core", "Failed to load governance cache from"),
+QT_TRANSLATE_NOOP("energi-core", "Failed to load masternode cache from"),
+QT_TRANSLATE_NOOP("energi-core", "Failed to load masternode payments cache from"),
 QT_TRANSLATE_NOOP("energi-core", "Failed to parse host:port string"),
 QT_TRANSLATE_NOOP("energi-core", "Fee (in %s/kB) to add to transactions you send (default: %s)"),
 QT_TRANSLATE_NOOP("energi-core", "Found enough users, signing ( waiting %s )"),
@@ -359,7 +383,7 @@ QT_TRANSLATE_NOOP("energi-core", "Incompatible mode."),
 QT_TRANSLATE_NOOP("energi-core", "Incompatible version."),
 QT_TRANSLATE_NOOP("energi-core", "Incorrect or no genesis block found. Wrong datadir for network?"),
 QT_TRANSLATE_NOOP("energi-core", "Information"),
-QT_TRANSLATE_NOOP("energi-core", "Initialization sanity check failed. Energi Core is shutting down."),
+QT_TRANSLATE_NOOP("energi-core", "Initialization sanity check failed. energi Core is shutting down."),
 QT_TRANSLATE_NOOP("energi-core", "Input is not valid."),
 QT_TRANSLATE_NOOP("energi-core", "InstantSend options:"),
 QT_TRANSLATE_NOOP("energi-core", "Insufficient funds."),
@@ -377,17 +401,19 @@ QT_TRANSLATE_NOOP("energi-core", "Invalid port detected in masternode.conf"),
 QT_TRANSLATE_NOOP("energi-core", "Invalid script detected."),
 QT_TRANSLATE_NOOP("energi-core", "KeePassHttp id for the established association"),
 QT_TRANSLATE_NOOP("energi-core", "KeePassHttp key for AES encrypted communication with KeePass"),
-QT_TRANSLATE_NOOP("energi-core", "Keep N ENERGI anonymized (default: %u)"),
+QT_TRANSLATE_NOOP("energi-core", "Keep N energi anonymized (default: %u)"),
 QT_TRANSLATE_NOOP("energi-core", "Keep at most <n> unconnectable transactions in memory (default: %u)"),
 QT_TRANSLATE_NOOP("energi-core", "Keep the transaction memory pool below <n> megabytes (default: %u)"),
+QT_TRANSLATE_NOOP("energi-core", "Keypool ran out, please call keypoolrefill first"),
 QT_TRANSLATE_NOOP("energi-core", "Last PrivateSend was too recent."),
 QT_TRANSLATE_NOOP("energi-core", "Last successful PrivateSend action was too recent."),
 QT_TRANSLATE_NOOP("energi-core", "Line: %d"),
 QT_TRANSLATE_NOOP("energi-core", "Listen for JSON-RPC connections on <port> (default: %u or testnet: %u)"),
 QT_TRANSLATE_NOOP("energi-core", "Listen for connections on <port> (default: %u or testnet: %u)"),
 QT_TRANSLATE_NOOP("energi-core", "Loading addresses..."),
+QT_TRANSLATE_NOOP("energi-core", "Loading banlist..."),
 QT_TRANSLATE_NOOP("energi-core", "Loading block index..."),
-QT_TRANSLATE_NOOP("energi-core", "Loading fullfiled requests cache..."),
+QT_TRANSLATE_NOOP("energi-core", "Loading fulfilled requests cache..."),
 QT_TRANSLATE_NOOP("energi-core", "Loading governance cache..."),
 QT_TRANSLATE_NOOP("energi-core", "Loading masternode cache..."),
 QT_TRANSLATE_NOOP("energi-core", "Loading masternode payment cache..."),
@@ -406,11 +432,11 @@ QT_TRANSLATE_NOOP("energi-core", "Maximum per-connection send buffer, <n>*1000 b
 QT_TRANSLATE_NOOP("energi-core", "Minimum bytes per sigop in transactions we relay and mine (default: %u)"),
 QT_TRANSLATE_NOOP("energi-core", "Missing input transaction information."),
 QT_TRANSLATE_NOOP("energi-core", "Mixing in progress..."),
+QT_TRANSLATE_NOOP("energi-core", "Mnemonic passphrase is too long, must be at most 256 characters"),
 QT_TRANSLATE_NOOP("energi-core", "Need to specify a port with -whitebind: '%s'"),
 QT_TRANSLATE_NOOP("energi-core", "No Masternodes detected."),
 QT_TRANSLATE_NOOP("energi-core", "No compatible Masternode found."),
 QT_TRANSLATE_NOOP("energi-core", "No errors detected."),
-QT_TRANSLATE_NOOP("energi-core", "No funds detected in need of denominating."),
 QT_TRANSLATE_NOOP("energi-core", "No matching denominations found for mixing."),
 QT_TRANSLATE_NOOP("energi-core", "Node relay options:"),
 QT_TRANSLATE_NOOP("energi-core", "Non-standard public key detected."),
@@ -433,7 +459,8 @@ QT_TRANSLATE_NOOP("energi-core", "Prune cannot be configured with a negative val
 QT_TRANSLATE_NOOP("energi-core", "Prune mode is incompatible with -txindex."),
 QT_TRANSLATE_NOOP("energi-core", "Pruning blockstore..."),
 QT_TRANSLATE_NOOP("energi-core", "RPC server options:"),
-QT_TRANSLATE_NOOP("energi-core", "Rebuild block chain index from current blk000??.dat files on startup"),
+QT_TRANSLATE_NOOP("energi-core", "Rebuild chain state and block index from the blk*.dat files on disk"),
+QT_TRANSLATE_NOOP("energi-core", "Rebuild chain state from the currently indexed blocks"),
 QT_TRANSLATE_NOOP("energi-core", "Receive and display P2P network alerts (default: %u)"),
 QT_TRANSLATE_NOOP("energi-core", "Reducing -maxconnections from %d to %d, because of system limitations."),
 QT_TRANSLATE_NOOP("energi-core", "Relay and mine data carrier transactions (default: %u)"),
@@ -466,13 +493,13 @@ QT_TRANSLATE_NOOP("energi-core", "Spend unconfirmed change when sending transact
 QT_TRANSLATE_NOOP("energi-core", "Submitted following entries to masternode: %u / %d"),
 QT_TRANSLATE_NOOP("energi-core", "Submitted to masternode, waiting for more entries ( %u / %d ) %s"),
 QT_TRANSLATE_NOOP("energi-core", "Submitted to masternode, waiting in queue %s"),
+QT_TRANSLATE_NOOP("energi-core", "Synchroning blockchain..."),
 QT_TRANSLATE_NOOP("energi-core", "Synchronization failed"),
 QT_TRANSLATE_NOOP("energi-core", "Synchronization finished"),
 QT_TRANSLATE_NOOP("energi-core", "Synchronization pending..."),
 QT_TRANSLATE_NOOP("energi-core", "Synchronizing governance objects..."),
 QT_TRANSLATE_NOOP("energi-core", "Synchronizing masternode payments..."),
 QT_TRANSLATE_NOOP("energi-core", "Synchronizing masternodes..."),
-QT_TRANSLATE_NOOP("energi-core", "Synchronizing sporks..."),
 QT_TRANSLATE_NOOP("energi-core", "The transaction amount is too small to pay the fee"),
 QT_TRANSLATE_NOOP("energi-core", "This help message"),
 QT_TRANSLATE_NOOP("energi-core", "This is experimental software."),
@@ -500,15 +527,15 @@ QT_TRANSLATE_NOOP("energi-core", "Unsupported argument -tor found, use -onion.")
 QT_TRANSLATE_NOOP("energi-core", "Upgrade wallet to latest format on startup"),
 QT_TRANSLATE_NOOP("energi-core", "Use KeePass 2 integration using KeePassHttp plugin (default: %u)"),
 QT_TRANSLATE_NOOP("energi-core", "Use UPnP to map the listening port (default: %u)"),
+QT_TRANSLATE_NOOP("energi-core", "Use the test chain"),
 QT_TRANSLATE_NOOP("energi-core", "User Agent comment (%s) contains unsafe characters."),
 QT_TRANSLATE_NOOP("energi-core", "Username for JSON-RPC connections"),
-QT_TRANSLATE_NOOP("energi-core", "Value more than PrivateSend pool maximum allows."),
 QT_TRANSLATE_NOOP("energi-core", "Verifying blocks..."),
 QT_TRANSLATE_NOOP("energi-core", "Verifying wallet..."),
 QT_TRANSLATE_NOOP("energi-core", "Very low number of keys left: %d"),
 QT_TRANSLATE_NOOP("energi-core", "Wallet %s resides outside data directory %s"),
 QT_TRANSLATE_NOOP("energi-core", "Wallet is locked."),
-QT_TRANSLATE_NOOP("energi-core", "Wallet needed to be rewritten: restart Energi Core to complete"),
+QT_TRANSLATE_NOOP("energi-core", "Wallet needed to be rewritten: restart energi Core to complete"),
 QT_TRANSLATE_NOOP("energi-core", "Wallet options:"),
 QT_TRANSLATE_NOOP("energi-core", "Wallet window title"),
 QT_TRANSLATE_NOOP("energi-core", "Warning"),
@@ -516,7 +543,6 @@ QT_TRANSLATE_NOOP("energi-core", "Warning: unknown new rules activated (versionb
 QT_TRANSLATE_NOOP("energi-core", "Wasn't able to create wallet backup folder %s!"),
 QT_TRANSLATE_NOOP("energi-core", "Whether to operate in a blocks only mode (default: %u)"),
 QT_TRANSLATE_NOOP("energi-core", "Will retry..."),
-QT_TRANSLATE_NOOP("energi-core", "You need to rebuild the database using -reindex to change -txindex"),
 QT_TRANSLATE_NOOP("energi-core", "Your entries added successfully."),
 QT_TRANSLATE_NOOP("energi-core", "Your transaction was accepted into the pool!"),
 QT_TRANSLATE_NOOP("energi-core", "Zapping all transactions from wallet..."),
