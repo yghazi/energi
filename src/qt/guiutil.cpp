@@ -734,13 +734,8 @@ boost::filesystem::path static GetAutostartFilePath()
 {
     std::string chain = ChainNameFromCommandLine();
     if (chain == CBaseChainParams::MAIN)
-<<<<<<< HEAD
-        return GetAutostartDir() / "energi.desktop";
-    return GetAutostartDir() / strprintf("energi-%s.lnk", chain);
-=======
-        return GetAutostartDir() / "dashcore.desktop";
-    return GetAutostartDir() / strprintf("dashcore-%s.lnk", chain);
->>>>>>> dash/v0.12.2.x
+        return GetAutostartDir() / "energicore.desktop";
+    return GetAutostartDir() / strprintf("energicore-%s.lnk", chain);
 }
 
 bool GetStartOnSystemStartup()
@@ -779,21 +774,13 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         if (!optionFile.good())
             return false;
         std::string chain = ChainNameFromCommandLine();
-<<<<<<< HEAD
         // Write a energi.desktop file to the autostart directory:
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
         if (chain == CBaseChainParams::MAIN)
-            optionFile << "Name=Energi\n";
-=======
-        // Write a dashcore.desktop file to the autostart directory:
-        optionFile << "[Desktop Entry]\n";
-        optionFile << "Type=Application\n";
-        if (chain == CBaseChainParams::MAIN)
-            optionFile << "Name=Dash Core\n";
->>>>>>> dash/v0.12.2.x
+            optionFile << "Name=Energi Core\n";
         else
-            optionFile << strprintf("Name=Dash Core (%s)\n", chain);
+            optionFile << strprintf("Name=Energi Core (%s)\n", chain);
         optionFile << "Exec=" << pszExePath << strprintf(" -min -testnet=%d -regtest=%d\n", GetBoolArg("-testnet", false), GetBoolArg("-regtest", false));
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";
