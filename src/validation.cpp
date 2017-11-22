@@ -2614,7 +2614,8 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
 
     // if there have been EPOCH_LENGTH number of blocks since the last DAG was generated,
     // generate a new one
-    if (epoch > ActiveDAG()->epoch()) {
+    auto const & active_dag = ActiveDAG();
+    if (active_dag && (epoch > active_dag->epoch())) {
         CreateDAG(height, [](::std::size_t step, ::std::size_t max, int phase) -> bool
         {
             double progress = static_cast<double>(step) / static_cast<double>(max) * 100.0;
