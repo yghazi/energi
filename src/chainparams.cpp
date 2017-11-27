@@ -273,14 +273,14 @@ public:
         consensus.nSubsidyHalvingInterval = 41540; /*  */
 
         consensus.nMasternodePaymentsStartBlock = 87600; // should be about 2 months after genesis
-        consensus.nMasternodePaymentsIncreaseBlock =  46000;
-        consensus.nMasternodePaymentsIncreasePeriod = 576;
+        consensus.nMasternodePaymentsIncreaseBlock =  46000; // TODO: should be removed, doesn't hold any meaning for EGI
+        consensus.nMasternodePaymentsIncreasePeriod = 576;   // TODO: should be removed, doesn't hold any meaning for EGI
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetPaymentsStartBlock = 4100;
         consensus.nBudgetPaymentsCycleBlocks = 50;
         consensus.nBudgetPaymentsWindowBlocks = 10;
         consensus.nBudgetProposalEstablishingTime = 60*20;
-        consensus.nSuperblockStartBlock = 61000; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPeymentsStartBlock
+        consensus.nSuperblockStartBlock = 61000; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPaymentsStartBlock
         consensus.nSuperblockCycle = 24;
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;

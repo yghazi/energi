@@ -220,7 +220,10 @@ void FillBlockPayments(CMutableTransaction& txNew, int nBlockHeight, CAmount blo
 
     // FILL BLOCK PAYEE WITH FOUNDER'S REWARD AND MASTERNODE PAYMENT OTHERWISE
     mnpayments.FillBlockFoundersReward(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
-    mnpayments.FillBlockPayee(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
+    // ONLY START PAYING THE MASTERNODE AFTER THE PAYMENTS START BLOCK
+    if(nBlockHeight + 1 > Params().GetConsensus().nMasternodePaymentsStartBlock) {
+        mnpayments.FillBlockPayee(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
+    }
     LogPrint("mnpayments", "FillBlockPayments -- nBlockHeight %d blockReward %lld txoutMasternodeRet %s txNew %s",
                             nBlockHeight, blockReward, txoutMasternodeRet.ToString(), txNew.ToString());
 }
