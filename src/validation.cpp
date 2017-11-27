@@ -2524,6 +2524,11 @@ void CreateDAG(int height, egihash::progress_callback_type callback)
 {
     using namespace egihash;
 
+    if (!GetBoolArg("-usedag", DEFAULT_USEDAG)) {
+        LogPrintf("dag: Operating in light mode - skipping DAG creation (usedag=0)");
+        return;
+    }
+
     auto const epoch = height / constants::EPOCH_LENGTH;
     auto const & seedhash = seedhash_to_filename(get_seedhash(height));
     stringstream ss;
