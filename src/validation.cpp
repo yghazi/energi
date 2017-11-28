@@ -3327,7 +3327,13 @@ static bool CheckIndexAgainstCheckpoint(const CBlockIndex* pindexPrev, CValidati
 bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& state, CBlockIndex * const pindexPrev)
 {
     const Consensus::Params& consensusParams = Params().GetConsensus();
-    int nHeight = pindexPrev->nHeight + 1;
+    int const nHeight = pindexPrev->nHeight + 1;
+
+    // height check
+    if (block.nHeight != nHeight)
+        return state.DoS(100, error("%s: block height is invalid", __func__),
+                        REJECT_INVALID, "bad-blk-height");
+
     // Check proof of work
     if(Params().NetworkIDString() == CBaseChainParams::MAIN && nHeight <= 68589){
         // architecture issues with DGW v1 and v2)
