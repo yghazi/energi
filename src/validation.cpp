@@ -3384,6 +3384,10 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, CBlockIn
 
     bool fDIP0001Active_context = (VersionBitsState(pindexPrev, consensusParams, Consensus::DEPLOYMENT_DIP0001, versionbitscache) == THRESHOLD_ACTIVE);
 
+    // height check
+    if (block.nHeight != (pindexPrev->nHeight + 1))
+        return state.DoS(100, error("%s: block height is invalid", __func__),
+                        REJECT_INVALID, "bad-blk-height");
     // Size limits
     unsigned int nMaxBlockSize = MaxBlockSize(fDIP0001Active_context);
     if (block.vtx.empty() || block.vtx.size() > nMaxBlockSize || ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION) > nMaxBlockSize)
