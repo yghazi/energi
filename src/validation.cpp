@@ -3327,7 +3327,7 @@ static bool CheckIndexAgainstCheckpoint(const CBlockIndex* pindexPrev, CValidati
 bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& state, CBlockIndex * const pindexPrev)
 {
     const Consensus::Params& consensusParams = Params().GetConsensus();
-    int const nHeight = pindexPrev->nHeight + 1;
+    uint32_t const nHeight = static_cast<uint32_t>(pindexPrev->nHeight) + 1; // TODO: Why is CBlockIndex::nHeight signed?
 
     // height check
     if (block.nHeight != nHeight)
