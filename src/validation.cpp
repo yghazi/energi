@@ -3335,6 +3335,7 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
                         REJECT_INVALID, "bad-blk-height");
 
     // Check proof of work
+    // TODO: disable pre-DGW fork logic
     if(Params().NetworkIDString() == CBaseChainParams::MAIN && nHeight <= 68589){
         // architecture issues with DGW v1 and v2)
         unsigned int nBitsNext = GetNextWorkRequired(pindexPrev, &block, consensusParams);
