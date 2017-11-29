@@ -469,7 +469,7 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
                     {
                         // Found a solution
                         SetThreadPriority(THREAD_PRIORITY_NORMAL);
-                        LogPrintf("EnergiMiner:\n  proof-of-work found\n  blockhash: %s\n  powhash: %s\n  mixhash: %s\n  target: %s\n", hash.GetHex(), pblock->GetHash().GetHex(), pblock->hashMix.GetHex(), hashTarget.GetHex());
+                        LogPrintf("EnergiMiner:\n  proof-of-work found\n  hash: %s\n  mixhash: %s\n  target: %s\n", hash.GetHex(), pblock->hashMix.GetHex(), hashTarget.GetHex());
                         ProcessBlockFound(pblock, chainparams);
                         SetThreadPriority(THREAD_PRIORITY_LOWEST);
                         coinbaseScript->KeepScript();
