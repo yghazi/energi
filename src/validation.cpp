@@ -3331,8 +3331,9 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
 
     // height check
     if (block.nHeight != nHeight)
-        return state.DoS(100, error("%s: block height is invalid", __func__),
-                        REJECT_INVALID, "bad-blk-height");
+    {
+        return state.DoS(100, error("%s: block height is invalid", __func__), REJECT_INVALID, "bad-blk-height");
+    }
 
     // Check proof of work
     // TODO: disable pre-DGW fork logic
