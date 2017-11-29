@@ -67,6 +67,11 @@ public:
         return (nBits == 0);
     }
 
+    /** GetPOWHash() returns the egihash used to satisfy the proof of work condition.
+    *       The first time this is computed, the hashMix is stored.
+    */
+    uint256 GetPOWHash() const;
+
     uint256 GetHash() const;
 
     uint256 GetHashMix() const

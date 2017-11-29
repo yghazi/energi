@@ -48,7 +48,7 @@ namespace
     #pragma pack(pop)
 }
 
-uint256 CBlockHeader::GetHash() const
+uint256 CBlockHeader::GetPOWHash() const
 {
     CBlockHeaderTruncatedLE truncatedBlockHeader(*this);
     egihash::h256_t headerHash(&truncatedBlockHeader, sizeof(truncatedBlockHeader));
@@ -67,6 +67,22 @@ uint256 CBlockHeader::GetHash() const
 
     hashMix = uint256(ret.mixhash);
     return uint256(ret.value);
+}
+
+uint256 CBlockHeader::GetHash() const
+{
+    if (!hashMix)
+    {
+        // nonce is used to populate
+        GetPOWHash();
+        if (!hashMix)
+        {
+            error("Can not produce a valid mixhash");
+        }
+    }
+
+    // return a 256-bit hash of the full block header, including nonce and mixhash
+    return SerializeHash(*this);
 }
 
 std::string CBlock::ToString() const
