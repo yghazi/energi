@@ -11,6 +11,9 @@
 #include "crypto/common.h"
 #include "compat/endian.h"
 #include "dag_singleton.h"
+#include "util.h"
+
+#include <algorithm>
 
 namespace
 {
@@ -71,11 +74,11 @@ uint256 CBlockHeader::GetPOWHash() const
 
 uint256 CBlockHeader::GetHash() const
 {
-    if (!hashMix)
+    if (std::memcmp(hashMix.begin(), &(egihash::empty_h256.b[0]), (std::min)(egihash::empty_h256.hash_size, static_cast<egihash::h256_t::size_type>(hashMix.size()))) == 0)
     {
         // nonce is used to populate
         GetPOWHash();
-        if (!hashMix)
+        if (std::memcmp(hashMix.begin(), &(egihash::empty_h256.b[0]), (std::min)(egihash::empty_h256.hash_size, static_cast<egihash::h256_t::size_type>(hashMix.size()))) == 0)
         {
             error("Can not produce a valid mixhash");
         }
