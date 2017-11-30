@@ -71,7 +71,7 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
 
 struct GenesisMiner
 {
-    GenesisMiner(CBlock & genesisBlock)
+    GenesisMiner(CBlock & genesisBlock, std::string networkID)
     {
         using namespace std;
 
@@ -98,7 +98,7 @@ struct GenesisMiner
             {
                 auto end = chrono::system_clock::now();
                 auto elapsed = chrono::duration_cast<std::chrono::milliseconds>(end - start);
-                cout << "Mined genesis block: " << genesisBlock.GetHash().ToString() << endl
+                cout << "Mined genesis block for " << networkID << ": " << genesisBlock.GetHash().ToString() << endl
                     << "target was " << bnTarget.ToString() << " POWHash was " << genesisBlock.GetPOWHash().ToString() << endl
                     << "took " << i << " hashes in " << elapsed.count() / 1000.0 << " seconds ("
                     << static_cast<double>(i) / static_cast<double>(elapsed.count() / 1000.0) << " hps)" << endl << endl
@@ -569,15 +569,16 @@ public:
         nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1512072938UL, 31216212, 0x1e1aafb6, 1, consensus.nBlockSubsidy);
+        genesis = CreateGenesisBlock(1512074072UL, 31765144, 0x1e1aafb6, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
-        uint256 expectedGenesisHash = uint256S("0x74897f3179a90b67911420ad42d35f0a4e29e8ba6b562897657c3fa2f4aad7e2");
-        uint256 expectedGenesisMerkleRoot = uint256S("0x398bc532d10d33bb8ed323860572558ba89ccecadfd33b0f7a25816df65cda6d");
+        uint256 expectedGenesisHash = uint256S("0xf3f1c22f4da6b8434a93ffaeed553ce0f95c1fd4307797dc2058f544732db002");
+        uint256 expectedGenesisMerkleRoot = uint256S("0xf5be3fa001329f6c2154bae1416e8194a570d9ecfb0cf78e8bdee1fefc739cf5");
 
+        // TODO: mine genesis block for testnet60x
         #ifdef ENERGI_MINE_NEW_GENESIS_BLOCK
         if (consensus.hashGenesisBlock != expectedGenesisHash)
         {
-            GenesisMiner mine(genesis);
+            GenesisMiner mine(genesis, strNetworkID);
         }
         #endif // ENERGI_MINE_NEW_GENESIS_BLOCK
 
@@ -725,7 +726,7 @@ public:
         #ifdef ENERGI_MINE_NEW_GENESIS_BLOCK
         if (consensus.hashGenesisBlock != expectedGenesisHash)
         {
-            GenesisMiner mine(genesis);
+            GenesisMiner mine(genesis, strNetworkID);
         }
         #endif // ENERGI_MINE_NEW_GENESIS_BLOCK
 
