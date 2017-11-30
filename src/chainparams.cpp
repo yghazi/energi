@@ -90,15 +90,15 @@ struct GenesisMiner
             {
                 auto end = chrono::system_clock::now();
                 auto elapsed = chrono::duration_cast<std::chrono::milliseconds>(end - start);
-                cout << "\r" << i << " hashes in " << elapsed.count() / 1000.0 << " seconds ("
-                    << static_cast<double>(i) / static_cast<double>(elapsed.count() / 1000.0) << " hps)";
+                cout << i << " hashes in " << elapsed.count() / 1000.0 << " seconds ("
+                    << static_cast<double>(i) / static_cast<double>(elapsed.count() / 1000.0) << " hps)" << endl;
             }
 
             if (UintToArith256(powHash) < bnTarget)
             {
                 auto end = chrono::system_clock::now();
                 auto elapsed = chrono::duration_cast<std::chrono::milliseconds>(end - start);
-                cout << "\r" << endl << "Mined genesis block: " << genesisBlock.GetHash().ToString() << endl
+                cout << "Mined genesis block: " << genesisBlock.GetHash().ToString() << endl
                     << "target was " << bnTarget.ToString() << " POWHash was " << genesisBlock.GetPOWHash().ToString() << endl
                     << "took " << i << " hashes in " << elapsed.count() / 1000.0 << " seconds ("
                     << static_cast<double>(i) / static_cast<double>(elapsed.count() / 1000.0) << " hps)" << endl << endl
