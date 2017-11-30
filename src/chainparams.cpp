@@ -571,9 +571,9 @@ public:
         nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1512074072UL, 31765144, 0x1e1aafb6, 1, consensus.nBlockSubsidy);
+        genesis = CreateGenesisBlock(1512074991UL, 34639374, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
-        uint256 expectedGenesisHash = uint256S("0xf3f1c22f4da6b8434a93ffaeed553ce0f95c1fd4307797dc2058f544732db002");
+        uint256 expectedGenesisHash = uint256S("0x7d9bbd6ad7ce8af0cbbc0433af3800ae3f2b055dde8c4adc3a1dc5c121f0ca25");
         uint256 expectedGenesisMerkleRoot = uint256S("0xf5be3fa001329f6c2154bae1416e8194a570d9ecfb0cf78e8bdee1fefc739cf5");
 
         // TODO: mine genesis block for testnet60x
