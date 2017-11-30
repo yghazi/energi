@@ -460,8 +460,8 @@ public:
             << "Prev genesis nonce: " <<  std::to_string(genesis.nNonce) << endl
             << "Prev genesis hash: "<< consensus.hashGenesisBlock.ToString().c_str()<<endl;
             // loop finds genesis nonce
-            // for(genesis.nNonce = 0; UintToArith256(genesis.GetHash()).GetCompact() < genesis.nBits; genesis.nNonce++){cout << genesis.GetHash().ToString().c_str() << endl;} 
-            for(genesis.nNonce = 606060;  consensus.powLimit < genesis.GetHash() ; genesis.nNonce++){cout << genesis.GetHash().ToString().c_str() << endl;} 
+            // for(genesis.nNonce = 0; UintToArith256(genesis.GetHash()).GetCompact() < genesis.nBits; genesis.nNonce++){cout << genesis.GetHash().ToString().c_str() << endl;}
+            for(genesis.nNonce = 606060;  consensus.powLimit < genesis.GetHash() ; genesis.nNonce++){cout << genesis.GetHash().ToString().c_str() << endl;}
             cout << "New genesis merkle root: " << genesis.hashMerkleRoot.ToString().c_str() << endl
             <<"New genesis nonce: " << std::to_string(genesis.nNonce) << endl
             <<"New genesis hash: " << genesis.GetHash().ToString().c_str() << endl;
@@ -494,7 +494,7 @@ public:
         // Testnet Dash BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;
 
-        vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
+        vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test60x, pnSeed6_test60x + ARRAYLEN(pnSeed6_test60x));
 
         fMiningRequiresPeers = true;
         fDefaultConsistencyChecks = false;
