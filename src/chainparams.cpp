@@ -449,8 +449,7 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        // TODO: re-enable seeding on the test net
-        vSeeds.push_back(CDNSSeedData("energi.network",  "us-seed1.test.energi.network"));
+        vSeeds.push_back(CDNSSeedData("energi.network", "us-seed1.test.energi.network"));
 
         // Testnet Energi addresses start with 't'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127);
@@ -717,11 +716,11 @@ public:
         nDefaultPort = 19994;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1506586761UL, 0, 0x207fffff, 1, consensus.nBlockSubsidy);
+        genesis = CreateGenesisBlock(1512073825UL, 1, 0x207fffff, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        uint256 expectedGenesisHash = uint256S("0x440cbbe939adba25e9e41b976d3daf8fb46b5f6ac0967b0a9ed06a749e7cf1e2");
-        uint256 expectedGenesisMerkleRoot = uint256S("0x6a4855e61ae0da5001564cee6ba8dcd7bc361e9bb12e76b62993390d6db25bca");
+        uint256 expectedGenesisHash = uint256S("0x7536f7b4bda99c77ea3d9dcf8edd82fcb93fd4493f56c444243aee585fb08cc0");
+        uint256 expectedGenesisMerkleRoot = uint256S("0x398bc532d10d33bb8ed323860572558ba89ccecadfd33b0f7a25816df65cda6d");
 
         #ifdef ENERGI_MINE_NEW_GENESIS_BLOCK
         if (consensus.hashGenesisBlock != expectedGenesisHash)
