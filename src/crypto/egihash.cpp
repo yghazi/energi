@@ -310,6 +310,8 @@ namespace
 
 namespace egihash
 {
+	constexpr h256_t::size_type h256_t::hash_size;
+
 	h256_t::h256_t(void const * input_data, size_type input_size)
 	: b{0}
 	{
@@ -324,9 +326,19 @@ namespace egihash
 		return (::std::memcmp(&b[0], &empty_h256.b[0], sizeof(b)) != 0);
 	}
 
+	bool h256_t::operator==(h256_t const & rhs) const
+	{
+		return (::std::memcmp(&b[0], &rhs.b[0], sizeof(b)) == 0);
+	}
+
 	result_t::operator bool() const
 	{
 		return bool(value) && bool(mixhash);
+	}
+
+	bool result_t::operator==(result_t const & rhs) const
+	{
+		return ((value == rhs.value) && (mixhash == rhs.mixhash));
 	}
 
 	// TODO: unit tests / validation
@@ -821,7 +833,7 @@ namespace egihash
 		}
 
 		// TODO: this func needs to be made endian safe
-		auto read = [&fs, &read_buffer, &buffer_ptr, &buffer_ptr_end, &filesize](void * dst, size_type count)
+		auto read = [&fs, &read_buffer, &buffer_ptr, &buffer_ptr_end](void * dst, size_type count)
 		{
 			// full buffer consumed exactly
 			if ((buffer_ptr_end - buffer_ptr) == 1)
