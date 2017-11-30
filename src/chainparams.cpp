@@ -86,7 +86,7 @@ struct GenesisMiner
         {
             uint256 powHash = genesisBlock.GetPOWHash();
 
-            if ((++i % 50000) == 0)
+            if ((++i % 250000) == 0)
             {
                 auto end = chrono::system_clock::now();
                 auto elapsed = chrono::duration_cast<std::chrono::milliseconds>(end - start);
