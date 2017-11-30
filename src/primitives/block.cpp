@@ -11,6 +11,9 @@
 #include "crypto/common.h"
 #include "compat/endian.h"
 #include "dag_singleton.h"
+#include "util.h"
+
+#include <algorithm>
 
 namespace
 {
@@ -48,7 +51,7 @@ namespace
     #pragma pack(pop)
 }
 
-uint256 CBlockHeader::GetHash() const
+uint256 CBlockHeader::GetPOWHash() const
 {
     CBlockHeaderTruncatedLE truncatedBlockHeader(*this);
     egihash::h256_t headerHash(&truncatedBlockHeader, sizeof(truncatedBlockHeader));
@@ -67,6 +70,22 @@ uint256 CBlockHeader::GetHash() const
 
     hashMix = uint256(ret.mixhash);
     return uint256(ret.value);
+}
+
+uint256 CBlockHeader::GetHash() const
+{
+    if (std::memcmp(hashMix.begin(), &(egihash::empty_h256.b[0]), (std::min)(egihash::empty_h256.hash_size, static_cast<egihash::h256_t::size_type>(hashMix.size()))) == 0)
+    {
+        // nonce is used to populate
+        GetPOWHash();
+        if (std::memcmp(hashMix.begin(), &(egihash::empty_h256.b[0]), (std::min)(egihash::empty_h256.hash_size, static_cast<egihash::h256_t::size_type>(hashMix.size()))) == 0)
+        {
+            error("Can not produce a valid mixhash");
+        }
+    }
+
+    // return a 256-bit hash of the full block header, including nonce and mixhash
+    return SerializeHash(*this);
 }
 
 std::string CBlock::ToString() const
