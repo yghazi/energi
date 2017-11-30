@@ -369,6 +369,157 @@ public:
 };
 static CTestNetParams testNetParams;
 
+
+/**
+ * Testnet (60x)
+ */
+class CTestNet60xParams : public CChainParams {
+public:
+    CTestNet60xParams() {
+        strNetworkID = "test60";
+
+        // Energi distribution parameters
+        consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY";
+        // ~23.15 energi = 23.148148148148148 = 1000_000 / ( 30 * 24 * 60 )
+        // 23.15  energi = 23.15 * 30 * 24 * 60 -> 1000080
+        // 23.15 * 10% = 2.315
+        // 23.15 * 20% = 4.630
+        // 23.15 * 30% = 6.945
+        // 23.15 * 40% = 9.260
+        consensus.nBlockSubsidy = 138900000000; //2315000000 * 60;
+        // 10% founders reward
+        consensus.nBlockSubsidyFounders = 13890000000;
+        // 20% miners
+        consensus.nBlockSubsidyMiners = 27780000000;
+        // 30% masternodes
+        // each masternode is paid serially.. more the master nodes more is the wait for the payment
+        // masternode payment gap is masternodes minutes
+        consensus.nBlockSubsidyMasternodes = 41670000000;
+        // 40% treasury
+        consensus.nBlockSubsidyTreasury = 55560000000;
+
+        // ensure the sum of the block subsidy parts equals the whole block subsidy
+        assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes + consensus.nBlockSubsidyTreasury == consensus.nBlockSubsidy);
+
+        // TODO: fix value for this parameter
+        consensus.nSubsidyHalvingInterval = 210240; /* Older value */ // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
+        consensus.nSubsidyHalvingInterval = 41540; /*  */
+
+        consensus.nMasternodePaymentsStartBlock = 1460; // 87600/60.. little over a day
+        consensus.nMasternodePaymentsIncreaseBlock =  0;
+        consensus.nMasternodePaymentsIncreasePeriod = 0;
+        consensus.nInstantSendKeepLock = 6;
+        consensus.nBudgetPaymentsStartBlock = 4320; // after 3 days
+        consensus.nBudgetPaymentsCycleBlocks = 50;
+        consensus.nBudgetPaymentsWindowBlocks = 10;
+        consensus.nBudgetProposalEstablishingTime = 60*20;
+        consensus.nSuperblockStartBlock = 6100; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPaymentsStartBlock
+        consensus.nSuperblockCycle = 24;
+        consensus.nGovernanceMinQuorum = 1;
+        consensus.nGovernanceFilterElements = 500;
+        consensus.nMasternodeMinimumConfirmations = 1;
+        consensus.nMajorityEnforceBlockUpgrade = 51;
+        consensus.nMajorityRejectBlockOutdated = 75;
+        consensus.nMajorityWindow = 100;
+        consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // TODO: this value is set way too high
+        consensus.nPowTargetTimespan = 24 * 60 * 60; // in seconds -> Energi: 1 day
+        consensus.nPowTargetSpacing = 60; // in seconds Energi: 1 minute
+        consensus.fPowAllowMinDifficultyBlocks = true;
+        consensus.fPowNoRetargeting = false;
+        consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
+        consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
+        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
+        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
+        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
+
+        // Deployment of BIP68, BIP112, and BIP113.
+        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].bit = 0;
+        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nStartTime = 1486252800; // Feb 5th, 2017
+        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nTimeout = 1517788800; // Feb 5th, 2018
+
+        pchMessageStart[0] = 0xd9;
+        pchMessageStart[1] = 0x2a;
+        pchMessageStart[2] = 0xab;
+        pchMessageStart[3] = 0x60; // Changed the last byte just in case, even though the port is different too, so shouldn't mess with the general testnet
+        vAlertPubKey = ParseHex("04c3660259aa76854c135c5b5b0a668cecc7ca81b531dbbb212353c90132ba32cf1a11309eec989856bbf1748d047b69590279633f15e5e9835d263acdedad2400");
+        nDefaultPort = 19796;
+        nMaxTipAge = 0x7fffffff; // allow mining on top of old blocks for testnet
+        nDelayGetHeadersTime = 24 * 60 * 60;
+        nPruneAfterHeight = 1000;
+
+
+        genesis = CreateGenesisBlock(1506586761UL, 0, 0x207fffff, 1, 50 * COIN);
+        consensus.hashGenesisBlock = genesis.GetHash();
+
+        #if 0
+        // Mine a genesis block
+        // auto hashGenesisBlock = uint256S("0x01");
+        if (true) {
+            using namespace std;
+            cout <<"Recalculating params for testnet." << endl
+            << "Prev genesis nonce: " <<  std::to_string(genesis.nNonce) << endl
+            << "Prev genesis hash: "<< consensus.hashGenesisBlock.ToString().c_str()<<endl;
+            // loop finds genesis nonce
+            // for(genesis.nNonce = 0; UintToArith256(genesis.GetHash()).GetCompact() < genesis.nBits; genesis.nNonce++){cout << genesis.GetHash().ToString().c_str() << endl;}
+            for(genesis.nNonce = 606060;  consensus.powLimit < genesis.GetHash() ; genesis.nNonce++){cout << genesis.GetHash().ToString().c_str() << endl;}
+            cout << "New genesis merkle root: " << genesis.hashMerkleRoot.ToString().c_str() << endl
+            <<"New genesis nonce: " << std::to_string(genesis.nNonce) << endl
+            <<"New genesis hash: " << genesis.GetHash().ToString().c_str() << endl;
+            exit(0);
+        }
+        #endif
+        assert(consensus.hashGenesisBlock == uint256S("0x440cbbe939adba25e9e41b976d3daf8fb46b5f6ac0967b0a9ed06a749e7cf1e2"));
+        assert(genesis.hashMerkleRoot == uint256S("0x6a4855e61ae0da5001564cee6ba8dcd7bc361e9bb12e76b62993390d6db25bca"));
+
+        // BIP34 is always active in Energi
+        consensus.BIP34Height = 0;
+        consensus.BIP34Hash = consensus.hashGenesisBlock;
+
+        vFixedSeeds.clear();
+        vSeeds.clear();
+        // TODO: re-enable seeding on the test net
+        vSeeds.push_back(CDNSSeedData("energi.network",  "us-seed1.test.energi.network"));
+
+        // Testnet Energi addresses start with 't'
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127);
+        // Testnet Dash script addresses start with '8' or '9'
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
+        // Testnet private keys start with '9' or 'c' (Bitcoin defaults)
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
+        // Testnet Dash BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
+        // Testnet Dash BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
+
+        // Testnet Dash BIP44 coin type is '1' (All coin's testnet default)
+        nExtCoinType = 1;
+
+        vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test60x, pnSeed6_test60x + ARRAYLEN(pnSeed6_test60x));
+
+        fMiningRequiresPeers = true;
+        fDefaultConsistencyChecks = false;
+        fRequireStandard = false;
+        fMineBlocksOnDemand = false;
+        fTestnetToBeDeprecatedFieldRPC = true;
+
+        nPoolMaxTransactions = 3;
+        nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
+        strSporkPubKey = "046f8bd5301f95b88d75f3557c732785e12916930506406e8919389f5360e7dffefbe6d6e45144b9ab837d65e21ab93b67d4af30d27ba38c5e5622d31903338039";
+        strMasternodePaymentsPubKey = "040c342b5f1a50c6b29adb92c5105eb8a1bea5151c7d353d30b85314a86bd577f1a76e27372220233a54afbb61b7c8f0e7e7dc6a030dc1b801b71369618ba59961";
+
+        checkpointData = (CCheckpointData) {
+            boost::assign::map_list_of
+            ( 0, uint256S("0x440cbbe939adba25e9e41b976d3daf8fb46b5f6ac0967b0a9ed06a749e7cf1e2")),
+            0, // * UNIX timestamp of last checkpoint block
+            0,     // * total number of transactions between genesis and last checkpoint
+                        //   (the tx=... number in the SetBestChain debug.log lines)
+            0         // * estimated number of transactions per day after checkpoint
+        };
+
+    }
+};
+static CTestNet60xParams testNet60xParams;
+
 /**
  * Regression test
  */
@@ -505,6 +656,8 @@ CChainParams& Params(const std::string& chain)
             return mainParams;
     else if (chain == CBaseChainParams::TESTNET)
             return testNetParams;
+        else if (chain == CBaseChainParams::TESTNET60X)
+            return testNet60xParams;
     else if (chain == CBaseChainParams::REGTEST)
             return regTestParams;
     else
