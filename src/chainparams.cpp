@@ -59,7 +59,7 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
 
-#define ENERGI_MINE_NEW_GENESIS_BLOCK
+//#define ENERGI_MINE_NEW_GENESIS_BLOCK
 #ifdef ENERGI_MINE_NEW_GENESIS_BLOCK
 
 #include "dag_singleton.h"
@@ -428,10 +428,10 @@ public:
         nPruneAfterHeight = 1000;
 
 
-        genesis = CreateGenesisBlock(1512074464UL, 2177668, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
+        genesis = CreateGenesisBlock(1512083591UL, 2537147, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        uint256 expectedGenesisHash = uint256S("0x12f47780decb348cd6b0537c1179c2ea99fd80bb2feb42f624a44080fbbcefe7");
+        uint256 expectedGenesisHash = uint256S("0xd1f7327e61b34d7660e1bc8bf8fe202f86bf84f1847110309e89dfc9e193d3ae");
         uint256 expectedGenesisMerkleRoot = uint256S("0x398bc532d10d33bb8ed323860572558ba89ccecadfd33b0f7a25816df65cda6d");
 
         // TODO: mine genesis block for testnet
@@ -545,7 +545,7 @@ public:
         consensus.nMajorityEnforceBlockUpgrade = 51;
         consensus.nMajorityRejectBlockOutdated = 75;
         consensus.nMajorityWindow = 100;
-        consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // TODO: this value is set way too high
+        consensus.powLimit = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
         consensus.nPowTargetTimespan = 24 * 60 * 60; // in seconds -> Energi: 1 day
         consensus.nPowTargetSpacing = 60; // in seconds Energi: 1 minute
         consensus.fPowAllowMinDifficultyBlocks = true;
@@ -571,9 +571,9 @@ public:
         nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1512074991UL, 34639374, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
+        genesis = CreateGenesisBlock(1512083684UL, 36291660, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
-        uint256 expectedGenesisHash = uint256S("0x7d9bbd6ad7ce8af0cbbc0433af3800ae3f2b055dde8c4adc3a1dc5c121f0ca25");
+        uint256 expectedGenesisHash = uint256S("0x69e6c1873b72fba2fed2e203ad3fcf1412ff0a107770273b2b6b44672ff12177");
         uint256 expectedGenesisMerkleRoot = uint256S("0xf5be3fa001329f6c2154bae1416e8194a570d9ecfb0cf78e8bdee1fefc739cf5");
 
         // TODO: mine genesis block for testnet60x
@@ -718,10 +718,10 @@ public:
         nDefaultPort = 19994;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1512073825UL, 1, 0x207fffff, 1, consensus.nBlockSubsidy);
+        genesis = CreateGenesisBlock(1512083866UL, 3, 0x207fffff, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        uint256 expectedGenesisHash = uint256S("0x7536f7b4bda99c77ea3d9dcf8edd82fcb93fd4493f56c444243aee585fb08cc0");
+        uint256 expectedGenesisHash = uint256S("0x498c712d8bd64ab5660b8bfe83901adfd79e3276c829e43ce63ec85f56ff3b0e");
         uint256 expectedGenesisMerkleRoot = uint256S("0x398bc532d10d33bb8ed323860572558ba89ccecadfd33b0f7a25816df65cda6d");
 
         #ifdef ENERGI_MINE_NEW_GENESIS_BLOCK
