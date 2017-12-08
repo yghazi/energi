@@ -16,6 +16,7 @@
 #include <boost/assign/list_of.hpp>
 
 #include "chainparamsseeds.h"
+#include "arith_uint256.h"
 
 static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesisOutputScript, uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
@@ -57,6 +58,107 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
     const CScript genesisOutputScript = CScript() << ParseHex("04494295bcacec9dad5aa01f28183f1f27e088cf7e950e21160d2f5eaad024a34eff1112f5cf3bd0fc80754e5cd4a26fde9c6866959e449a5990782c8b60d5f4f5") << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
+
+//#define ENERGI_MINE_NEW_GENESIS_BLOCK
+#ifdef ENERGI_MINE_NEW_GENESIS_BLOCK
+
+#include "dag_singleton.h"
+#include "crypto/egihash.h"
+#include "validation.h"
+
+#include <chrono>
+#include <iomanip>
+
+struct GenesisMiner
+{
+    GenesisMiner(CBlock & genesisBlock, std::string networkID)
+    {
+        using namespace std;
+
+        arith_uint256 bnTarget = arith_uint256().SetCompact(genesisBlock.nBits);
+        prepare_dag();
+
+        auto start = std::chrono::system_clock::now();
+
+        genesisBlock.nTime = chrono::seconds(time(NULL)).count();
+        int i = 0;
+        while (true)
+        {
+            uint256 powHash = genesisBlock.GetPOWHash();
+
+            if ((++i % 250000) == 0)
+            {
+                auto end = chrono::system_clock::now();
+                auto elapsed = chrono::duration_cast<std::chrono::milliseconds>(end - start);
+                cout << i << " hashes in " << elapsed.count() / 1000.0 << " seconds ("
+                    << static_cast<double>(i) / static_cast<double>(elapsed.count() / 1000.0) << " hps)" << endl;
+            }
+
+            if (UintToArith256(powHash) < bnTarget)
+            {
+                auto end = chrono::system_clock::now();
+                auto elapsed = chrono::duration_cast<std::chrono::milliseconds>(end - start);
+                cout << "Mined genesis block for " << networkID << " network: " << genesisBlock.GetHash().ToString() << endl
+                    << "target was " << bnTarget.ToString() << " POWHash was " << genesisBlock.GetPOWHash().ToString() << endl
+                    << "took " << i << " hashes in " << elapsed.count() / 1000.0 << " seconds ("
+                    << static_cast<double>(i) / static_cast<double>(elapsed.count() / 1000.0) << " hps)" << endl << endl
+                    << genesisBlock.ToString() << endl;
+                exit(0);
+            }
+            genesisBlock.nNonce++;
+        }
+    }
+
+    void prepare_dag()
+    {
+        using namespace egihash;
+        using namespace std;
+        auto const & seedhash = seedhash_to_filename(get_seedhash(0));
+
+        stringstream ss;
+        ss << hex << setw(4) << setfill('0') << 0 << "-" << seedhash.substr(0, 12) << ".dag";
+        auto const epoch_file = GetDataDir(false) / "dag" / ss.str();
+
+        auto progress = [](::std::size_t step, ::std::size_t max, int phase) -> bool
+        {
+            switch(phase)
+            {
+                case cache_seeding:
+                    cout << "\rSeeding cache...";
+                    break;
+                case cache_generation:
+                    cout << "\rGenerating cache...";
+                    break;
+                case cache_saving:
+                    cout << "\rSaving cache...";
+                    break;
+                case cache_loading:
+                    cout << "\rLoading cache...";
+                    break;
+                case dag_generation:
+                    cout << "\rGenerating DAG...";
+                    break;
+                case dag_saving:
+                    cout << "\rSaving DAG...";
+                    break;
+                case dag_loading:
+                    cout << "\rLoading DAG...";
+                    break;
+                default:
+                    break;
+            }
+            cout << fixed << setprecision(2)
+            << static_cast<double>(step) / static_cast<double>(max) * 100.0 << "%"
+            << setfill(' ') << setw(80) << flush;
+
+            return true;
+        };
+        unique_ptr<dag_t> new_dag(new dag_t(epoch_file.string(), progress));
+        cout << "\r" << endl << endl;
+        ActiveDAG(move(new_dag));
+    }
+};
+#endif // ENERGI_MINE_NEW_GENESIS_BLOCK
 
 /**
  * Main network
@@ -165,11 +267,22 @@ public:
         nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 100000;
 
-        genesis = CreateGenesisBlock(1390095618, 28917698, 0x1e0ffff0, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1390095618, 28917698, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
-        // TODO: fix the following assertions
-        //assert(consensus.hashGenesisBlock == uint256S("0x00000ffd590b1485b3caadc19b22e6379c733355108f107a430458cdf3407ab6"));
-        //assert(genesis.hashMerkleRoot == uint256S("0xe0028eb9648db56b1ac77cf090b99048a8007e2bb64b68f092c03c7f56a662c7"));
+
+        // TODO: mine genesis block for main net
+        //uint256 expectedGenesisHash = uint256S("0x440cbbe939adba25e9e41b976d3daf8fb46b5f6ac0967b0a9ed06a749e7cf1e2");
+        //uint256 expectedGenesisMerkleRoot = uint256S("0x6a4855e61ae0da5001564cee6ba8dcd7bc361e9bb12e76b62993390d6db25bca");
+
+        //#ifdef ENERGI_MINE_NEW_GENESIS_BLOCK
+        //if (consensus.hashGenesisBlock != expectedGenesisHash)
+        //{
+        //    GenesisMiner mine(genesis, strNetworkID);
+        //}
+        //#endif // ENERGI_MINE_NEW_GENESIS_BLOCK
+//
+        //assert(consensus.hashGenesisBlock == expectedGenesisHash);
+        //assert(genesis.hashMerkleRoot == expectedGenesisMerkleRoot);
 
         // BIP34 is always active in Energi
         consensus.BIP34Height = 0;
@@ -238,7 +351,7 @@ public:
 static CMainParams mainParams;
 
 /**
- * Testnet (v3)
+ * Testnet (v1)
  */
 class CTestNetParams : public CChainParams {
 public:
@@ -288,7 +401,7 @@ public:
         consensus.nMajorityEnforceBlockUpgrade = 51;
         consensus.nMajorityRejectBlockOutdated = 75;
         consensus.nMajorityWindow = 100;
-        consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // TODO: this value is set way too high
+        consensus.powLimit = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
         consensus.nPowTargetTimespan = 24 * 60 * 60; // in seconds -> Energi: 1 day
         consensus.nPowTargetSpacing = 60; // in seconds Energi: 1 minute
         consensus.fPowAllowMinDifficultyBlocks = true;
@@ -315,10 +428,22 @@ public:
         nPruneAfterHeight = 1000;
 
 
-        genesis = CreateGenesisBlock(1506586761UL, 0, 0x207fffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1512083591UL, 2537147, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x440cbbe939adba25e9e41b976d3daf8fb46b5f6ac0967b0a9ed06a749e7cf1e2"));
-        assert(genesis.hashMerkleRoot == uint256S("0x6a4855e61ae0da5001564cee6ba8dcd7bc361e9bb12e76b62993390d6db25bca"));
+
+        uint256 expectedGenesisHash = uint256S("0xd1f7327e61b34d7660e1bc8bf8fe202f86bf84f1847110309e89dfc9e193d3ae");
+        uint256 expectedGenesisMerkleRoot = uint256S("0x398bc532d10d33bb8ed323860572558ba89ccecadfd33b0f7a25816df65cda6d");
+
+        // TODO: mine genesis block for testnet
+        #ifdef ENERGI_MINE_NEW_GENESIS_BLOCK
+        if (consensus.hashGenesisBlock != expectedGenesisHash)
+        {
+            GenesisMiner mine(genesis, strNetworkID);
+        }
+        #endif // ENERGI_MINE_NEW_GENESIS_BLOCK
+
+        assert(consensus.hashGenesisBlock == expectedGenesisHash);
+        assert(genesis.hashMerkleRoot == expectedGenesisMerkleRoot);
 
         // BIP34 is always active in Energi
         consensus.BIP34Height = 0;
@@ -326,8 +451,7 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        // TODO: re-enable seeding on the test net
-        vSeeds.push_back(CDNSSeedData("energi.network",  "us-seed1.test.energi.network"));
+        vSeeds.push_back(CDNSSeedData("energi.network", "us-seed1.test.energi.network"));
 
         // Testnet Energi addresses start with 't'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127);
@@ -368,6 +492,148 @@ public:
     }
 };
 static CTestNetParams testNetParams;
+
+
+/**
+ * Testnet (60x)
+ */
+class CTestNet60xParams : public CChainParams {
+public:
+    CTestNet60xParams() {
+        strNetworkID = "test60";
+
+        // Energi distribution parameters
+        consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY";
+        // ~23.15 energi = 23.148148148148148 = 1000_000 / ( 30 * 24 * 60 )
+        // 23.15  energi = 23.15 * 30 * 24 * 60 -> 1000080
+        // 23.15 * 10% = 2.315
+        // 23.15 * 20% = 4.630
+        // 23.15 * 30% = 6.945
+        // 23.15 * 40% = 9.260
+        consensus.nBlockSubsidy = 138900000000; //2315000000 * 60;
+        // 10% founders reward
+        consensus.nBlockSubsidyFounders = 13890000000;
+        // 20% miners
+        consensus.nBlockSubsidyMiners = 27780000000;
+        // 30% masternodes
+        // each masternode is paid serially.. more the master nodes more is the wait for the payment
+        // masternode payment gap is masternodes minutes
+        consensus.nBlockSubsidyMasternodes = 41670000000;
+        // 40% treasury
+        consensus.nBlockSubsidyTreasury = 55560000000;
+
+        // ensure the sum of the block subsidy parts equals the whole block subsidy
+        assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes + consensus.nBlockSubsidyTreasury == consensus.nBlockSubsidy);
+
+        // TODO: fix value for this parameter
+        consensus.nSubsidyHalvingInterval = 210240; /* Older value */ // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
+        consensus.nSubsidyHalvingInterval = 41540; /*  */
+
+        consensus.nMasternodePaymentsStartBlock = 1460; // 87600/60.. little over a day
+        consensus.nMasternodePaymentsIncreaseBlock =  0;
+        consensus.nMasternodePaymentsIncreasePeriod = 0;
+        consensus.nInstantSendKeepLock = 6;
+        consensus.nBudgetPaymentsStartBlock = 4320; // after 3 days
+        consensus.nBudgetPaymentsCycleBlocks = 50;
+        consensus.nBudgetPaymentsWindowBlocks = 10;
+        consensus.nBudgetProposalEstablishingTime = 60*20;
+        consensus.nSuperblockStartBlock = 6100; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPaymentsStartBlock
+        consensus.nSuperblockCycle = 24;
+        consensus.nGovernanceMinQuorum = 1;
+        consensus.nGovernanceFilterElements = 500;
+        consensus.nMasternodeMinimumConfirmations = 1;
+        consensus.nMajorityEnforceBlockUpgrade = 51;
+        consensus.nMajorityRejectBlockOutdated = 75;
+        consensus.nMajorityWindow = 100;
+        consensus.powLimit = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
+        consensus.nPowTargetTimespan = 24 * 60 * 60; // in seconds -> Energi: 1 day
+        consensus.nPowTargetSpacing = 60; // in seconds Energi: 1 minute
+        consensus.fPowAllowMinDifficultyBlocks = true;
+        consensus.fPowNoRetargeting = false;
+        consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
+        consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
+        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
+        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
+        consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
+
+        // Deployment of BIP68, BIP112, and BIP113.
+        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].bit = 0;
+        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nStartTime = 1486252800; // Feb 5th, 2017
+        consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nTimeout = 1517788800; // Feb 5th, 2018
+
+        pchMessageStart[0] = 0xd9;
+        pchMessageStart[1] = 0x2a;
+        pchMessageStart[2] = 0xab;
+        pchMessageStart[3] = 0x60; // Changed the last byte just in case, even though the port is different too, so shouldn't mess with the general testnet
+        vAlertPubKey = ParseHex("04c3660259aa76854c135c5b5b0a668cecc7ca81b531dbbb212353c90132ba32cf1a11309eec989856bbf1748d047b69590279633f15e5e9835d263acdedad2400");
+        nDefaultPort = 29797;
+        nMaxTipAge = 0x7fffffff; // allow mining on top of old blocks for testnet
+        nDelayGetHeadersTime = 24 * 60 * 60;
+        nPruneAfterHeight = 1000;
+
+        genesis = CreateGenesisBlock(1512083684UL, 36291660, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
+        consensus.hashGenesisBlock = genesis.GetHash();
+        uint256 expectedGenesisHash = uint256S("0x69e6c1873b72fba2fed2e203ad3fcf1412ff0a107770273b2b6b44672ff12177");
+        uint256 expectedGenesisMerkleRoot = uint256S("0xf5be3fa001329f6c2154bae1416e8194a570d9ecfb0cf78e8bdee1fefc739cf5");
+
+        // TODO: mine genesis block for testnet60x
+        #ifdef ENERGI_MINE_NEW_GENESIS_BLOCK
+        if (consensus.hashGenesisBlock != expectedGenesisHash)
+        {
+            GenesisMiner mine(genesis, strNetworkID);
+        }
+        #endif // ENERGI_MINE_NEW_GENESIS_BLOCK
+
+        assert(consensus.hashGenesisBlock == expectedGenesisHash);
+        assert(genesis.hashMerkleRoot == expectedGenesisMerkleRoot);
+
+        // BIP34 is always active in Energi
+        consensus.BIP34Height = 0;
+        consensus.BIP34Hash = consensus.hashGenesisBlock;
+
+        vFixedSeeds.clear();
+        vSeeds.clear();
+        vSeeds.push_back(CDNSSeedData("energi.network",  "us-seed1.test60x.energi.network"));
+
+        // Testnet Energi addresses start with 't'
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127);
+        // Testnet Dash script addresses start with '8' or '9'
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
+        // Testnet private keys start with '9' or 'c' (Bitcoin defaults)
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
+        // Testnet Dash BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
+        // Testnet Dash BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
+
+        // Testnet Dash BIP44 coin type is '1' (All coin's testnet default)
+        nExtCoinType = 1;
+
+        vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test60x, pnSeed6_test60x + ARRAYLEN(pnSeed6_test60x));
+
+        fMiningRequiresPeers = true;
+        fDefaultConsistencyChecks = false;
+        fRequireStandard = false;
+        fMineBlocksOnDemand = false;
+        fTestnetToBeDeprecatedFieldRPC = true;
+
+        nPoolMaxTransactions = 3;
+        nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
+        strSporkPubKey = "046f8bd5301f95b88d75f3557c732785e12916930506406e8919389f5360e7dffefbe6d6e45144b9ab837d65e21ab93b67d4af30d27ba38c5e5622d31903338039";
+        strMasternodePaymentsPubKey = "040c342b5f1a50c6b29adb92c5105eb8a1bea5151c7d353d30b85314a86bd577f1a76e27372220233a54afbb61b7c8f0e7e7dc6a030dc1b801b71369618ba59961";
+
+        checkpointData = (CCheckpointData) {
+            boost::assign::map_list_of
+            ( 0, uint256S("0x440cbbe939adba25e9e41b976d3daf8fb46b5f6ac0967b0a9ed06a749e7cf1e2")),
+            0, // * UNIX timestamp of last checkpoint block
+            0,     // * total number of transactions between genesis and last checkpoint
+                        //   (the tx=... number in the SetBestChain debug.log lines)
+            0         // * estimated number of transactions per day after checkpoint
+        };
+
+    }
+};
+static CTestNet60xParams testNet60xParams;
 
 /**
  * Regression test
@@ -449,14 +715,24 @@ public:
         pchMessageStart[3] = 0x7f;
         nMaxTipAge = 6 * 60 * 60; // ~144 blocks behind -> 2 x fork detection time, was 24 * 60 * 60 in bitcoin
         nDelayGetHeadersTime = 0; // never delay GETHEADERS in regtests
-        nDefaultPort = 19994;
+        nDefaultPort = 39797;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1506586761UL, 0, 0x207fffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1512083866UL, 3, 0x207fffff, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x440cbbe939adba25e9e41b976d3daf8fb46b5f6ac0967b0a9ed06a749e7cf1e2"));
-        assert(genesis.hashMerkleRoot == uint256S("0x6a4855e61ae0da5001564cee6ba8dcd7bc361e9bb12e76b62993390d6db25bca"));
 
+        uint256 expectedGenesisHash = uint256S("0x498c712d8bd64ab5660b8bfe83901adfd79e3276c829e43ce63ec85f56ff3b0e");
+        uint256 expectedGenesisMerkleRoot = uint256S("0x398bc532d10d33bb8ed323860572558ba89ccecadfd33b0f7a25816df65cda6d");
+
+        #ifdef ENERGI_MINE_NEW_GENESIS_BLOCK
+        if (consensus.hashGenesisBlock != expectedGenesisHash)
+        {
+            GenesisMiner mine(genesis, strNetworkID);
+        }
+        #endif // ENERGI_MINE_NEW_GENESIS_BLOCK
+
+        assert(consensus.hashGenesisBlock == expectedGenesisHash);
+        assert(genesis.hashMerkleRoot == expectedGenesisMerkleRoot);
         vFixedSeeds.clear(); //! Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();  //! Regtest mode doesn't have any DNS seeds.
 
@@ -505,6 +781,8 @@ CChainParams& Params(const std::string& chain)
             return mainParams;
     else if (chain == CBaseChainParams::TESTNET)
             return testNetParams;
+        else if (chain == CBaseChainParams::TESTNET60X)
+            return testNet60xParams;
     else if (chain == CBaseChainParams::REGTEST)
             return regTestParams;
     else

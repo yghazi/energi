@@ -11,6 +11,9 @@
 #include "crypto/common.h"
 #include "compat/endian.h"
 #include "dag_singleton.h"
+#include "util.h"
+
+#include <algorithm>
 
 namespace
 {
@@ -45,10 +48,27 @@ namespace
             memcpy(hashMerkleRoot, merkleRoot.c_str(), (std::min)(merkleRoot.size(), sizeof(hashMerkleRoot)));
         }
     };
+    static_assert(sizeof(CBlockHeaderTruncatedLE) == 146, "CBlockHeaderTruncatedLE has incorrect size");
+
+    struct CBlockHeaderFullLE : public CBlockHeaderTruncatedLE
+    {
+        uint32_t nNonce;
+        char hashMix[65];
+
+        CBlockHeaderFullLE(CBlockHeader const & h)
+        : CBlockHeaderTruncatedLE(h)
+        , nNonce(h.nNonce)
+        , hashMix{0}
+        {
+            auto mixString = h.hashMix.ToString();
+            memcpy(hashMix, mixString.c_str(), (std::min)(mixString.size(), sizeof(hashMix)));
+        }
+    };
+    static_assert(sizeof(CBlockHeaderFullLE) == 215, "CBlockHeaderFullLE has incorrect size");
     #pragma pack(pop)
 }
 
-uint256 CBlockHeader::GetHash() const
+uint256 CBlockHeader::GetPOWHash() const
 {
     CBlockHeaderTruncatedLE truncatedBlockHeader(*this);
     egihash::h256_t headerHash(&truncatedBlockHeader, sizeof(truncatedBlockHeader));
@@ -67,6 +87,24 @@ uint256 CBlockHeader::GetHash() const
 
     hashMix = uint256(ret.mixhash);
     return uint256(ret.value);
+}
+
+uint256 CBlockHeader::GetHash() const
+{
+    if (std::memcmp(hashMix.begin(), &(egihash::empty_h256.b[0]), (std::min)(egihash::empty_h256.hash_size, static_cast<egihash::h256_t::size_type>(hashMix.size()))) == 0)
+    {
+        // nonce is used to populate
+        GetPOWHash();
+        if (std::memcmp(hashMix.begin(), &(egihash::empty_h256.b[0]), (std::min)(egihash::empty_h256.hash_size, static_cast<egihash::h256_t::size_type>(hashMix.size()))) == 0)
+        {
+            error("Can not produce a valid mixhash");
+        }
+    }
+
+    // return a Keccak-256 hash of the full block header, including nonce and mixhash
+    CBlockHeaderFullLE fullBlockHeader(*this);
+    egihash::h256_t blockHash(&fullBlockHeader, sizeof(fullBlockHeader));
+    return uint256(blockHash);
 }
 
 std::string CBlock::ToString() const

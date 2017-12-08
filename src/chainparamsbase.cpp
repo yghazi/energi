@@ -13,12 +13,14 @@
 
 const std::string CBaseChainParams::MAIN = "main";
 const std::string CBaseChainParams::TESTNET = "test";
+const std::string CBaseChainParams::TESTNET60X = "test60";
 const std::string CBaseChainParams::REGTEST = "regtest";
 
 void AppendParamsHelpMessages(std::string& strUsage, bool debugHelp)
 {
     strUsage += HelpMessageGroup(_("Chain selection options:"));
     strUsage += HelpMessageOpt("-testnet", _("Use the test chain"));
+    strUsage += HelpMessageOpt("-testnet60x", _("Use the 60x test chain, which is essentially 60 times faster, in terms of emission and governance"));
     if (debugHelp) {
         strUsage += HelpMessageOpt("-regtest", "Enter regression test mode, which uses a special chain in which blocks can be solved instantly. "
                                    "This is intended for regression testing tools and app development.");
@@ -39,7 +41,7 @@ public:
 static CBaseMainParams mainParams;
 
 /**
- * Testnet (v3)
+ * Testnet (v1)
  */
 class CBaseTestNetParams : public CBaseChainParams
 {
@@ -52,6 +54,21 @@ public:
 };
 static CBaseTestNetParams testNetParams;
 
+/**
+ * Testnet (60x)
+ * Represents the 60x faster testnet, in terms of emission and governance testing
+ */
+class CBaseTestNet60xParams : public CBaseChainParams
+{
+public:
+    CBaseTestNet60xParams()
+    {
+        nRPCPort = 29796;
+        strDataDir = "testnet60";
+    }
+};
+static CBaseTestNet60xParams testNet60xParams;
+
 /*
  * Regression test
  */
@@ -60,7 +77,7 @@ class CBaseRegTestParams : public CBaseChainParams
 public:
     CBaseRegTestParams()
     {
-        nRPCPort = 18332;
+        nRPCPort = 39796;
         strDataDir = "regtest";
     }
 };
@@ -80,6 +97,8 @@ CBaseChainParams& BaseParams(const std::string& chain)
         return mainParams;
     else if (chain == CBaseChainParams::TESTNET)
         return testNetParams;
+     else if (chain == CBaseChainParams::TESTNET60X)
+        return testNet60xParams;
     else if (chain == CBaseChainParams::REGTEST)
         return regTestParams;
     else
@@ -95,13 +114,16 @@ std::string ChainNameFromCommandLine()
 {
     bool fRegTest = GetBoolArg("-regtest", false);
     bool fTestNet = GetBoolArg("-testnet", false);
+    bool fTestNet60x = GetBoolArg("-testnet60x", false);
 
-    if (fTestNet && fRegTest)
-        throw std::runtime_error("Invalid combination of -regtest and -testnet.");
+    if ((fTestNet && fRegTest && fTestNet60x) || (fTestNet && fRegTest) || (fTestNet60x && fRegTest) || (fTestNet && fTestNet60x))
+        throw std::runtime_error("Invalid combination of -regtest, -testnet and/or -testnet60x. Can't be used together.");
     if (fRegTest)
         return CBaseChainParams::REGTEST;
     if (fTestNet)
         return CBaseChainParams::TESTNET;
+    if (fTestNet60x)
+        return CBaseChainParams::TESTNET60X;
     return CBaseChainParams::MAIN;
 }
 

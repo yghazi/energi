@@ -44,6 +44,30 @@ bool IsBlockValueValid(const CBlock& block, int nBlockHeight, CAmount blockRewar
 
     const Consensus::Params& consensusParams = Params().GetConsensus();
 
+    // verify founder's address payment
+    // TODO: is there a better way to search tx outputs?
+    bool isFoundersRewardValueMet = false;
+    CBitcoinAddress foundersAddress(consensusParams.foundersAddress);
+    CKeyID foundersKeyID;
+    if (!foundersAddress.GetKeyID(foundersKeyID))
+    {
+        error("Unable to get key ID for Founder's address");
+    }
+    CScript foundersPubKey = GetScriptForDestination(foundersKeyID);
+    for (auto const & i : block.vtx[0].vout)
+    {
+        if ((i.scriptPubKey == foundersPubKey) && (i.nValue >= consensusParams.nBlockSubsidyFounders))
+        {
+            isFoundersRewardValueMet = true;
+            break;
+        }
+    }
+    if (!isFoundersRewardValueMet)
+    {
+        LogPrint("gobject", "IsBlockValueValid -- coinbase does not pay correct Founder's Reward");
+        return false;
+    }
+
     if(nBlockHeight < consensusParams.nSuperblockStartBlock) {
         int nOffset = nBlockHeight % consensusParams.nBudgetPaymentsCycleBlocks;
         if(nBlockHeight >= consensusParams.nBudgetPaymentsStartBlock &&
