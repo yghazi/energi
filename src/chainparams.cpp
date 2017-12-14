@@ -360,13 +360,12 @@ public:
 
         // Energi distribution parameters
         consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY";
-        // Assuming that there are 525,600 blocks per year, and there is a 12M annual emission
+        
+        // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
         // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
         // miners get 20% of all coins or 2.4M / 525,600 ~ 4.57
         // founder gets 10% of all coins or 1.2M / 525,600 ~ 2.28
         // which adds up to 13.7 as block subsidy
-
-
         consensus.nBlockSubsidy = 1370000000;
         // 10% founders reward
         consensus.nBlockSubsidyFounders = 228000000;
@@ -510,26 +509,30 @@ public:
 
         // Energi distribution parameters
         consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY";
-        // ~23.15 energi = 23.148148148148148 = 1000_000 / ( 30 * 24 * 60 )
-        // 23.15  energi = 23.15 * 30 * 24 * 60 -> 1000080
-        // 23.15 * 10% = 2.315
-        // 23.15 * 20% = 4.630
-        // 23.15 * 30% = 6.945
-        // 23.15 * 40% = 9.260
-        consensus.nBlockSubsidy = 138900000000; //2315000000 * 60;
+        // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
+        // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
+        // miners get 20% of all coins or 2.4M / 525,600 ~ 4.57
+        // founder gets 10% of all coins or 1.2M / 525,600 ~ 2.28
+        // which adds up to 13.7 as block subsidy
+        consensus.nBlockSubsidy = 82200000000; // 1370000000 * 60
         // 10% founders reward
-        consensus.nBlockSubsidyFounders = 13890000000;
+        consensus.nBlockSubsidyFounders = 13680000000; // 228000000 * 60
         // 20% miners
-        consensus.nBlockSubsidyMiners = 27780000000;
+        consensus.nBlockSubsidyMiners = 27420000000; // 457000000 * 60
         // 30% masternodes
         // each masternode is paid serially.. more the master nodes more is the wait for the payment
         // masternode payment gap is masternodes minutes
-        consensus.nBlockSubsidyMasternodes = 41670000000;
-        // 40% treasury
-        consensus.nBlockSubsidyTreasury = 55560000000;
-
+        consensus.nBlockSubsidyMasternodes = 41100000000; // 685000000 * 60
+        
         // ensure the sum of the block subsidy parts equals the whole block subsidy
-        assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes + consensus.nBlockSubsidyTreasury == consensus.nBlockSubsidy);
+        assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
+        
+        // 40% of the total annual emission of ~12M goes to the treasury
+        // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the 
+        // number of super blocks per year according to the 20160 block cycle
+        consensus.nRegularTreasuryBudget = 18400000000000;
+        consensus.nSpecialTreasuryBudget = 40000000000000; // 400K special initial treasury budget
+        consensus.nSpecialTreasuryBudgetBlock = 6100; // same as nSuperblockStartBlock for now
 
         // TODO: fix value for this parameter
         consensus.nSubsidyHalvingInterval = 210240; /* Older value */ // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
@@ -544,7 +547,7 @@ public:
         consensus.nBudgetPaymentsWindowBlocks = 10;
         consensus.nBudgetProposalEstablishingTime = 60*20;
         consensus.nSuperblockStartBlock = 6100; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPaymentsStartBlock
-        consensus.nSuperblockCycle = 24;
+        consensus.nSuperblockCycle = 1440; // everyday (24*60)
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
         consensus.nMasternodeMinimumConfirmations = 1;
