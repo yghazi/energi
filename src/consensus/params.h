@@ -91,6 +91,9 @@ struct Params {
     CAmount nBlockSubsidyFounders;
     CAmount nBlockSubsidyMiners;
     CAmount nBlockSubsidyMasternodes;
+    CAmount nRegularTreasuryBudget;
+    CAmount nSpecialTreasuryBudget;
+    int nSpecialTreasuryBudgetBlock;
     CAmount nBlockSubsidyTreasury;
     std::string foundersAddress;
 };
