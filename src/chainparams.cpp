@@ -202,7 +202,7 @@ public:
         // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the 
         // number of super blocks per year according to the 20160 block cycle
         consensus.nRegularTreasuryBudget = 18400000000000;
-        consensus.nSpecialTreasuryBudget = 40000000000000; // 400K special initial treasury budget
+        consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
         consensus.nSpecialTreasuryBudgetBlock = 61000; // same as nSuperblockStartBlock for now
 
         consensus.nSubsidyHalvingInterval = 210240; /* Older value */ // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
@@ -388,7 +388,7 @@ public:
         // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the 
         // number of super blocks per year according to the 20160 block cycle
         consensus.nRegularTreasuryBudget = 18400000000000;
-        consensus.nSpecialTreasuryBudget = 40000000000000; // 400K special initial treasury budget
+        consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
         consensus.nSpecialTreasuryBudgetBlock = 61000; // same as nSuperblockStartBlock for now
 
         // TODO: fix value for this parameter
@@ -536,7 +536,7 @@ public:
         // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the 
         // number of super blocks per year according to the 20160 block cycle
         consensus.nRegularTreasuryBudget = 18400000000000;
-        consensus.nSpecialTreasuryBudget = 40000000000000; // 400K special initial treasury budget
+        consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
         consensus.nSpecialTreasuryBudgetBlock = 6100; // same as nSuperblockStartBlock for now
 
         // TODO: fix value for this parameter
@@ -682,7 +682,7 @@ public:
         // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the 
         // number of super blocks per year according to the 20160 block cycle
         consensus.nRegularTreasuryBudget = 18400000000000;
-        consensus.nSpecialTreasuryBudget = 40000000000000; // 400K special initial treasury budget
+        consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
         consensus.nSpecialTreasuryBudgetBlock = 61000; // same as nSuperblockStartBlock for now
 
         // TODO: are consensus.nSubsidyHalvingInterval params needed?
