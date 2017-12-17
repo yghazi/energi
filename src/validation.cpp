@@ -1223,10 +1223,15 @@ double ConvertBitsToDouble(unsigned int nBits)
     return dDiff;
 }
 
-CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
+CAmount GetMasternodePayment(int nHeight, CAmount blockReward)
 {
-    // 30% of the total block emission goes to the masternode
-    CAmount ret = blockValue * 0.3;
+    CAmount ret = 0;
+    const Consensus::Params& consensusParams = Params().GetConsensus();
+    CAmount txFees = blockReward - consensusParams.nBlockSubsidy;
+    if (nHeight >= consensusParams.nMasternodePaymentsStartBlock) {
+        //Masternodes get their assigned block subsidy plus 50% of the tx fees
+        ret = consensusParams.nBlockSubsidyMasternodes + (0.5 * txFees);
+    }
     return ret;
 }
 

@@ -375,6 +375,8 @@ public:
         // 10% founders reward
         consensus.nBlockSubsidyFounders = 228000000;
         // 20% miners
+        // TODO: can remove, since it's not being used anywhere, except to make sure the 
+        // subsidy parts equal the total block subsidy 
         consensus.nBlockSubsidyMiners = 457000000;
         // 30% masternodes
         // each masternode is paid serially.. more the master nodes more is the wait for the payment
@@ -390,10 +392,6 @@ public:
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
         consensus.nSpecialTreasuryBudgetBlock = 61000; // same as nSuperblockStartBlock for now
-
-        // TODO: fix value for this parameter
-        consensus.nSubsidyHalvingInterval = 210240; /* Older value */ // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
-        consensus.nSubsidyHalvingInterval = 41540; /*  */
 
         consensus.nMasternodePaymentsStartBlock = 87600; // should be about 2 months after genesis
         consensus.nMasternodePaymentsIncreaseBlock =  46000; // TODO: should be removed, doesn't hold any meaning for EGI
