@@ -155,16 +155,15 @@ bool IsBlockValueValid(const CBlock& block, int nBlockHeight, CAmount blockRewar
 
 bool IsBlockPayeeValid(const CTransaction& txNew, int nBlockHeight, CAmount blockReward)
 {
-    if(!masternodeSync.IsSynced()) {
+    const Consensus::Params& consensusParams = Params().GetConsensus();
+    if(!masternodeSync.IsSynced() || (nBlockHeight < consensusParams.nMasternodePaymentsStartBlock)) {
         //there is no budget data to use to check anything, let's just accept the longest chain
-        if(fDebug) LogPrintf("IsBlockPayeeValid -- WARNING: Client not synced, skipping block payee checks\n");
+        if(fDebug) LogPrintf("IsBlockPayeeValid -- WARNING: Client not synced or nMasternodePaymentsStartBlock height not reached, skipping block payee checks\n");
         return true;
     }
 
     // we are still using budgets, but we have no data about them anymore,
     // we can only check masternode payments
-
-    const Consensus::Params& consensusParams = Params().GetConsensus();
 
     if(nBlockHeight < consensusParams.nSuperblockStartBlock) {
         if(mnpayments.IsTransactionValid(txNew, nBlockHeight)) {
@@ -244,9 +243,14 @@ void FillBlockPayments(CMutableTransaction& txNew, int nBlockHeight, CAmount blo
 
     // FILL BLOCK PAYEE WITH FOUNDER'S REWARD AND MASTERNODE PAYMENT OTHERWISE
     mnpayments.FillBlockFoundersReward(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
-    mnpayments.FillBlockPayee(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
-    LogPrint("mnpayments", "FillBlockPayments -- nBlockHeight %d blockReward %lld txoutMasternodeRet %s txNew %s",
+    // ONLY START PAYING THE MASTERNODE AFTER THE PAYMENTS START BLOCK
+    if(nBlockHeight + 1 > Params().GetConsensus().nMasternodePaymentsStartBlock) {
+        mnpayments.FillBlockPayee(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
+        LogPrint("mnpayments", "FillBlockPayments -- nBlockHeight %d blockReward %lld txoutMasternodeRet %s txNew %s",
                             nBlockHeight, blockReward, txoutMasternodeRet.ToString(), txNew.ToString());
+    }
+    LogPrint("mnpayments", "FillBlockPayments -- nBlockHeight %d blockReward %lld txNew %s",
+                            nBlockHeight, blockReward, txNew.ToString());
 }
 
 std::string GetRequiredPaymentsString(int nBlockHeight)
