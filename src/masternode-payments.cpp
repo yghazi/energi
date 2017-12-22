@@ -345,7 +345,7 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int nBlockH
     }
 
     // GET MASTERNODE PAYMENT VARIABLES SETUP
-    CAmount masternodePayment = GetMasternodePayment(nBlockHeight, blockReward);
+    CAmount masternodePayment = GetMasternodePayment(nBlockHeight, 0);
 
     // split reward between miner ...
     txNew.vout[0].nValue -= masternodePayment;
