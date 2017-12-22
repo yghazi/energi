@@ -44,27 +44,27 @@ bool IsBlockValueValid(const CBlock& block, int nBlockHeight, CAmount blockRewar
 
     const Consensus::Params& consensusParams = Params().GetConsensus();
 
-    // verify founder's address payment
+    // verify the Energi foundation address payment
     // TODO: is there a better way to search tx outputs?
-    bool isFoundersRewardValueMet = false;
-    CBitcoinAddress foundersAddress(consensusParams.foundersAddress);
-    CKeyID foundersKeyID;
-    if (!foundersAddress.GetKeyID(foundersKeyID))
+    bool isFoundationRewardValueMet = false;
+    CBitcoinAddress foundationAddress(consensusParams.energiFoundationAddress);
+    CKeyID foundationKeyID;
+    if (!foundationAddress.GetKeyID(foundationKeyID))
     {
-        error("Unable to get key ID for Founder's address");
+        error("Unable to get key ID for Energi Foundation address");
     }
-    CScript foundersPubKey = GetScriptForDestination(foundersKeyID);
+    CScript foundationPubKey = GetScriptForDestination(foundationKeyID);
     for (auto const & i : block.vtx[0].vout)
     {
-        if ((i.scriptPubKey == foundersPubKey) && (i.nValue >= consensusParams.nBlockSubsidyFounders))
+        if ((i.scriptPubKey == foundationPubKey) && (i.nValue >= consensusParams.nBlockSubsidyFoundation))
         {
-            isFoundersRewardValueMet = true;
+            isFoundationRewardValueMet = true;
             break;
         }
     }
-    if (!isFoundersRewardValueMet)
+    if (!isFoundationRewardValueMet)
     {
-        LogPrint("gobject", "IsBlockValueValid -- coinbase does not pay correct Founder's Reward");
+        LogPrint("gobject", "IsBlockValueValid -- coinbase does not pay correct Energi Foundation Amount");
         return false;
     }
 
@@ -241,8 +241,8 @@ void FillBlockPayments(CMutableTransaction& txNew, int nBlockHeight, CAmount blo
             return;
     }
 
-    // FILL BLOCK PAYEE WITH FOUNDER'S REWARD AND MASTERNODE PAYMENT OTHERWISE
-    mnpayments.FillBlockFoundersReward(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
+    // FILL BLOCK PAYEE WITH ENERGI FOUNDATION REWARD AND MASTERNODE PAYMENT OTHERWISE
+    mnpayments.FillBlockFoundationReward(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
     // ONLY START PAYING THE MASTERNODE AFTER THE PAYMENTS START BLOCK
     if(nBlockHeight + 1 > Params().GetConsensus().nMasternodePaymentsStartBlock) {
         mnpayments.FillBlockPayee(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
@@ -285,37 +285,37 @@ bool CMasternodePayments::CanVote(COutPoint outMasternode, int nBlockHeight)
 }
 
 /**
-*   FillBlockFoundersReward
+*   FillBlockFoundationReward
 *
-*   Add the founder's reward transaction to the block
+*   Add the Energi Foundation reward transaction to the block
 */
-void CMasternodePayments::FillBlockFoundersReward(CMutableTransaction& txNew, int /*nBlockHeight*/, CAmount /*blockReward*/, CTxOut& txoutFounderRet)
+void CMasternodePayments::FillBlockFoundationReward(CMutableTransaction& txNew, int /*nBlockHeight*/, CAmount /*blockReward*/, CTxOut& txoutFoundationRet)
 {
     auto const & consensus = Params().GetConsensus();
 
     // make sure it's not filled yet
-    txoutFounderRet = CTxOut();
+    txoutFoundationRet = CTxOut();
 
-    CBitcoinAddress foundersAddress(consensus.foundersAddress);
-    CKeyID foundersKeyID;
-    if (!foundersAddress.GetKeyID(foundersKeyID))
+    CBitcoinAddress foundationAddress(consensus.energiFoundationAddress);
+    CKeyID foundationKeyID;
+    if (!foundationAddress.GetKeyID(foundationKeyID))
     {
-        error("Unable to get key ID for Founder's address");
+        error("Unable to get key ID for Energi Foundation address");
     }
-    CScript payee = GetScriptForDestination(foundersKeyID);
+    CScript payee = GetScriptForDestination(foundationKeyID);
 
-    CAmount founderPayment = consensus.nBlockSubsidyFounders;
+    CAmount foundationPayment = consensus.nBlockSubsidyFoundation;
 
-    // split reward between founder, masternodes & miners
-    txNew.vout[0].nValue -= founderPayment;
-    txoutFounderRet = CTxOut(founderPayment, payee);
-    txNew.vout.push_back(txoutFounderRet);
+    // split reward between Energi Foundation, masternodes & miners
+    txNew.vout[0].nValue -= foundationPayment;
+    txoutFoundationRet = CTxOut(foundationPayment, payee);
+    txNew.vout.push_back(txoutFoundationRet);
 
     CTxDestination address1;
     ExtractDestination(payee, address1);
     CBitcoinAddress address2(address1);
 
-    LogPrintf("CMasternodePayments::FillBlockFoundersReward -- Founder payment %lld to %s\n", founderPayment, address2.ToString());
+    LogPrintf("CMasternodePayments::FillBlockFoundationReward -- Foundation payment %lld to %s\n", foundationPayment, address2.ToString());
 }
 
 /**

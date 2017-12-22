@@ -178,7 +178,7 @@ public:
         strNetworkID = "main";
 
         // Energi distribution parameters
-        consensus.foundersAddress = "TODO: implement me";
+        consensus.energiFoundationAddress = "TODO: implement me";
 
         // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
         // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
@@ -186,8 +186,8 @@ public:
         // founder gets 10% of all coins or 1.2M / 525,600 ~ 2.28
         // which adds up to 13.7 as block subsidy
         consensus.nBlockSubsidy = 1370000000;
-        // 10% founders reward
-        consensus.nBlockSubsidyFounders = 228000000;
+        // 10% to energi foundation
+        consensus.nBlockSubsidyFoundation = 228000000;
         // 20% miners
         consensus.nBlockSubsidyMiners = 457000000;
         // 30% masternodes
@@ -196,7 +196,7 @@ public:
         consensus.nBlockSubsidyMasternodes = 685000000;
 
         // ensure the sum of the block subsidy parts equals the whole block subsidy
-        assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
+        assert(consensus.nBlockSubsidyFoundation + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
 
         // 40% of the total annual emission of ~12M goes to the treasury
         // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
@@ -364,7 +364,7 @@ public:
         strNetworkID = "test";
 
         // Energi distribution parameters
-        consensus.foundersAddress = "tA61JveN6y2kej9kYNK9tKvVuUgAvgaC6X";
+        consensus.energiFoundationAddress = "tA61JveN6y2kej9kYNK9tKvVuUgAvgaC6X";
 
         // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
         // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
@@ -373,7 +373,7 @@ public:
         // which adds up to 13.7 as block subsidy
         consensus.nBlockSubsidy = 1370000000;
         // 10% founders reward
-        consensus.nBlockSubsidyFounders = 228000000;
+        consensus.nBlockSubsidyFoundation = 228000000;
         // 20% miners
         // TODO: can remove, since it's not being used anywhere, except to make sure the
         // subsidy parts equal the total block subsidy
@@ -384,7 +384,7 @@ public:
         consensus.nBlockSubsidyMasternodes = 685000000;
 
         // ensure the sum of the block subsidy parts equals the whole block subsidy
-        assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
+        assert(consensus.nBlockSubsidyFoundation + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
 
         // 40% of the total annual emission of ~12M goes to the treasury
         // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
@@ -436,11 +436,11 @@ public:
         nPruneAfterHeight = 1000;
 
 
-        genesis = CreateGenesisBlock(1512083591UL, 2537147, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
+        genesis = CreateGenesisBlock(1513964719UL, 3478439, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        uint256 expectedGenesisHash = uint256S("0xd1f7327e61b34d7660e1bc8bf8fe202f86bf84f1847110309e89dfc9e193d3ae");
-        uint256 expectedGenesisMerkleRoot = uint256S("0x398bc532d10d33bb8ed323860572558ba89ccecadfd33b0f7a25816df65cda6d");
+        uint256 expectedGenesisHash = uint256S("0xc3f91e24800c520442b805d6c83c573715b4818cd0d6b6c8073960e62dae278d");
+        uint256 expectedGenesisMerkleRoot = uint256S("0x05c6efdc02cd5a40e168d22745297a2d35458e820577e71f639524bb4c01e740");
 
         // TODO: mine genesis block for testnet
         #ifdef ENERGI_MINE_NEW_GENESIS_BLOCK
@@ -511,7 +511,7 @@ public:
         strNetworkID = "test60";
 
         // Energi distribution parameters
-        consensus.foundersAddress = "tA61JveN6y2kej9kYNK9tKvVuUgAvgaC6X";
+        consensus.energiFoundationAddress = "tA61JveN6y2kej9kYNK9tKvVuUgAvgaC6X";
         // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
         // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
         // miners get 20% of all coins or 2.4M / 525,600 ~ 4.57
@@ -519,7 +519,7 @@ public:
         // which adds up to 13.7 as block subsidy
         consensus.nBlockSubsidy = 82200000000; // 1370000000 * 60
         // 10% founders reward
-        consensus.nBlockSubsidyFounders = 13680000000; // 228000000 * 60
+        consensus.nBlockSubsidyFoundation = 13680000000; // 228000000 * 60
         // 20% miners
         consensus.nBlockSubsidyMiners = 27420000000; // 457000000 * 60
         // 30% masternodes
@@ -528,7 +528,7 @@ public:
         consensus.nBlockSubsidyMasternodes = 41100000000; // 685000000 * 60
 
         // ensure the sum of the block subsidy parts equals the whole block subsidy
-        assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
+        assert(consensus.nBlockSubsidyFoundation + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
 
         // 40% of the total annual emission of ~12M goes to the treasury
         // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
@@ -656,7 +656,7 @@ public:
         strNetworkID = "regtest";
 
         // Energi distribution parameters
-        consensus.foundersAddress = "tA61JveN6y2kej9kYNK9tKvVuUgAvgaC6X";
+        consensus.energiFoundationAddress = "tA61JveN6y2kej9kYNK9tKvVuUgAvgaC6X";
 
         // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
         // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
@@ -665,7 +665,7 @@ public:
         // which adds up to 13.7 as block subsidy
         consensus.nBlockSubsidy = 1370000000;
         // 10% founders reward
-        consensus.nBlockSubsidyFounders = 228000000;
+        consensus.nBlockSubsidyFoundation = 228000000;
         // 20% miners
         consensus.nBlockSubsidyMiners = 457000000;
         // 30% masternodes
@@ -674,7 +674,7 @@ public:
         consensus.nBlockSubsidyMasternodes = 685000000;
 
         // ensure the sum of the block subsidy parts equals the whole block subsidy
-        assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
+        assert(consensus.nBlockSubsidyFoundation + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
 
         // 40% of the total annual emission of ~12M goes to the treasury
         // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the

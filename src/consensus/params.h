@@ -88,14 +88,14 @@ struct Params {
     * Energi specific parameters
     */
     CAmount nBlockSubsidy;
-    CAmount nBlockSubsidyFounders;
+    CAmount nBlockSubsidyFoundation;
     CAmount nBlockSubsidyMiners;
     CAmount nBlockSubsidyMasternodes;
     CAmount nRegularTreasuryBudget;
     CAmount nSpecialTreasuryBudget;
     int nSpecialTreasuryBudgetBlock;
     CAmount nBlockSubsidyTreasury;
-    std::string foundersAddress;
+    std::string energiFoundationAddress;
 };
 } // namespace Consensus
 
