@@ -43,14 +43,8 @@ struct BIP9Deployment {
  */
 struct Params {
     uint256 hashGenesisBlock;
-    int nSubsidyHalvingInterval;
     int nMasternodePaymentsStartBlock;
-    int nMasternodePaymentsIncreaseBlock;
-    int nMasternodePaymentsIncreasePeriod; // in blocks
     int nInstantSendKeepLock; // in blocks
-    int nBudgetPaymentsStartBlock;
-    int nBudgetPaymentsCycleBlocks;
-    int nBudgetPaymentsWindowBlocks;
     int nBudgetProposalEstablishingTime; // in seconds
     int nSuperblockStartBlock;
     int nSuperblockCycle; // in blocks
@@ -91,10 +85,10 @@ struct Params {
     CAmount nBlockSubsidyFoundation;
     CAmount nBlockSubsidyMiners;
     CAmount nBlockSubsidyMasternodes;
+
     CAmount nRegularTreasuryBudget;
     CAmount nSpecialTreasuryBudget;
-    int nSpecialTreasuryBudgetBlock;
-    CAmount nBlockSubsidyTreasury;
+    uint32_t nSpecialTreasuryBudgetBlock;
     std::string energiFoundationAddress;
 };
 } // namespace Consensus

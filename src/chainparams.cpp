@@ -205,17 +205,9 @@ public:
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
         consensus.nSpecialTreasuryBudgetBlock = 61000; // same as nSuperblockStartBlock for now
 
-        consensus.nSubsidyHalvingInterval = 210240; /* Older value */ // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
-        consensus.nSubsidyHalvingInterval = 41540; /*  */
-
         consensus.nMasternodePaymentsStartBlock = 87600; // should be about 2 months after genesis
-        consensus.nMasternodePaymentsIncreaseBlock = 158000; // actual historical value
-        consensus.nMasternodePaymentsIncreasePeriod = 576*30; // 17280 - actual historical value
         consensus.nInstantSendKeepLock = 24;
 
-        consensus.nBudgetPaymentsStartBlock = 0; // actual historical value
-        consensus.nBudgetPaymentsCycleBlocks = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
-        consensus.nBudgetPaymentsWindowBlocks = 100;
         consensus.nBudgetProposalEstablishingTime = 60*60*24; // 1 day
         consensus.nSuperblockStartBlock = 0; //
         consensus.nSuperblockCycle = 20160; // (60*24*14) Super block cycle for every 14 days (2 weeks)
@@ -394,14 +386,9 @@ public:
         consensus.nSpecialTreasuryBudgetBlock = 61000; // same as nSuperblockStartBlock for now
 
         consensus.nMasternodePaymentsStartBlock = 87600; // should be about 2 months after genesis
-        consensus.nMasternodePaymentsIncreaseBlock =  46000; // TODO: should be removed, doesn't hold any meaning for EGI
-        consensus.nMasternodePaymentsIncreasePeriod = 576;   // TODO: should be removed, doesn't hold any meaning for EGI
         consensus.nInstantSendKeepLock = 6;
-        consensus.nBudgetPaymentsStartBlock = 4100;
-        consensus.nBudgetPaymentsCycleBlocks = 50;
-        consensus.nBudgetPaymentsWindowBlocks = 10;
         consensus.nBudgetProposalEstablishingTime = 60*20;
-        consensus.nSuperblockStartBlock = 61000; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPaymentsStartBlock
+        consensus.nSuperblockStartBlock = 20160;
         consensus.nSuperblockCycle = 20160; // (60*24*14) Super block cycle for every 14 days (2 weeks)
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
@@ -537,19 +524,10 @@ public:
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
         consensus.nSpecialTreasuryBudgetBlock = 6100; // same as nSuperblockStartBlock for now
 
-        // TODO: fix value for this parameter
-        consensus.nSubsidyHalvingInterval = 210240; /* Older value */ // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
-        consensus.nSubsidyHalvingInterval = 41540; /*  */
-
         consensus.nMasternodePaymentsStartBlock = 1460; // 87600/60.. little over a day
-        consensus.nMasternodePaymentsIncreaseBlock =  0;
-        consensus.nMasternodePaymentsIncreasePeriod = 0;
         consensus.nInstantSendKeepLock = 6;
-        consensus.nBudgetPaymentsStartBlock = 4320; // after 3 days
-        consensus.nBudgetPaymentsCycleBlocks = 50;
-        consensus.nBudgetPaymentsWindowBlocks = 10;
         consensus.nBudgetProposalEstablishingTime = 60*20;
-        consensus.nSuperblockStartBlock = 6100; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPaymentsStartBlock
+        consensus.nSuperblockStartBlock = 1460; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPaymentsStartBlock
         consensus.nSuperblockCycle = 60; // every hour
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
@@ -683,15 +661,8 @@ public:
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
         consensus.nSpecialTreasuryBudgetBlock = 61000; // same as nSuperblockStartBlock for now
 
-        // TODO: are consensus.nSubsidyHalvingInterval params needed?
-
         consensus.nMasternodePaymentsStartBlock = 240;
-        consensus.nMasternodePaymentsIncreaseBlock = 350;
-        consensus.nMasternodePaymentsIncreasePeriod = 10;
         consensus.nInstantSendKeepLock = 6;
-        consensus.nBudgetPaymentsStartBlock = 1000;
-        consensus.nBudgetPaymentsCycleBlocks = 50;
-        consensus.nBudgetPaymentsWindowBlocks = 10;
         consensus.nBudgetProposalEstablishingTime = 60*20;
         consensus.nSuperblockStartBlock = 1500;
         consensus.nSuperblockCycle = 20160;
