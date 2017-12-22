@@ -44,57 +44,29 @@ bool IsBlockValueValid(const CBlock& block, int nBlockHeight, CAmount blockRewar
 
     const Consensus::Params& consensusParams = Params().GetConsensus();
 
-    // verify founder's address payment
+    // verify the Energi foundation address payment
     // TODO: is there a better way to search tx outputs?
-    bool isFoundersRewardValueMet = false;
-    CBitcoinAddress foundersAddress(consensusParams.foundersAddress);
-    CKeyID foundersKeyID;
-    if (!foundersAddress.GetKeyID(foundersKeyID))
+    bool isFoundationRewardValueMet = false;
+    CBitcoinAddress foundationAddress(consensusParams.energiFoundationAddress);
+    CKeyID foundationKeyID;
+    if (!foundationAddress.GetKeyID(foundationKeyID))
     {
-        error("Unable to get key ID for Founder's address");
+        error("Unable to get key ID for Energi Foundation address");
     }
-    CScript foundersPubKey = GetScriptForDestination(foundersKeyID);
+    CScript foundationPubKey = GetScriptForDestination(foundationKeyID);
     for (auto const & i : block.vtx[0].vout)
     {
-        if ((i.scriptPubKey == foundersPubKey) && (i.nValue >= consensusParams.nBlockSubsidyFounders))
+        if ((i.scriptPubKey == foundationPubKey) && (i.nValue >= consensusParams.nBlockSubsidyFoundation))
         {
-            isFoundersRewardValueMet = true;
+            isFoundationRewardValueMet = true;
             break;
         }
     }
-    if (!isFoundersRewardValueMet)
+    if (!isFoundationRewardValueMet)
     {
-        LogPrint("gobject", "IsBlockValueValid -- coinbase does not pay correct Founder's Reward");
+        LogPrint("gobject", "IsBlockValueValid -- coinbase does not pay correct Energi Foundation Amount");
         return false;
     }
-
-    if(nBlockHeight < consensusParams.nSuperblockStartBlock) {
-        int nOffset = nBlockHeight % consensusParams.nBudgetPaymentsCycleBlocks;
-        if(nBlockHeight >= consensusParams.nBudgetPaymentsStartBlock &&
-            nOffset < consensusParams.nBudgetPaymentsWindowBlocks) {
-            // NOTE: make sure SPORK_13_OLD_SUPERBLOCK_FLAG is disabled when 12.1 starts to go live
-            if(masternodeSync.IsSynced() && !sporkManager.IsSporkActive(SPORK_13_OLD_SUPERBLOCK_FLAG)) {
-                // no budget blocks should be accepted here, if SPORK_13_OLD_SUPERBLOCK_FLAG is disabled
-                LogPrint("gobject", "IsBlockValueValid -- Client synced but budget spork is disabled, checking block value against block reward\n");
-                if(!isBlockRewardValueMet) {
-                    strErrorRet = strprintf("coinbase pays too much at height %d (actual=%d vs limit=%d), exceeded block reward, budgets are disabled",
-                                            nBlockHeight, block.vtx[0].GetValueOut(), blockReward);
-                }
-                return isBlockRewardValueMet;
-            }
-            LogPrint("gobject", "IsBlockValueValid -- WARNING: Skipping budget block value checks, accepting block\n");
-            // TODO: reprocess blocks to make sure they are legit?
-            return true;
-        }
-        // LogPrint("gobject", "IsBlockValueValid -- Block is not in budget cycle window, checking block value against block reward\n");
-        if(!isBlockRewardValueMet) {
-            strErrorRet = strprintf("coinbase pays too much at height %d (actual=%d vs limit=%d), exceeded block reward, block is not in budget cycle window",
-                                    nBlockHeight, block.vtx[0].GetValueOut(), blockReward);
-        }
-        return isBlockRewardValueMet;
-    }
-
-    // superblocks started
 
     CAmount nSuperblockMaxValue =  blockReward + CSuperblock::GetPaymentsLimit(nBlockHeight);
     bool isSuperblockMaxValueMet = (block.vtx[0].GetValueOut() <= nSuperblockMaxValue);
@@ -162,41 +134,7 @@ bool IsBlockPayeeValid(const CTransaction& txNew, int nBlockHeight, CAmount bloc
         return true;
     }
 
-    // we are still using budgets, but we have no data about them anymore,
-    // we can only check masternode payments
-
-    if(nBlockHeight < consensusParams.nSuperblockStartBlock) {
-        if(mnpayments.IsTransactionValid(txNew, nBlockHeight)) {
-            LogPrint("mnpayments", "IsBlockPayeeValid -- Valid masternode payment at height %d: %s", nBlockHeight, txNew.ToString());
-            return true;
-        }
-
-        int nOffset = nBlockHeight % consensusParams.nBudgetPaymentsCycleBlocks;
-        if(nBlockHeight >= consensusParams.nBudgetPaymentsStartBlock &&
-            nOffset < consensusParams.nBudgetPaymentsWindowBlocks) {
-            if(!sporkManager.IsSporkActive(SPORK_13_OLD_SUPERBLOCK_FLAG)) {
-                // no budget blocks should be accepted here, if SPORK_13_OLD_SUPERBLOCK_FLAG is disabled
-                LogPrint("gobject", "IsBlockPayeeValid -- ERROR: Client synced but budget spork is disabled and masternode payment is invalid\n");
-                return false;
-            }
-            // NOTE: this should never happen in real, SPORK_13_OLD_SUPERBLOCK_FLAG MUST be disabled when 12.1 starts to go live
-            LogPrint("gobject", "IsBlockPayeeValid -- WARNING: Probably valid budget block, have no data, accepting\n");
-            // TODO: reprocess blocks to make sure they are legit?
-            return true;
-        }
-
-        if(sporkManager.IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
-            LogPrintf("IsBlockPayeeValid -- ERROR: Invalid masternode payment detected at height %d: %s", nBlockHeight, txNew.ToString());
-            return false;
-        }
-
-        LogPrintf("IsBlockPayeeValid -- WARNING: Masternode payment enforcement is disabled, accepting any payee\n");
-        return true;
-    }
-
-    // superblocks started
     // SEE IF THIS IS A VALID SUPERBLOCK
-
     if(sporkManager.IsSporkActive(SPORK_9_SUPERBLOCKS_ENABLED)) {
         if(CSuperblockManager::IsSuperblockTriggered(nBlockHeight)) {
             if(CSuperblockManager::IsValid(txNew, nBlockHeight, blockReward)) {
@@ -241,8 +179,8 @@ void FillBlockPayments(CMutableTransaction& txNew, int nBlockHeight, CAmount blo
             return;
     }
 
-    // FILL BLOCK PAYEE WITH FOUNDER'S REWARD AND MASTERNODE PAYMENT OTHERWISE
-    mnpayments.FillBlockFoundersReward(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
+    // FILL BLOCK PAYEE WITH ENERGI FOUNDATION REWARD AND MASTERNODE PAYMENT OTHERWISE
+    mnpayments.FillBlockFoundationReward(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
     // ONLY START PAYING THE MASTERNODE AFTER THE PAYMENTS START BLOCK
     if(nBlockHeight + 1 > Params().GetConsensus().nMasternodePaymentsStartBlock) {
         mnpayments.FillBlockPayee(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
@@ -285,37 +223,37 @@ bool CMasternodePayments::CanVote(COutPoint outMasternode, int nBlockHeight)
 }
 
 /**
-*   FillBlockFoundersReward
+*   FillBlockFoundationReward
 *
-*   Add the founder's reward transaction to the block
+*   Add the Energi Foundation reward transaction to the block
 */
-void CMasternodePayments::FillBlockFoundersReward(CMutableTransaction& txNew, int /*nBlockHeight*/, CAmount /*blockReward*/, CTxOut& txoutFounderRet)
+void CMasternodePayments::FillBlockFoundationReward(CMutableTransaction& txNew, int /*nBlockHeight*/, CAmount /*blockReward*/, CTxOut& txoutFoundationRet)
 {
     auto const & consensus = Params().GetConsensus();
 
     // make sure it's not filled yet
-    txoutFounderRet = CTxOut();
+    txoutFoundationRet = CTxOut();
 
-    CBitcoinAddress foundersAddress(consensus.foundersAddress);
-    CKeyID foundersKeyID;
-    if (!foundersAddress.GetKeyID(foundersKeyID))
+    CBitcoinAddress foundationAddress(consensus.energiFoundationAddress);
+    CKeyID foundationKeyID;
+    if (!foundationAddress.GetKeyID(foundationKeyID))
     {
-        error("Unable to get key ID for Founder's address");
+        error("Unable to get key ID for Energi Foundation address");
     }
-    CScript payee = GetScriptForDestination(foundersKeyID);
+    CScript payee = GetScriptForDestination(foundationKeyID);
 
-    CAmount founderPayment = consensus.nBlockSubsidyFounders;
+    CAmount foundationPayment = consensus.nBlockSubsidyFoundation;
 
-    // split reward between founder, masternodes & miners
-    txNew.vout[0].nValue -= founderPayment;
-    txoutFounderRet = CTxOut(founderPayment, payee);
-    txNew.vout.push_back(txoutFounderRet);
+    // split reward between Energi Foundation, masternodes & miners
+    txNew.vout[0].nValue -= foundationPayment;
+    txoutFoundationRet = CTxOut(foundationPayment, payee);
+    txNew.vout.push_back(txoutFoundationRet);
 
     CTxDestination address1;
     ExtractDestination(payee, address1);
     CBitcoinAddress address2(address1);
 
-    LogPrintf("CMasternodePayments::FillBlockFoundersReward -- Founder payment %lld to %s\n", founderPayment, address2.ToString());
+    LogPrintf("CMasternodePayments::FillBlockFoundationReward -- Foundation payment %lld to %s\n", foundationPayment, address2.ToString());
 }
 
 /**

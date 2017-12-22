@@ -98,8 +98,8 @@ struct GenesisMiner
             {
                 auto end = chrono::system_clock::now();
                 auto elapsed = chrono::duration_cast<std::chrono::milliseconds>(end - start);
-                cout << "Mined genesis block for " << networkID << " network: " << genesisBlock.GetHash().ToString() << endl
-                    << "target was " << bnTarget.ToString() << " POWHash was " << genesisBlock.GetPOWHash().ToString() << endl
+                cout << "Mined genesis block for " << networkID << " network: 0x" << genesisBlock.GetHash().ToString() << endl
+                    << "target was " << bnTarget.ToString() << " POWHash was 0x" << genesisBlock.GetPOWHash().ToString() << endl
                     << "took " << i << " hashes in " << elapsed.count() / 1000.0 << " seconds ("
                     << static_cast<double>(i) / static_cast<double>(elapsed.count() / 1000.0) << " hps)" << endl << endl
                     << genesisBlock.ToString() << endl;
@@ -178,46 +178,38 @@ public:
         strNetworkID = "main";
 
         // Energi distribution parameters
-        consensus.foundersAddress = "TODO: implement me";
-        
+        consensus.energiFoundationAddress = "TODO: implement me";
+
         // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
         // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
         // miners get 20% of all coins or 2.4M / 525,600 ~ 4.57
         // founder gets 10% of all coins or 1.2M / 525,600 ~ 2.28
         // which adds up to 13.7 as block subsidy
         consensus.nBlockSubsidy = 1370000000;
-        // 10% founders reward
-        consensus.nBlockSubsidyFounders = 228000000;
+        // 10% to energi foundation
+        consensus.nBlockSubsidyFoundation = 228000000;
         // 20% miners
         consensus.nBlockSubsidyMiners = 457000000;
         // 30% masternodes
         // each masternode is paid serially.. more the master nodes more is the wait for the payment
         // masternode payment gap is masternodes minutes
         consensus.nBlockSubsidyMasternodes = 685000000;
-        
+
         // ensure the sum of the block subsidy parts equals the whole block subsidy
-        assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
+        assert(consensus.nBlockSubsidyFoundation + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
 
         // 40% of the total annual emission of ~12M goes to the treasury
-        // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the 
+        // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
         // number of super blocks per year according to the 20160 block cycle
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = 61000; // same as nSuperblockStartBlock for now
-
-        consensus.nSubsidyHalvingInterval = 210240; /* Older value */ // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
-        consensus.nSubsidyHalvingInterval = 41540; /*  */
+        consensus.nSpecialTreasuryBudgetBlock = 20160; // same as nSuperblockStartBlock for now
 
         consensus.nMasternodePaymentsStartBlock = 87600; // should be about 2 months after genesis
-        consensus.nMasternodePaymentsIncreaseBlock = 158000; // actual historical value
-        consensus.nMasternodePaymentsIncreasePeriod = 576*30; // 17280 - actual historical value
         consensus.nInstantSendKeepLock = 24;
 
-        consensus.nBudgetPaymentsStartBlock = 0; // actual historical value
-        consensus.nBudgetPaymentsCycleBlocks = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
-        consensus.nBudgetPaymentsWindowBlocks = 100;
         consensus.nBudgetProposalEstablishingTime = 60*60*24; // 1 day
-        consensus.nSuperblockStartBlock = 0; //
+        consensus.nSuperblockStartBlock = 20160; //
         consensus.nSuperblockCycle = 20160; // (60*24*14) Super block cycle for every 14 days (2 weeks)
 
         consensus.nGovernanceMinQuorum = 10;
@@ -364,8 +356,8 @@ public:
         strNetworkID = "test";
 
         // Energi distribution parameters
-        consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY";
-        
+        consensus.energiFoundationAddress = "tA61JveN6y2kej9kYNK9tKvVuUgAvgaC6X";
+
         // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
         // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
         // miners get 20% of all coins or 2.4M / 525,600 ~ 4.57
@@ -373,35 +365,30 @@ public:
         // which adds up to 13.7 as block subsidy
         consensus.nBlockSubsidy = 1370000000;
         // 10% founders reward
-        consensus.nBlockSubsidyFounders = 228000000;
+        consensus.nBlockSubsidyFoundation = 228000000;
         // 20% miners
-        // TODO: can remove, since it's not being used anywhere, except to make sure the 
-        // subsidy parts equal the total block subsidy 
+        // TODO: can remove, since it's not being used anywhere, except to make sure the
+        // subsidy parts equal the total block subsidy
         consensus.nBlockSubsidyMiners = 457000000;
         // 30% masternodes
         // each masternode is paid serially.. more the master nodes more is the wait for the payment
         // masternode payment gap is masternodes minutes
         consensus.nBlockSubsidyMasternodes = 685000000;
-        
+
         // ensure the sum of the block subsidy parts equals the whole block subsidy
-        assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
+        assert(consensus.nBlockSubsidyFoundation + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
 
         // 40% of the total annual emission of ~12M goes to the treasury
-        // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the 
+        // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
         // number of super blocks per year according to the 20160 block cycle
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = 61000; // same as nSuperblockStartBlock for now
+        consensus.nSpecialTreasuryBudgetBlock = 20160; // same as nSuperblockStartBlock for now
 
         consensus.nMasternodePaymentsStartBlock = 87600; // should be about 2 months after genesis
-        consensus.nMasternodePaymentsIncreaseBlock =  46000; // TODO: should be removed, doesn't hold any meaning for EGI
-        consensus.nMasternodePaymentsIncreasePeriod = 576;   // TODO: should be removed, doesn't hold any meaning for EGI
         consensus.nInstantSendKeepLock = 6;
-        consensus.nBudgetPaymentsStartBlock = 4100;
-        consensus.nBudgetPaymentsCycleBlocks = 50;
-        consensus.nBudgetPaymentsWindowBlocks = 10;
         consensus.nBudgetProposalEstablishingTime = 60*20;
-        consensus.nSuperblockStartBlock = 61000; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPaymentsStartBlock
+        consensus.nSuperblockStartBlock = 20160;
         consensus.nSuperblockCycle = 20160; // (60*24*14) Super block cycle for every 14 days (2 weeks)
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
@@ -436,11 +423,11 @@ public:
         nPruneAfterHeight = 1000;
 
 
-        genesis = CreateGenesisBlock(1512083591UL, 2537147, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
+        genesis = CreateGenesisBlock(1513976300UL, 3973119, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        uint256 expectedGenesisHash = uint256S("0xd1f7327e61b34d7660e1bc8bf8fe202f86bf84f1847110309e89dfc9e193d3ae");
-        uint256 expectedGenesisMerkleRoot = uint256S("0x398bc532d10d33bb8ed323860572558ba89ccecadfd33b0f7a25816df65cda6d");
+        uint256 expectedGenesisHash = uint256S("0x615bdc6b29d4505aedb57ad39add993c634afdeb2db6203f1f5114dab8b8158f");
+        uint256 expectedGenesisMerkleRoot = uint256S("0x05c6efdc02cd5a40e168d22745297a2d35458e820577e71f639524bb4c01e740");
 
         // TODO: mine genesis block for testnet
         #ifdef ENERGI_MINE_NEW_GENESIS_BLOCK
@@ -511,7 +498,7 @@ public:
         strNetworkID = "test60";
 
         // Energi distribution parameters
-        consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY";
+        consensus.energiFoundationAddress = "tA61JveN6y2kej9kYNK9tKvVuUgAvgaC6X";
         // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
         // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
         // miners get 20% of all coins or 2.4M / 525,600 ~ 4.57
@@ -519,37 +506,28 @@ public:
         // which adds up to 13.7 as block subsidy
         consensus.nBlockSubsidy = 82200000000; // 1370000000 * 60
         // 10% founders reward
-        consensus.nBlockSubsidyFounders = 13680000000; // 228000000 * 60
+        consensus.nBlockSubsidyFoundation = 13680000000; // 228000000 * 60
         // 20% miners
         consensus.nBlockSubsidyMiners = 27420000000; // 457000000 * 60
         // 30% masternodes
         // each masternode is paid serially.. more the master nodes more is the wait for the payment
         // masternode payment gap is masternodes minutes
         consensus.nBlockSubsidyMasternodes = 41100000000; // 685000000 * 60
-        
+
         // ensure the sum of the block subsidy parts equals the whole block subsidy
-        assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
-        
+        assert(consensus.nBlockSubsidyFoundation + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
+
         // 40% of the total annual emission of ~12M goes to the treasury
-        // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the 
+        // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
         // number of super blocks per year according to the 20160 block cycle
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = 6100; // same as nSuperblockStartBlock for now
-
-        // TODO: fix value for this parameter
-        consensus.nSubsidyHalvingInterval = 210240; /* Older value */ // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
-        consensus.nSubsidyHalvingInterval = 41540; /*  */
+        consensus.nSpecialTreasuryBudgetBlock = 336; // same as nSuperblockStartBlock for now
 
         consensus.nMasternodePaymentsStartBlock = 1460; // 87600/60.. little over a day
-        consensus.nMasternodePaymentsIncreaseBlock =  0;
-        consensus.nMasternodePaymentsIncreasePeriod = 0;
         consensus.nInstantSendKeepLock = 6;
-        consensus.nBudgetPaymentsStartBlock = 4320; // after 3 days
-        consensus.nBudgetPaymentsCycleBlocks = 50;
-        consensus.nBudgetPaymentsWindowBlocks = 10;
         consensus.nBudgetProposalEstablishingTime = 60*20;
-        consensus.nSuperblockStartBlock = 6100; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPaymentsStartBlock
+        consensus.nSuperblockStartBlock = 336;   // 20160 / 60
         consensus.nSuperblockCycle = 60; // every hour
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
@@ -583,10 +561,10 @@ public:
         nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1512083684UL, 36291660, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
+        genesis = CreateGenesisBlock(1513976416UL, 38110691, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
-        uint256 expectedGenesisHash = uint256S("0x69e6c1873b72fba2fed2e203ad3fcf1412ff0a107770273b2b6b44672ff12177");
-        uint256 expectedGenesisMerkleRoot = uint256S("0xf5be3fa001329f6c2154bae1416e8194a570d9ecfb0cf78e8bdee1fefc739cf5");
+        uint256 expectedGenesisHash = uint256S("0x522ac9ac37fa9de5bb3b2f9cb76d8d8a9e0de0b9ee0bc5377ef34beb05ec3e52");
+        uint256 expectedGenesisMerkleRoot = uint256S("0x744d37be84d22167ca7b69219a6b04d5f2fbb33a6c9b38f7f5237badc1c8bc00");
 
         // TODO: mine genesis block for testnet60x
         #ifdef ENERGI_MINE_NEW_GENESIS_BLOCK
@@ -656,8 +634,8 @@ public:
         strNetworkID = "regtest";
 
         // Energi distribution parameters
-        consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY";
-        
+        consensus.energiFoundationAddress = "tA61JveN6y2kej9kYNK9tKvVuUgAvgaC6X";
+
         // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
         // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
         // miners get 20% of all coins or 2.4M / 525,600 ~ 4.57
@@ -665,33 +643,26 @@ public:
         // which adds up to 13.7 as block subsidy
         consensus.nBlockSubsidy = 1370000000;
         // 10% founders reward
-        consensus.nBlockSubsidyFounders = 228000000;
+        consensus.nBlockSubsidyFoundation = 228000000;
         // 20% miners
         consensus.nBlockSubsidyMiners = 457000000;
         // 30% masternodes
         // each masternode is paid serially.. more the master nodes more is the wait for the payment
         // masternode payment gap is masternodes minutes
         consensus.nBlockSubsidyMasternodes = 685000000;
-        
+
         // ensure the sum of the block subsidy parts equals the whole block subsidy
-        assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
+        assert(consensus.nBlockSubsidyFoundation + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
 
         // 40% of the total annual emission of ~12M goes to the treasury
-        // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the 
+        // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
         // number of super blocks per year according to the 20160 block cycle
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = 61000; // same as nSuperblockStartBlock for now
-
-        // TODO: are consensus.nSubsidyHalvingInterval params needed?
+        consensus.nSpecialTreasuryBudgetBlock = 1500; // same as nSuperblockStartBlock for now
 
         consensus.nMasternodePaymentsStartBlock = 240;
-        consensus.nMasternodePaymentsIncreaseBlock = 350;
-        consensus.nMasternodePaymentsIncreasePeriod = 10;
         consensus.nInstantSendKeepLock = 6;
-        consensus.nBudgetPaymentsStartBlock = 1000;
-        consensus.nBudgetPaymentsCycleBlocks = 50;
-        consensus.nBudgetPaymentsWindowBlocks = 10;
         consensus.nBudgetProposalEstablishingTime = 60*20;
         consensus.nSuperblockStartBlock = 1500;
         consensus.nSuperblockCycle = 20160;
@@ -735,11 +706,11 @@ public:
         nDefaultPort = 39797;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1512083866UL, 3, 0x207fffff, 1, consensus.nBlockSubsidy);
+        genesis = CreateGenesisBlock(1513976528UL, 3, 0x207fffff, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        uint256 expectedGenesisHash = uint256S("0x498c712d8bd64ab5660b8bfe83901adfd79e3276c829e43ce63ec85f56ff3b0e");
-        uint256 expectedGenesisMerkleRoot = uint256S("0x398bc532d10d33bb8ed323860572558ba89ccecadfd33b0f7a25816df65cda6d");
+        uint256 expectedGenesisHash = uint256S("0xc77bdfb0e05c990c3fe1c40071e6df0bd1092a2fe85495a18a961a8447ef6eec");
+        uint256 expectedGenesisMerkleRoot = uint256S("0x05c6efdc02cd5a40e168d22745297a2d35458e820577e71f639524bb4c01e740");
 
         #ifdef ENERGI_MINE_NEW_GENESIS_BLOCK
         if (consensus.hashGenesisBlock != expectedGenesisHash)
