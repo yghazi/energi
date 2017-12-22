@@ -203,13 +203,13 @@ public:
         // number of super blocks per year according to the 20160 block cycle
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = 61000; // same as nSuperblockStartBlock for now
+        consensus.nSpecialTreasuryBudgetBlock = 20160; // same as nSuperblockStartBlock for now
 
         consensus.nMasternodePaymentsStartBlock = 87600; // should be about 2 months after genesis
         consensus.nInstantSendKeepLock = 24;
 
         consensus.nBudgetProposalEstablishingTime = 60*60*24; // 1 day
-        consensus.nSuperblockStartBlock = 0; //
+        consensus.nSuperblockStartBlock = 20160; //
         consensus.nSuperblockCycle = 20160; // (60*24*14) Super block cycle for every 14 days (2 weeks)
 
         consensus.nGovernanceMinQuorum = 10;
@@ -383,7 +383,7 @@ public:
         // number of super blocks per year according to the 20160 block cycle
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = 61000; // same as nSuperblockStartBlock for now
+        consensus.nSpecialTreasuryBudgetBlock = 20160; // same as nSuperblockStartBlock for now
 
         consensus.nMasternodePaymentsStartBlock = 87600; // should be about 2 months after genesis
         consensus.nInstantSendKeepLock = 6;
@@ -522,12 +522,12 @@ public:
         // number of super blocks per year according to the 20160 block cycle
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = 6100; // same as nSuperblockStartBlock for now
+        consensus.nSpecialTreasuryBudgetBlock = 336; // same as nSuperblockStartBlock for now
 
         consensus.nMasternodePaymentsStartBlock = 1460; // 87600/60.. little over a day
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetProposalEstablishingTime = 60*20;
-        consensus.nSuperblockStartBlock = 1460; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPaymentsStartBlock
+        consensus.nSuperblockStartBlock = 336;   // 20160 / 60
         consensus.nSuperblockCycle = 60; // every hour
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
@@ -659,7 +659,7 @@ public:
         // number of super blocks per year according to the 20160 block cycle
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = 61000; // same as nSuperblockStartBlock for now
+        consensus.nSpecialTreasuryBudgetBlock = 1500; // same as nSuperblockStartBlock for now
 
         consensus.nMasternodePaymentsStartBlock = 240;
         consensus.nInstantSendKeepLock = 6;
