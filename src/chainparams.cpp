@@ -179,7 +179,7 @@ public:
 
         // Energi distribution parameters
         consensus.foundersAddress = "TODO: implement me";
-        
+
         // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
         // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
         // miners get 20% of all coins or 2.4M / 525,600 ~ 4.57
@@ -194,12 +194,12 @@ public:
         // each masternode is paid serially.. more the master nodes more is the wait for the payment
         // masternode payment gap is masternodes minutes
         consensus.nBlockSubsidyMasternodes = 685000000;
-        
+
         // ensure the sum of the block subsidy parts equals the whole block subsidy
         assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
 
         // 40% of the total annual emission of ~12M goes to the treasury
-        // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the 
+        // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
         // number of super blocks per year according to the 20160 block cycle
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
@@ -364,8 +364,8 @@ public:
         strNetworkID = "test";
 
         // Energi distribution parameters
-        consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY";
-        
+        consensus.foundersAddress = "tA61JveN6y2kej9kYNK9tKvVuUgAvgaC6X";
+
         // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
         // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
         // miners get 20% of all coins or 2.4M / 525,600 ~ 4.57
@@ -375,19 +375,19 @@ public:
         // 10% founders reward
         consensus.nBlockSubsidyFounders = 228000000;
         // 20% miners
-        // TODO: can remove, since it's not being used anywhere, except to make sure the 
-        // subsidy parts equal the total block subsidy 
+        // TODO: can remove, since it's not being used anywhere, except to make sure the
+        // subsidy parts equal the total block subsidy
         consensus.nBlockSubsidyMiners = 457000000;
         // 30% masternodes
         // each masternode is paid serially.. more the master nodes more is the wait for the payment
         // masternode payment gap is masternodes minutes
         consensus.nBlockSubsidyMasternodes = 685000000;
-        
+
         // ensure the sum of the block subsidy parts equals the whole block subsidy
         assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
 
         // 40% of the total annual emission of ~12M goes to the treasury
-        // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the 
+        // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
         // number of super blocks per year according to the 20160 block cycle
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
@@ -511,7 +511,7 @@ public:
         strNetworkID = "test60";
 
         // Energi distribution parameters
-        consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY";
+        consensus.foundersAddress = "tA61JveN6y2kej9kYNK9tKvVuUgAvgaC6X";
         // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
         // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
         // miners get 20% of all coins or 2.4M / 525,600 ~ 4.57
@@ -526,12 +526,12 @@ public:
         // each masternode is paid serially.. more the master nodes more is the wait for the payment
         // masternode payment gap is masternodes minutes
         consensus.nBlockSubsidyMasternodes = 41100000000; // 685000000 * 60
-        
+
         // ensure the sum of the block subsidy parts equals the whole block subsidy
         assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
-        
+
         // 40% of the total annual emission of ~12M goes to the treasury
-        // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the 
+        // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
         // number of super blocks per year according to the 20160 block cycle
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
@@ -656,8 +656,8 @@ public:
         strNetworkID = "regtest";
 
         // Energi distribution parameters
-        consensus.foundersAddress = "tFLyidSoz9teKks22hscftwhVHqdewvAzY";
-        
+        consensus.foundersAddress = "tA61JveN6y2kej9kYNK9tKvVuUgAvgaC6X";
+
         // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
         // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
         // miners get 20% of all coins or 2.4M / 525,600 ~ 4.57
@@ -672,12 +672,12 @@ public:
         // each masternode is paid serially.. more the master nodes more is the wait for the payment
         // masternode payment gap is masternodes minutes
         consensus.nBlockSubsidyMasternodes = 685000000;
-        
+
         // ensure the sum of the block subsidy parts equals the whole block subsidy
         assert(consensus.nBlockSubsidyFounders + consensus.nBlockSubsidyMiners + consensus.nBlockSubsidyMasternodes == consensus.nBlockSubsidy);
 
         // 40% of the total annual emission of ~12M goes to the treasury
-        // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the 
+        // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
         // number of super blocks per year according to the 20160 block cycle
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
