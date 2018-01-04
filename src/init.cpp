@@ -1287,6 +1287,10 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 			std::cout << "\r" << msg;
 			uiInterface.ShowProgress(msg, step * 100 / max);
 			};
+            if (fRequestShutdown) {
+                progress_handler("");
+                return false;
+            }
 
 		switch(phase)
 		{
