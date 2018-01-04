@@ -281,10 +281,6 @@ public:
         //assert(consensus.hashGenesisBlock == expectedGenesisHash);
         //assert(genesis.hashMerkleRoot == expectedGenesisMerkleRoot);
 
-        // BIP34 is always active in Energi
-        consensus.BIP34Height = 0;
-        consensus.BIP34Hash = consensus.hashGenesisBlock;
-
         vSeeds.push_back(CDNSSeedData("energi.network", "us-seed1.energi.network"));
 
         // Energi addresses start with 'E'
@@ -440,10 +436,6 @@ public:
         assert(consensus.hashGenesisBlock == expectedGenesisHash);
         assert(genesis.hashMerkleRoot == expectedGenesisMerkleRoot);
 
-        // BIP34 is always active in Energi
-        consensus.BIP34Height = 0;
-        consensus.BIP34Hash = consensus.hashGenesisBlock;
-
         vFixedSeeds.clear();
         vSeeds.clear();
         vSeeds.push_back(CDNSSeedData("energi.network", "us-seed1.test.energi.network"));
@@ -577,10 +569,6 @@ public:
         assert(consensus.hashGenesisBlock == expectedGenesisHash);
         assert(genesis.hashMerkleRoot == expectedGenesisMerkleRoot);
 
-        // BIP34 is always active in Energi
-        consensus.BIP34Height = 0;
-        consensus.BIP34Hash = consensus.hashGenesisBlock;
-
         vFixedSeeds.clear();
         vSeeds.clear();
         vSeeds.push_back(CDNSSeedData("energi.network",  "us-seed1.test60x.energi.network"));
@@ -672,8 +660,6 @@ public:
         consensus.nMajorityEnforceBlockUpgrade = 750;
         consensus.nMajorityRejectBlockOutdated = 950;
         consensus.nMajorityWindow = 1000;
-        consensus.BIP34Height = -1; // BIP34 has not necessarily activated on regtest
-        consensus.BIP34Hash = uint256();
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 24 * 60 * 60; // Dash: 1 day
         consensus.nPowTargetSpacing = 60; // Energi: 1 minute
