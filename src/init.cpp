@@ -1284,11 +1284,13 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
         auto progress_handler = [&](std::string const &msg)
         {
-        std::cout << "\r" << msg;
-        uiInterface.ShowProgress(msg, step * 100 / max);
+            std::cout << "\r" << msg;
+            uiInterface.ShowProgress(msg, step * 100 / max);
         };
-        if (fRequestShutdown) {
-            progress_handler("");
+
+        if (fRequestShutdown)
+        {
+            progress_handler("InitDAG() cancelled ... ");
             return false;
         }
 
