@@ -1295,25 +1295,25 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         switch(phase)
         {
             case egihash::cache_seeding:
-                    progress_handler("Seeding cache ... ");
+                progress_handler("Seeding cache ... ");
                 break;
             case egihash::cache_generation:
-                    progress_handler("Generating cache ... ");
+                progress_handler("Generating cache ... ");
                 break;
             case egihash::cache_saving:
-                    progress_handler("Saving cache ... ");
+                progress_handler("Saving cache ... ");
                 break;
             case egihash::cache_loading:
-                    progress_handler("Loading cache ... ");
+                progress_handler("Loading cache ... ");
                 break;
             case egihash::dag_generation:
-                    progress_handler("Generating Dag ... ");
+                progress_handler("Generating Dag ... ");
                 break;
             case egihash::dag_saving:
-                    progress_handler("Saving Dag ... ");
+                progress_handler("Saving Dag ... ");
                 break;
             case egihash::dag_loading:
-                    progress_handler("Loading Dag ... ");
+                progress_handler("Loading Dag ... ");
                 break;
             default:
                 break;
