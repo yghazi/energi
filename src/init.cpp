@@ -1276,54 +1276,56 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
     // initialize the DAG
     InitDAG([](::std::size_t step, ::std::size_t max, int phase) -> bool
-	{
-			std::stringstream ss;
-			ss << std::fixed << std::setprecision(2)
-			<< static_cast<double>(step) / static_cast<double>(max) * 100.0 << "%"
-			<< std::setfill(' ') << std::setw(80);
+    {
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(2)
+        << static_cast<double>(step) / static_cast<double>(max) * 100.0 << "%"
+        << std::setfill(' ') << std::setw(80);
 
-			auto progress_handler = [&](std::string const &msg)
-			{
-			std::cout << "\r" << msg;
-			uiInterface.ShowProgress(msg, step * 100 / max);
-			};
-            if (fRequestShutdown) {
-                progress_handler("");
-                return false;
-            }
+        auto progress_handler = [&](std::string const &msg)
+        {
+            std::cout << "\r" << msg;
+            uiInterface.ShowProgress(msg, step * 100 / max);
+        };
 
-		switch(phase)
-		{
-			case egihash::cache_seeding:
-					progress_handler("Seeding cache ... ");
-				break;
-			case egihash::cache_generation:
-					progress_handler("Generating cache ... ");
-				break;
-			case egihash::cache_saving:
-					progress_handler("Saving cache ... ");
-				break;
-			case egihash::cache_loading:
-					progress_handler("Loading cache ... ");
-				break;
-			case egihash::dag_generation:
-					progress_handler("Generating Dag ... ");
-				break;
-			case egihash::dag_saving:
-					progress_handler("Saving Dag ... ");
-				break;
-			case egihash::dag_loading:
-					progress_handler("Loading Dag ... ");
-				break;
-			default:
-				break;
-		}
+        if (fRequestShutdown)
+        {
+            progress_handler("InitDAG() cancelled ... ");
+            return false;
+        }
 
-		auto progress = ss.str();
-		std::cout << progress << std::flush;
+        switch(phase)
+        {
+            case egihash::cache_seeding:
+                progress_handler("Seeding cache ... ");
+                break;
+            case egihash::cache_generation:
+                progress_handler("Generating cache ... ");
+                break;
+            case egihash::cache_saving:
+                progress_handler("Saving cache ... ");
+                break;
+            case egihash::cache_loading:
+                progress_handler("Loading cache ... ");
+                break;
+            case egihash::dag_generation:
+                progress_handler("Generating Dag ... ");
+                break;
+            case egihash::dag_saving:
+                progress_handler("Saving Dag ... ");
+                break;
+            case egihash::dag_loading:
+                progress_handler("Loading Dag ... ");
+                break;
+            default:
+                break;
+        }
 
-		return true;
-	});
+        auto progress = ss.str();
+        std::cout << progress << std::flush;
+
+        return true;
+    });
 
     // Start the lightweight task scheduler thread
     CScheduler::Function serviceLoop = boost::bind(&CScheduler::serviceQueue, &scheduler);
