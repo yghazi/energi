@@ -113,7 +113,7 @@ struct GenesisMiner
     {
         using namespace egihash;
         using namespace std;
-        auto const & seedhash = seedhash_to_filename(get_seedhash(0));
+        auto const & seedhash = cache_t::get_seedhash(0).to_hex();
 
         stringstream ss;
         ss << hex << setw(4) << setfill('0') << 0 << "-" << seedhash.substr(0, 12) << ".dag";

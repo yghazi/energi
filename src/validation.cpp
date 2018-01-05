@@ -2444,7 +2444,7 @@ void CreateDAG(int height, egihash::progress_callback_type callback)
     }
 
     auto const epoch = height / constants::EPOCH_LENGTH;
-    auto const & seedhash = seedhash_to_filename(get_seedhash(height));
+    auto const & seedhash = cache_t::get_seedhash(height).to_hex();
     stringstream ss;
     ss << hex << setw(4) << setfill('0') << epoch << "-" << seedhash.substr(0, 12) << ".dag";
     auto const epoch_file = GetDataDir(false) / "dag" / ss.str();

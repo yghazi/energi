@@ -82,7 +82,7 @@ uint256 CBlockHeader::GetPOWHash() const
     else // otherwise all we can do is generate a light hash
     {
         // TODO: pre-load caches and seed hashes
-        ret = egihash::light::hash(egihash::cache_t(nHeight, egihash::get_seedhash(nHeight)), headerHash, nNonce);
+        ret = egihash::light::hash(egihash::cache_t(nHeight), headerHash, nNonce);
     }
 
     hashMix = uint256(ret.mixhash);
