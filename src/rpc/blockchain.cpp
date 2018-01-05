@@ -78,6 +78,7 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     result.push_back(Pair("bits", strprintf("%08x", blockindex->nBits)));
     result.push_back(Pair("difficulty", GetDifficulty(blockindex)));
     result.push_back(Pair("chainwork", blockindex->nChainWork.GetHex()));
+    result.push_back(Pair("hashmix", blockindex->hashMix.GetHex()));
 
     if (blockindex->pprev)
         result.push_back(Pair("previousblockhash", blockindex->pprev->GetBlockHash().GetHex()));
@@ -119,6 +120,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     result.push_back(Pair("bits", strprintf("%08x", block.nBits)));
     result.push_back(Pair("difficulty", GetDifficulty(blockindex)));
     result.push_back(Pair("chainwork", blockindex->nChainWork.GetHex()));
+    result.push_back(Pair("hashmix", block.hashMix.GetHex()));
 
     if (blockindex->pprev)
         result.push_back(Pair("previousblockhash", blockindex->pprev->GetBlockHash().GetHex()));
@@ -355,6 +357,7 @@ UniValue getblockheader(const UniValue& params, bool fHelp)
             "  \"nonce\" : n,           (numeric) The nonce\n"
             "  \"bits\" : \"1d00ffff\", (string) The bits\n"
             "  \"difficulty\" : x.xxx,  (numeric) The difficulty\n"
+            "  \"hashmix      \" : \"hash\",      (string) The hashmix of the block\n"
             "  \"previousblockhash\" : \"hash\",  (string) The hash of the previous block\n"
             "  \"nextblockhash\" : \"hash\",      (string) The hash of the next block\n"
             "  \"chainwork\" : \"0000...1f3\"     (string) Expected number of hashes required to produce the current chain (in hex)\n"
@@ -415,6 +418,7 @@ UniValue getblockheaders(const UniValue& params, bool fHelp)
             "  \"nonce\" : n,                   (numeric) The nonce\n"
             "  \"bits\" : \"1d00ffff\",           (string)  The bits\n"
             "  \"difficulty\" : x.xxx,          (numeric) The difficulty\n"
+            "  \"hashmix      \" : \"hash\",      (string) The hashmix of the block\n"
             "  \"previousblockhash\" : \"hash\",  (string)  The hash of the previous block\n"
             "  \"nextblockhash\" : \"hash\",      (string)  The hash of the next block\n"
             "  \"chainwork\" : \"0000...1f3\"     (string)  Expected number of hashes required to produce the current chain (in hex)\n"
@@ -508,6 +512,7 @@ UniValue getblock(const UniValue& params, bool fHelp)
             "  \"bits\" : \"1d00ffff\", (string) The bits\n"
             "  \"difficulty\" : x.xxx,  (numeric) The difficulty\n"
             "  \"chainwork\" : \"xxxx\",  (string) Expected number of hashes required to produce the chain up to this block (in hex)\n"
+            "  \"hashmix      \" : \"hash\",      (string) The hashmix of the block\n"
             "  \"previousblockhash\" : \"hash\",  (string) The hash of the previous block\n"
             "  \"nextblockhash\" : \"hash\"       (string) The hash of the next block\n"
             "}\n"
