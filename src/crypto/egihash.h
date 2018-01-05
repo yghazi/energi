@@ -164,20 +164,6 @@ namespace egihash
 	static constexpr uint8_t size_epoch0_seedhash = sizeof(epoch0_seedhash) - 1;
 	static_assert(size_epoch0_seedhash == 32, "Invalid seedhash");
 
-	/** \brief get_seedhash(uint64_t) will compute the seedhash for a given block number.
-	*
-	*	\param block_number An unsigned 64-bit integer representing the block number for which to compute the seed hash.
-	*	\return A hexidecimal encoded keccak-256 seed hash for the given block number.
-	*/
-	::std::string get_seedhash(uint64_t const block_number);
-
-	/** \brief function to provide readable dag file name
-	*
-	*	\param A hexidecimal encoded keccak-256 seed hash for the given block number.
-	*	\return A readable filename
-	*/
-	std::string seedhash_to_filename(const std::string &seedhash);
-
 	/** \brief h256_t represents a the result of a keccak-256 hash.
 	*/
 	struct h256_t
@@ -217,6 +203,12 @@ namespace egihash
 		*/
 		h256_t(void const * input_data, size_type input_size);
 
+		/** \brief Get the hex-encoded value for this h256_t.
+		*
+		*	\returns std::string containing hex encoded value for this h256_t.
+		*/
+		::std::string to_hex() const;
+
 		/** \brief Test if this hash is valid. Returns true if hash data is not all 0 bytes.
 		*/
 		operator bool() const;
@@ -235,6 +227,70 @@ namespace egihash
 	/** \brief A default constructed h256_t has all empty bytes.
 	*/
 	static constexpr h256_t empty_h256;
+
+	/** \brief h512_t represents a the result of a keccak-512 hash.
+	*/
+	struct h512_t
+	{
+		using size_type = ::std::size_t;
+		static constexpr size_type hash_size = 64;
+
+		/** \brief Default constructor for h512_t fills data field b with 0 bytes
+		*/
+		constexpr h512_t(): b{0} {}
+
+		/** \brief Default copy constructor
+		*/
+		h512_t(h512_t const &) = default;
+
+		/** \brief Default copy assignment operator
+		*/
+		h512_t & operator=(h512_t const &) = default;
+
+		/** \brief Default move constructor
+		*/
+		h512_t(h512_t &&) = default;
+
+		/** \brief Default move assignment operator
+		*/
+		h512_t & operator=(h512_t &&) = default;
+
+		/** \brief Default destructor
+		*/
+		~h512_t() = default;
+
+		/** \brief Construct and compute a hash from a data source.
+		*
+		*	\param input_data A pointer to the start of the data to be hashed
+		*	\param input_size The number of bytes of input data to hash
+		*	\throws hash_exception on error
+		*/
+		h512_t(void const * input_data, size_type input_size);
+
+		/** \brief Get the hex-encoded value for this h512_t.
+		*
+		*	\returns std::string containing hex encoded value for this h512_t.
+		*/
+		::std::string to_hex() const;
+
+		/** \brief Test if this hash is valid. Returns true if hash data is not all 0 bytes.
+		*/
+		operator bool() const;
+
+		/** \brief Compare this h512_t to another h512_t.
+		*
+		*	\return true if the hashes are equal.
+		*/
+		bool operator==(h512_t const &) const;
+
+		/** \brief This member stores the 512-bit hash data
+		*/
+		uint8_t b[hash_size];
+	};
+
+	/** \brief A default constructed h512_t has all empty bytes.
+	*/
+	static constexpr h512_t empty_h512;
 
 	/** \brief result_t represents the result of an egihash.
 	*/
@@ -362,7 +418,7 @@ namespace egihash
 		*	\param seed is the seed hash (i.e. get_seedhash(block_number)) for which this cache_t is to be constructed.
 		*	\param callback (optional) may be used to monitor the progress of cache generation. Return false to cancel, true to continue.
 		*/
-		cache_t(uint64_t block_number, ::std::string const & seed, progress_callback_type callback = [](size_type, size_type, int){ return true; });
+		cache_t(uint64_t block_number, progress_callback_type callback = [](size_type, size_type, int){ return true; });
 
 		/** \brief Get the epoch number for which this cache is valid.
 		*
@@ -382,12 +438,25 @@ namespace egihash
 		*/
 		data_type const & data() const;
 
+		/** \brief Get the seedhash for this cache.
+		*
+		*	/returns h256_t seed hash for this cache.
+		*/
+		h256_t seedhash() const;
+
 		/** \brief Get the size of the cache data in bytes.
 		*
 		*	\param block_number is the block number for which cache size to compute.
 		*	\returns size_type representing the size of the cache data in bytes.
 		*/
 		static size_type get_cache_size(uint64_t const block_number) noexcept;
+
+		/** \brief get_seedhash(uint64_t) will compute the seedhash for a given block number.
+		*
+		*	\param block_number An unsigned 64-bit integer representing the block number for which to compute the seed hash.
+		*	\return An h256_t keccak-256 seed hash for the given block number.
+		*/
+		static h256_t get_seedhash(uint64_t const block_number);
 
 		/** \brief cache_t internal implementation.
 		*/
@@ -610,38 +679,4 @@ namespace egihash
 	}
 }
 
-extern "C"
-{
-#endif // __cplusplus
-
-#define EGIHASH_NAMESPACE_PREFIX egihash
-#define EGIHASH_CONCAT(x, y) EGIHASH_CONCAT_(x, y)
-#define EGIHASH_CONCAT_(x, y) x ## y
-#define EGIHASH_NAMESPACE(name) EGIHASH_NAMESPACE_(_ ## name)
-#define EGIHASH_NAMESPACE_(name) EGIHASH_CONCAT(EGIHASH_NAMESPACE_PREFIX, name)
-
-typedef int (* EGIHASH_NAMESPACE(callback))(unsigned int);
-typedef struct EGIHASH_NAMESPACE(light) * EGIHASH_NAMESPACE(light_t);
-typedef struct EGIHASH_NAMESPACE(full) * EGIHASH_NAMESPACE(full_t);
-typedef struct EGIHASH_NAMESPACE(h256) { uint8_t b[32]; } EGIHASH_NAMESPACE(h256_t);
-typedef struct EGIHASH_NAMESPACE(result) { EGIHASH_NAMESPACE(h256_t) value; EGIHASH_NAMESPACE(h256_t) mixhash; } EGIHASH_NAMESPACE(result_t);
-typedef struct EGIHASH_NAMESPACE(h512) { uint8_t b[64]; } EGIHASH_NAMESPACE(h512_t);
-
-#if 0 // TODO: FIXME
-EGIHASH_NAMESPACE(light_t) EGIHASH_NAMESPACE(light_new)(unsigned int block_number);
-EGIHASH_NAMESPACE(result_t) EGIHASH_NAMESPACE(light_compute)(EGIHASH_NAMESPACE(light_t) light, EGIHASH_NAMESPACE(h256_t) header_hash, uint64_t nonce);
-void EGIHASH_NAMESPACE(light_delete)(EGIHASH_NAMESPACE(light_t) light);
-
-EGIHASH_NAMESPACE(full_t) EGIHASH_NAMESPACE(full_new)(EGIHASH_NAMESPACE(light_t) light, EGIHASH_NAMESPACE(callback) callback);
-uint64_t EGIHASH_NAMESPACE(full_dag_size)(EGIHASH_NAMESPACE(full_t) full);
-void const * EGIHASH_NAMESPACE(full_dag)(EGIHASH_NAMESPACE(full_t) full);
-EGIHASH_NAMESPACE(result_t) EGIHASH_NAMESPACE(full_compute)(EGIHASH_NAMESPACE(full_t) full, EGIHASH_NAMESPACE(h256_t) header_hash, uint64_t nonce);
-void EGIHASH_NAMESPACE(full_delete)(EGIHASH_NAMESPACE(full_t) full);
-#endif
-
-void egihash_h256_compute(EGIHASH_NAMESPACE(h256_t) * output_hash, void * input_data, uint64_t input_size);
-void egihash_h512_compute(EGIHASH_NAMESPACE(h512_t) * output_hash, void * input_data, uint64_t input_size);
-
-#ifdef __cplusplus
-} // extern "C"
 #endif // __cplusplus
