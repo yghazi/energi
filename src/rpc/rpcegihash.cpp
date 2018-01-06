@@ -145,5 +145,5 @@ UniValue getactivedag(const UniValue& params, bool fHelp)
     result.push_back(Pair("epoch", dag->epoch()));
     result.push_back(Pair("seedhash", cache_t::get_seedhash(dag->epoch() * constants::EPOCH_LENGTH).to_hex()));
     result.push_back(Pair("size", dag->size()));
-    return std::move(result);
+    return result;
 }
