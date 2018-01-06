@@ -409,7 +409,7 @@ static const CRPCCommand vRPCCommands[] =
     { "egihash",            "getdagsize",             &getdagsize,             true  },
     { "egihash",            "getdagcachesize",        &getdagcachesize,        true  },
     { "egihash",            "getdag",                 &getdag,                 true  },
-    { "egihash",            "getcache",               &getdag,                 true  },
+    { "egihash",            "getcache",               &getcache,               true  },
     { "egihash",            "getactivedag",           &getactivedag,           true  },
 #endif // ENABLE_WALLET
 };
