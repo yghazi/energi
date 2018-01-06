@@ -53,7 +53,7 @@ UniValue getdagsize(const UniValue& params, bool fHelp)
             throw std::runtime_error("provided argument \'" + params[0].get_str() + "\' is not an integer");
         }
     }
-    return dag_t::get_full_size(epoch * constants::EPOCH_LENGTH);
+    return static_cast<uint64_t>(dag_t::get_full_size(epoch * constants::EPOCH_LENGTH));
 }
 
 UniValue getdagcachesize(const UniValue& params, bool fHelp)
@@ -99,7 +99,7 @@ UniValue getdag(const UniValue& params, bool fHelp)
     auto block_num = epoch * constants::EPOCH_LENGTH;
     result.push_back(Pair("epoch", epoch));
     result.push_back(Pair("seedhash", cache_t::get_seedhash(block_num).to_hex()));
-    result.push_back(Pair("size", dag_t::get_full_size(block_num)));
+    result.push_back(Pair("size", static_cast<uint64_t>(dag_t::get_full_size(block_num))));
     result.push_back(Pair("cache_size", cache_t::get_cache_size(block_num)));
     return result;
 }
@@ -144,6 +144,6 @@ UniValue getactivedag(const UniValue& params, bool fHelp)
     UniValue result(UniValue::VOBJ);
     result.push_back(Pair("epoch", dag->epoch()));
     result.push_back(Pair("seedhash", cache_t::get_seedhash(dag->epoch() * constants::EPOCH_LENGTH).to_hex()));
-    result.push_back(Pair("size", dag->size()));
+    result.push_back(Pair("size", static_cast<uint64_t>(dag->size())));
     return result;
 }
