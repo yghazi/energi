@@ -60,7 +60,7 @@ public:
         EGI,
         mEGI,
         uEGI,
-        duffs
+        atoms
     };
 
     enum SeparatorStyle
