@@ -205,7 +205,7 @@ public:
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
         consensus.nSpecialTreasuryBudgetBlock = 20160; // same as nSuperblockStartBlock for now
 
-        consensus.nMasternodePaymentsStartBlock = 87600; // should be about 2 months after genesis
+        consensus.nMasternodePaymentsStartBlock = 172800; // should be about 120 days after genesis
         consensus.nInstantSendKeepLock = 24;
 
         consensus.nBudgetProposalEstablishingTime = 60*60*24; // 1 day
@@ -381,7 +381,7 @@ public:
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
         consensus.nSpecialTreasuryBudgetBlock = 20160; // same as nSuperblockStartBlock for now
 
-        consensus.nMasternodePaymentsStartBlock = 87600; // should be about 2 months after genesis
+        consensus.nMasternodePaymentsStartBlock = 172800; // should be about 120 days after genesis
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetProposalEstablishingTime = 60*20;
         consensus.nSuperblockStartBlock = 20160;
@@ -516,7 +516,7 @@ public:
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
         consensus.nSpecialTreasuryBudgetBlock = 336; // same as nSuperblockStartBlock for now
 
-        consensus.nMasternodePaymentsStartBlock = 1460; // 87600/60.. little over a day
+        consensus.nMasternodePaymentsStartBlock = 172800 / 60;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetProposalEstablishingTime = 60*20;
         consensus.nSuperblockStartBlock = 336;   // 20160 / 60
