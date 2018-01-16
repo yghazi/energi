@@ -253,7 +253,7 @@ public:
         return false;
     }
 
-    /// Is the input associated with collateral public key? (and there is 10000 EGI - checking if valid masternode)
+    /// Is the input associated with collateral public key? (and there is 10000 NRG - checking if valid masternode)
     bool IsInputAssociatedWithPubkey();
 
     bool IsValidNetAddr();

@@ -217,7 +217,7 @@ void CActiveMasternode::ManageStateInitial(CConnman& connman)
     }
 
     if(pwalletMain->GetBalance() < MASTERNODE_COLLATERAL_AMOUNT) {
-        LogPrintf("CActiveMasternode::ManageStateInitial -- %s: Wallet balance is < 10,000 EGI\n", GetStateString());
+        LogPrintf("CActiveMasternode::ManageStateInitial -- %s: Wallet balance is < 10,000 NRG\n", GetStateString());
         return;
     }
 
@@ -235,7 +235,7 @@ void CActiveMasternode::ManageStateInitial(CConnman& connman)
 
 void CActiveMasternode::ManageStateRemote()
 {
-    LogPrint("masternode", "CActiveMasternode::ManageStateRemote -- Start status = %s, type = %s, pinger enabled = %d, pubKeyMasternode.GetID() = %s\n", 
+    LogPrint("masternode", "CActiveMasternode::ManageStateRemote -- Start status = %s, type = %s, pinger enabled = %d, pubKeyMasternode.GetID() = %s\n",
              GetStatus(), GetTypeString(), fPingerEnabled, pubKeyMasternode.GetID().ToString());
 
     mnodeman.CheckMasternode(pubKeyMasternode, true);
