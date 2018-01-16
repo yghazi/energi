@@ -415,10 +415,10 @@ public:
         nPruneAfterHeight = 1000;
 
 
-        genesis = CreateGenesisBlock(1513976300UL, 3973119, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
+        genesis = CreateGenesisBlock(1516144193UL, 6508026, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        uint256 expectedGenesisHash = uint256S("0x615bdc6b29d4505aedb57ad39add993c634afdeb2db6203f1f5114dab8b8158f");
+        uint256 expectedGenesisHash = uint256S("0x1408784a8bd90a85a9ba7d58648de31f384bd4e33aebe94b7372fc17cde650ce");
         uint256 expectedGenesisMerkleRoot = uint256S("0x05c6efdc02cd5a40e168d22745297a2d35458e820577e71f639524bb4c01e740");
 
         // TODO: mine genesis block for testnet
@@ -547,9 +547,9 @@ public:
         nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1513976416UL, 38110691, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
+        genesis = CreateGenesisBlock(1516144391UL, 38160320, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
-        uint256 expectedGenesisHash = uint256S("0x522ac9ac37fa9de5bb3b2f9cb76d8d8a9e0de0b9ee0bc5377ef34beb05ec3e52");
+        uint256 expectedGenesisHash = uint256S("0xb38cebd45b08ebe91ed1c767f79bee1011af8cdf2b086fc64d71ae7927576cf2");
         uint256 expectedGenesisMerkleRoot = uint256S("0x744d37be84d22167ca7b69219a6b04d5f2fbb33a6c9b38f7f5237badc1c8bc00");
 
         // TODO: mine genesis block for testnet60x
@@ -684,10 +684,10 @@ public:
         nDefaultPort = 39797;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1513976528UL, 3, 0x207fffff, 1, consensus.nBlockSubsidy);
+        genesis = CreateGenesisBlock(1516144496UL, 5, 0x207fffff, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        uint256 expectedGenesisHash = uint256S("0xc77bdfb0e05c990c3fe1c40071e6df0bd1092a2fe85495a18a961a8447ef6eec");
+        uint256 expectedGenesisHash = uint256S("0xf9d442ef921c690a367e3986f6f2293e6644db1befc33f7b8411f3c551453155");
         uint256 expectedGenesisMerkleRoot = uint256S("0x05c6efdc02cd5a40e168d22745297a2d35458e820577e71f639524bb4c01e740");
 
         #ifdef ENERGI_MINE_NEW_GENESIS_BLOCK
