@@ -209,7 +209,6 @@ public:
         consensus.nInstantSendKeepLock = 24;
 
         consensus.nBudgetProposalEstablishingTime = 60*60*24; // 1 day
-        consensus.nSuperblockStartBlock = 20160; //
         consensus.nSuperblockCycle = 20160; // (60*24*14) Super block cycle for every 14 days (2 weeks)
 
         consensus.nGovernanceMinQuorum = 10;
@@ -384,7 +383,6 @@ public:
         consensus.nMasternodePaymentsStartBlock = 172800; // should be about 120 days after genesis
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetProposalEstablishingTime = 60*20;
-        consensus.nSuperblockStartBlock = 20160;
         consensus.nSuperblockCycle = 20160; // (60*24*14) Super block cycle for every 14 days (2 weeks)
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
@@ -519,7 +517,6 @@ public:
         consensus.nMasternodePaymentsStartBlock = 172800 / 60;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetProposalEstablishingTime = 60*20;
-        consensus.nSuperblockStartBlock = 336;   // 20160 / 60
         consensus.nSuperblockCycle = 60; // every hour
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
@@ -652,8 +649,7 @@ public:
         consensus.nMasternodePaymentsStartBlock = 240;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetProposalEstablishingTime = 60*20;
-        consensus.nSuperblockStartBlock = 1500;
-        consensus.nSuperblockCycle = 20160;
+        consensus.nSuperblockCycle = 60;
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 100;
         consensus.nMasternodeMinimumConfirmations = 1;

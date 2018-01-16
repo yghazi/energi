@@ -520,7 +520,7 @@ CSuperblock(uint256& nHash)
 bool CSuperblock::IsValidBlockHeight(int nBlockHeight)
 {
     // SUPERBLOCKS CAN HAPPEN ONLY after hardfork and only ONCE PER CYCLE
-    return nBlockHeight >= Params().GetConsensus().nSuperblockStartBlock &&
+    return nBlockHeight >= Params().GetConsensus().nSuperblockCycle &&
             ((nBlockHeight % Params().GetConsensus().nSuperblockCycle) == 0);
 }
 

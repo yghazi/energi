@@ -46,7 +46,6 @@ struct Params {
     int nMasternodePaymentsStartBlock;
     int nInstantSendKeepLock; // in blocks
     int nBudgetProposalEstablishingTime; // in seconds
-    int nSuperblockStartBlock;
     int nSuperblockCycle; // in blocks
     int nGovernanceMinQuorum; // Min absolute vote count to trigger an action
     int nGovernanceFilterElements;

@@ -915,31 +915,17 @@ UniValue getgovernanceinfo(const UniValue& params, bool fHelp)
             );
     }
 
-    // Compute last/next superblock
-    int nLastSuperblock, nNextSuperblock;
-
     // Get current block height
     int nBlockHeight = 0;
     {
         LOCK(cs_main);
-        nBlockHeight = (int)chainActive.Height();
+        nBlockHeight = static_cast<int>(chainActive.Height());
     }
 
-    // Get chain parameters
-    int nSuperblockStartBlock = Params().GetConsensus().nSuperblockStartBlock;
-    int nSuperblockCycle = Params().GetConsensus().nSuperblockCycle;
-
-    // Get first superblock
-    int nFirstSuperblockOffset = (nSuperblockCycle - nSuperblockStartBlock % nSuperblockCycle) % nSuperblockCycle;
-    int nFirstSuperblock = nSuperblockStartBlock + nFirstSuperblockOffset;
-
-    if(nBlockHeight < nFirstSuperblock){
-        nLastSuperblock = 0;
-        nNextSuperblock = nFirstSuperblock;
-    } else {
-        nLastSuperblock = nBlockHeight - nBlockHeight % nSuperblockCycle;
-        nNextSuperblock = nLastSuperblock + nSuperblockCycle;
-    }
+    // Compute last/next superblock
+    int const nSuperblockCycle = Params().GetConsensus().nSuperblockCycle;
+    int const nLastSuperblock = nBlockHeight - nBlockHeight % nSuperblockCycle;
+    int const nNextSuperblock = nLastSuperblock + nSuperblockCycle;
 
     UniValue obj(UniValue::VOBJ);
     obj.push_back(Pair("governanceminquorum", Params().GetConsensus().nGovernanceMinQuorum));
