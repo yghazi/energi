@@ -57,9 +57,9 @@ public:
      */
     enum Unit
     {
-        EGI,
-        mEGI,
-        uEGI,
+        NRG,
+        mNRG,
+        uNRG,
         atoms
     };
 
