@@ -107,7 +107,6 @@ protected:
     int nPoolMaxTransactions;
     int nFulfilledRequestExpireTime;
     std::string strSporkPubKey;
-    std::string strMasternodePaymentsPubKey;
 };
 
 /**
