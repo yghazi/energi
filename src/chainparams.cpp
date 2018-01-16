@@ -201,15 +201,15 @@ public:
         // 40% of the total annual emission of ~12M goes to the treasury
         // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
         // number of super blocks per year according to the 20160 block cycle
+        consensus.nSuperblockCycle = 20160; // (60*24*14) Super block cycle for every 14 days (2 weeks)
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = 20160; // same as nSuperblockStartBlock for now
+        consensus.nSpecialTreasuryBudgetBlock = consensus.nSuperblockCycle * 4;
 
         consensus.nMasternodePaymentsStartBlock = 172800; // should be about 120 days after genesis
         consensus.nInstantSendKeepLock = 24;
 
         consensus.nBudgetProposalEstablishingTime = 60*60*24; // 1 day
-        consensus.nSuperblockCycle = 20160; // (60*24*14) Super block cycle for every 14 days (2 weeks)
 
         consensus.nGovernanceMinQuorum = 10;
         consensus.nGovernanceFilterElements = 20000;
@@ -376,14 +376,14 @@ public:
         // 40% of the total annual emission of ~12M goes to the treasury
         // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
         // number of super blocks per year according to the 20160 block cycle
+        consensus.nSuperblockCycle = 20160; // (60*24*14) Super block cycle for every 14 days (2 weeks)
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = 20160; // same as nSuperblockStartBlock for now
+        consensus.nSpecialTreasuryBudgetBlock = consensus.nSuperblockCycle * 4;
 
         consensus.nMasternodePaymentsStartBlock = 172800; // should be about 120 days after genesis
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetProposalEstablishingTime = 60*20;
-        consensus.nSuperblockCycle = 20160; // (60*24*14) Super block cycle for every 14 days (2 weeks)
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
         consensus.nMasternodeMinimumConfirmations = 1;
@@ -510,14 +510,14 @@ public:
         // 40% of the total annual emission of ~12M goes to the treasury
         // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
         // number of super blocks per year according to the 20160 block cycle
+        consensus.nSuperblockCycle = 60;
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = 336; // same as nSuperblockStartBlock for now
+        consensus.nSpecialTreasuryBudgetBlock = consensus.nSuperblockCycle * 4;
 
         consensus.nMasternodePaymentsStartBlock = 172800 / 60;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetProposalEstablishingTime = 60*20;
-        consensus.nSuperblockCycle = 60; // every hour
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
         consensus.nMasternodeMinimumConfirmations = 1;
@@ -642,14 +642,14 @@ public:
         // 40% of the total annual emission of ~12M goes to the treasury
         // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
         // number of super blocks per year according to the 20160 block cycle
+        consensus.nSuperblockCycle = 60;
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = 1500; // same as nSuperblockStartBlock for now
+        consensus.nSpecialTreasuryBudgetBlock = consensus.nSuperblockCycle * 4;
 
         consensus.nMasternodePaymentsStartBlock = 240;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetProposalEstablishingTime = 60*20;
-        consensus.nSuperblockCycle = 60;
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 100;
         consensus.nMasternodeMinimumConfirmations = 1;
