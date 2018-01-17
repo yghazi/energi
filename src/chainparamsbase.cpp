@@ -116,6 +116,7 @@ std::string ChainNameFromCommandLine()
     bool fTestNet = GetBoolArg("-testnet", false);
     bool fTestNet60x = GetBoolArg("-testnet60x", false);
 
+    // special build - default to testnet binaries
     if ((fTestNet && fRegTest && fTestNet60x) || (fTestNet && fRegTest) || (fTestNet60x && fRegTest) || (fTestNet && fTestNet60x))
         throw std::runtime_error("Invalid combination of -regtest, -testnet and/or -testnet60x. Can't be used together.");
     if (fRegTest)
@@ -124,7 +125,7 @@ std::string ChainNameFromCommandLine()
         return CBaseChainParams::TESTNET;
     if (fTestNet60x)
         return CBaseChainParams::TESTNET60X;
-    return CBaseChainParams::MAIN;
+    return CBaseChainParams::TESTNET;
 }
 
 bool AreBaseParamsConfigured()
