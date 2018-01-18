@@ -510,7 +510,7 @@ public:
         consensus.nSuperblockCycle = 60;
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = consensus.nSuperblockCycle * 4;
+        consensus.nSpecialTreasuryBudgetBlock = consensus.nSuperblockCycle * 36;
 
         consensus.nMasternodePaymentsStartBlock = 172800 / 60;
         consensus.nInstantSendKeepLock = 6;
