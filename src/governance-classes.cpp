@@ -532,7 +532,7 @@ CAmount CSuperblock::GetPaymentsLimit(int nBlockHeight)
         return 0;
     }
 
-    CAmount nPaymentsLimit = consensusParams.nSpecialTreasuryBudgetBlock == nBlockHeight ? consensusParams.nSpecialTreasuryBudget : consensusParams.nRegularTreasuryBudget;
+    CAmount nPaymentsLimit = consensusParams.nSpecialTreasuryBudgetBlock == static_cast<uint32_t>(nBlockHeight) ? consensusParams.nSpecialTreasuryBudget : consensusParams.nRegularTreasuryBudget;
     LogPrint("gobject", "CSuperblock::GetPaymentsLimit -- Valid superblock height %d, payments max %lld\n", nBlockHeight, nPaymentsLimit);
 
     return nPaymentsLimit;
