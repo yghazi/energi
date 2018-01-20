@@ -282,6 +282,8 @@
     </qresource>
     <qresource prefix="/images/trad">
         <file alias="about">res/images/trad/about.png</file>
+        <file alias="unchecked">res/images/trad/unchecked.png</file>
+        <file alias="checked">res/images/trad/checked.png</file>
         <file alias="energi_logo_horizontal">res/images/trad/energi_logo_horizontal.png</file>
         <file alias="drkblue_downArrow">res/images/trad/drkblue_downArrow.png</file>
         <file alias="drkblue_downArrow_small">res/images/trad/drkblue_downArrow_small.png</file>
