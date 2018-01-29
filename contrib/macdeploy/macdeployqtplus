@@ -809,6 +809,7 @@ if config.dmg is not None:
         on run argv
            tell application "Finder"
              tell disk "$disk"
+                   delay 5
                    open
                    set current view of container window to icon view
                    set toolbar visible of container window to false
@@ -821,6 +822,7 @@ if config.dmg is not None:
                    $items_positions
                    close -- close/reopen works around a bug...
                    open
+                   delay 5
                    update without registering applications
                    delay 5
                    eject
