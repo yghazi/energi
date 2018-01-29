@@ -283,7 +283,7 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int nBlockH
     }
 
     // GET MASTERNODE PAYMENT VARIABLES SETUP
-    CAmount masternodePayment = GetMasternodePayment(nBlockHeight, 0);
+    CAmount masternodePayment = GetMasternodePayment(nBlockHeight, blockReward);
 
     // split reward between miner ...
     txNew.vout[0].nValue -= masternodePayment;
@@ -582,7 +582,7 @@ bool CMasternodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
         }
     }
 
-    LogPrintf("CMasternodeBlockPayees::IsTransactionValid -- ERROR: Missing required payment, possible payees: '%s', amount: %f EGI\n", strPayeesPossible, (float)nMasternodePayment/COIN);
+    LogPrintf("CMasternodeBlockPayees::IsTransactionValid -- ERROR: Missing required payment, possible payees: '%s', amount: %f NRG\n", strPayeesPossible, (float)nMasternodePayment/COIN);
     return false;
 }
 

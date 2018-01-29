@@ -19,9 +19,9 @@ BitcoinUnits::BitcoinUnits(QObject *parent):
 QList<BitcoinUnits::Unit> BitcoinUnits::availableUnits()
 {
     QList<BitcoinUnits::Unit> unitlist;
-    unitlist.append(EGI);
-    unitlist.append(mEGI);
-    unitlist.append(uEGI);
+    unitlist.append(NRG);
+    unitlist.append(mNRG);
+    unitlist.append(uNRG);
     unitlist.append(atoms);
     return unitlist;
 }
@@ -30,9 +30,9 @@ bool BitcoinUnits::valid(int unit)
 {
     switch(unit)
     {
-    case EGI:
-    case mEGI:
-    case uEGI:
+    case NRG:
+    case mNRG:
+    case uNRG:
     case atoms:
         return true;
     default:
@@ -46,9 +46,9 @@ QString BitcoinUnits::name(int unit)
     {
         switch(unit)
         {
-            case EGI: return QString("EGI");
-            case mEGI: return QString("mEGI");
-            case uEGI: return QString::fromUtf8("μEGI");
+            case NRG: return QString("NRG");
+            case mNRG: return QString("mNRG");
+            case uNRG: return QString::fromUtf8("μNRG");
             case atoms: return QString("atoms");
             default: return QString("???");
         }
@@ -57,9 +57,9 @@ QString BitcoinUnits::name(int unit)
     {
         switch(unit)
         {
-            case EGI: return QString("tEGI");
-            case mEGI: return QString("mtEGI");
-            case uEGI: return QString::fromUtf8("μtEGI");
+            case NRG: return QString("tNRG");
+            case mNRG: return QString("mtNRG");
+            case uNRG: return QString::fromUtf8("μtNRG");
             case atoms: return QString("tatoms");
             default: return QString("???");
         }
@@ -72,9 +72,9 @@ QString BitcoinUnits::description(int unit)
     {
         switch(unit)
         {
-            case EGI: return QString("Energi");
-            case mEGI: return QString("Milli-Energi (1 / 1" THIN_SP_UTF8 "000)");
-            case uEGI: return QString("Micro-Energi (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case NRG: return QString("Energi");
+            case mNRG: return QString("Milli-Energi (1 / 1" THIN_SP_UTF8 "000)");
+            case uNRG: return QString("Micro-Energi (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             case atoms: return QString("Ten Nano-Energi (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
@@ -83,9 +83,9 @@ QString BitcoinUnits::description(int unit)
     {
         switch(unit)
         {
-            case EGI: return QString("TestEnergis");
-            case mEGI: return QString("Milli-TestEnergi (1 / 1" THIN_SP_UTF8 "000)");
-            case uEGI: return QString("Micro-TestEnergi (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case NRG: return QString("TestEnergis");
+            case mNRG: return QString("Milli-TestEnergi (1 / 1" THIN_SP_UTF8 "000)");
+            case uNRG: return QString("Micro-TestEnergi (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             case atoms: return QString("Ten Nano-TestEnergi (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
@@ -96,9 +96,9 @@ qint64 BitcoinUnits::factor(int unit)
 {
     switch(unit)
     {
-    case EGI:  return 100000000;
-    case mEGI: return 100000;
-    case uEGI: return 100;
+    case NRG:  return 100000000;
+    case mNRG: return 100000;
+    case uNRG: return 100;
     case atoms: return 1;
     default:   return 100000000;
     }
@@ -108,9 +108,9 @@ int BitcoinUnits::decimals(int unit)
 {
     switch(unit)
     {
-    case EGI: return 8;
-    case mEGI: return 5;
-    case uEGI: return 2;
+    case NRG: return 8;
+    case mNRG: return 5;
+    case uNRG: return 2;
     case atoms: return 0;
     default: return 0;
     }

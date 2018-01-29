@@ -49,7 +49,7 @@ unsigned int nTxConfirmTarget = DEFAULT_TX_CONFIRM_TARGET;
 bool bSpendZeroConfChange = DEFAULT_SPEND_ZEROCONF_CHANGE;
 bool fSendFreeTransactions = DEFAULT_SEND_FREE_TRANSACTIONS;
 
-/** 
+/**
  * Fees smaller than this (in atoms) are considered zero fee (for transaction creation)
  * Override with -mintxfee
  */
@@ -601,7 +601,7 @@ bool CWallet::Verify(const string& walletFile, string& warningString, string& er
         } catch (const boost::filesystem::filesystem_error&) {
             // failure is ok (well, not really, but it's not worse than what we started with)
         }
-        
+
         // try again
         if (!bitdb.Open(GetDataDir())) {
             // if it still fails, it probably means we can't even create the database env
@@ -610,14 +610,14 @@ bool CWallet::Verify(const string& walletFile, string& warningString, string& er
             return true;
         }
     }
-    
+
     if (GetBoolArg("-salvagewallet", false))
     {
         // Recover readable keypairs:
         if (!CWalletDB::Recover(bitdb, walletFile, true))
             return false;
     }
-    
+
     if (boost::filesystem::exists(GetDataDir() / walletFile))
     {
         CDBEnv::VerifyResult r = bitdb.Verify(walletFile, CWalletDB::Recover);
@@ -631,7 +631,7 @@ bool CWallet::Verify(const string& walletFile, string& warningString, string& er
         if (r == CDBEnv::RECOVER_FAIL)
             errorString += _("wallet.dat corrupt, salvage failed");
     }
-    
+
     return true;
 }
 
@@ -2464,9 +2464,9 @@ static void ApproximateBestSubset(vector<pair<CAmount, pair<const CWalletTx*,uns
         }
     }
 
-    //Reduces the approximate best subset by removing any inputs that are smaller than the surplus of nTotal beyond nTargetValue. 
+    //Reduces the approximate best subset by removing any inputs that are smaller than the surplus of nTotal beyond nTargetValue.
     for (unsigned int i = 0; i < vValue.size(); i++)
-    {                        
+    {
         if (vfBest[i] && (nBest - vValue[i].first) >= nTargetValue )
         {
             vfBest[i] = false;
@@ -2767,10 +2767,10 @@ bool CWallet::SelectCoinsByDenominations(int nDenom, CAmount nValueMin, CAmount 
     std::random_shuffle(vCoins.rbegin(), vCoins.rend(), GetRandInt);
 
     // ( bit on if present )
-    // bit 0 - 100EGI+1
-    // bit 1 - 10EGI+1
-    // bit 2 - 1EGI+1
-    // bit 3 - .1EGI+1
+    // bit 0 - 100NRG+1
+    // bit 1 - 10NRG+1
+    // bit 2 - 1NRG+1
+    // bit 3 - .1NRG+1
 
     std::vector<int> vecBits;
     if (!CPrivateSend::GetDenominationsBits(nDenom, vecBits)) {
@@ -3285,9 +3285,9 @@ bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend, CWalletTx& wt
                 if (!SelectCoins(nValueToSelect, setCoins, nValueIn, coinControl, nCoinType, fUseInstantSend))
                 {
                     if (nCoinType == ONLY_NOTCOLLATERALIFMN) {
-                        strFailReason = _("Unable to locate enough funds for this transaction that are not equal 10000 EGI.");
+                        strFailReason = _("Unable to locate enough funds for this transaction that are not equal 10000 NRG.");
                     } else if (nCoinType == ONLY_NONDENOMINATED_NOTCOLLATERALIFMN) {
-                        strFailReason = _("Unable to locate enough PrivateSend non-denominated funds for this transaction that are not equal 10000 EGI.");
+                        strFailReason = _("Unable to locate enough PrivateSend non-denominated funds for this transaction that are not equal 10000 NRG.");
                     } else if (nCoinType == ONLY_DENOMINATED) {
                         strFailReason = _("Unable to locate enough PrivateSend denominated funds for this transaction.");
                         strFailReason += " " + _("PrivateSend uses exact denominated amounts to send funds, you might simply need to anonymize some more coins.");
@@ -3734,7 +3734,7 @@ bool CWallet::SetDefaultKey(const CPubKey &vchPubKey)
 
 /**
  * Mark old keypool keys as used,
- * and generate all new keys 
+ * and generate all new keys
  */
 bool CWallet::NewKeyPool()
 {

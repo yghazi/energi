@@ -304,11 +304,11 @@ bool ECC_InitSanityCheck() {
 void ECC_Start() {
     //TEMP solution to get rid of 'SIGABRT's and have actual test failures.
     //It seems abortion from one test brings to a case where'secp256k1_context_sign' is not reset and the alert fails in other tests
-    if (secp256k1_context_sign != NULL) {
-      secp256k1_context_sign = NULL;
-      assert(false); //Keeping the original logic just with resetting the static var
-    }
-    //assert(secp256k1_context_sign == NULL);
+    //if (secp256k1_context_sign != NULL) {
+    //  secp256k1_context_sign = NULL;
+    //  assert(false); //Keeping the original logic just with resetting the static var
+    //}
+    assert(secp256k1_context_sign == NULL);
 
     secp256k1_context *ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
     assert(ctx != NULL);

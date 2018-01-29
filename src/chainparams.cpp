@@ -201,16 +201,15 @@ public:
         // 40% of the total annual emission of ~12M goes to the treasury
         // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
         // number of super blocks per year according to the 20160 block cycle
+        consensus.nSuperblockCycle = 20160; // (60*24*14) Super block cycle for every 14 days (2 weeks)
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = 20160; // same as nSuperblockStartBlock for now
+        consensus.nSpecialTreasuryBudgetBlock = consensus.nSuperblockCycle * 4;
 
-        consensus.nMasternodePaymentsStartBlock = 87600; // should be about 2 months after genesis
+        consensus.nMasternodePaymentsStartBlock = 172800; // should be about 120 days after genesis
         consensus.nInstantSendKeepLock = 24;
 
         consensus.nBudgetProposalEstablishingTime = 60*60*24; // 1 day
-        consensus.nSuperblockStartBlock = 20160; //
-        consensus.nSuperblockCycle = 20160; // (60*24*14) Super block cycle for every 14 days (2 weeks)
 
         consensus.nGovernanceMinQuorum = 10;
         consensus.nGovernanceFilterElements = 20000;
@@ -258,7 +257,7 @@ public:
         pchMessageStart[1] = 0x2d;
         pchMessageStart[2] = 0x9a;
         pchMessageStart[3] = 0xaf;
-        vAlertPubKey = ParseHex("0466e98d9fe73af302d93ead0a7637834837e04c04fd67c9f100b278b53f004737b944f7caf8d32e6a2e1e368df31a44992b93569726d795bdc65dca439c8eec47");
+        vAlertPubKey = ParseHex("04da7109a0215bf7bb19ecaf9e4295104142b4e03579473c1083ad44e8195a13394a8a7e51ca223fdbc5439420fd08963e491007beab68ac65c5b1c842c8635b37");
         nDefaultPort = 9797;
         nMaxTipAge = 6 * 60 * 60; // ~144 blocks behind -> 2 x fork detection time, was 24 * 60 * 60 in bitcoin
         nDelayGetHeadersTime = 24 * 60 * 60;
@@ -307,9 +306,7 @@ public:
 
         nPoolMaxTransactions = 3;
         nFulfilledRequestExpireTime = 60*60; // fulfilled requests expire in 1 hour
-        // TODO change the public keys
-        strSporkPubKey = "049b34e6fb9eb999228f984a96d05ca6556e0d09f1c2fc069fecc514dac885cf13012324531acbb07be1c517359abd3855e98ebc133edbda47e2449292eac47325";
-        strMasternodePaymentsPubKey = "04ead8cb682e9df4d464539821b43e9a4a14015d5402f6884e632b6a4a2338ee3970d0513620e2686dc8261b4c64c427dc8563edcbcfbd3382ad295e8fa71e1e5f";
+        strSporkPubKey = "044221353eb05b321b55f9b47dc90462066d6e09019e95b05d6603a117877fd34b13b34e8ed005379a9553ce7e719c44c658fd9c9acaae58a04c63cb8f7b5716db";
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
@@ -377,15 +374,14 @@ public:
         // 40% of the total annual emission of ~12M goes to the treasury
         // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
         // number of super blocks per year according to the 20160 block cycle
+        consensus.nSuperblockCycle = 20160; // (60*24*14) Super block cycle for every 14 days (2 weeks)
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = 20160; // same as nSuperblockStartBlock for now
+        consensus.nSpecialTreasuryBudgetBlock = consensus.nSuperblockCycle * 4;
 
-        consensus.nMasternodePaymentsStartBlock = 87600; // should be about 2 months after genesis
+        consensus.nMasternodePaymentsStartBlock = 172800; // should be about 120 days after genesis
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetProposalEstablishingTime = 60*20;
-        consensus.nSuperblockStartBlock = 20160;
-        consensus.nSuperblockCycle = 20160; // (60*24*14) Super block cycle for every 14 days (2 weeks)
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
         consensus.nMasternodeMinimumConfirmations = 1;
@@ -412,17 +408,17 @@ public:
         pchMessageStart[1] = 0x2a;
         pchMessageStart[2] = 0xab;
         pchMessageStart[3] = 0x6e;
-        vAlertPubKey = ParseHex("04c3660259aa76854c135c5b5b0a668cecc7ca81b531dbbb212353c90132ba32cf1a11309eec989856bbf1748d047b69590279633f15e5e9835d263acdedad2400");
+        vAlertPubKey = ParseHex("04da7109a0215bf7bb19ecaf9e4295104142b4e03579473c1083ad44e8195a13394a8a7e51ca223fdbc5439420fd08963e491007beab68ac65c5b1c842c8635b37");
         nDefaultPort = 19797;
         nMaxTipAge = 0x7fffffff; // allow mining on top of old blocks for testnet
         nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 1000;
 
 
-        genesis = CreateGenesisBlock(1513976300UL, 3973119, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
+        genesis = CreateGenesisBlock(1516144193UL, 6508026, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        uint256 expectedGenesisHash = uint256S("0x615bdc6b29d4505aedb57ad39add993c634afdeb2db6203f1f5114dab8b8158f");
+        uint256 expectedGenesisHash = uint256S("0x1408784a8bd90a85a9ba7d58648de31f384bd4e33aebe94b7372fc17cde650ce");
         uint256 expectedGenesisMerkleRoot = uint256S("0x05c6efdc02cd5a40e168d22745297a2d35458e820577e71f639524bb4c01e740");
 
         // TODO: mine genesis block for testnet
@@ -464,8 +460,7 @@ public:
 
         nPoolMaxTransactions = 3;
         nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
-        strSporkPubKey = "046f8bd5301f95b88d75f3557c732785e12916930506406e8919389f5360e7dffefbe6d6e45144b9ab837d65e21ab93b67d4af30d27ba38c5e5622d31903338039";
-        strMasternodePaymentsPubKey = "040c342b5f1a50c6b29adb92c5105eb8a1bea5151c7d353d30b85314a86bd577f1a76e27372220233a54afbb61b7c8f0e7e7dc6a030dc1b801b71369618ba59961";
+        strSporkPubKey = "044221353eb05b321b55f9b47dc90462066d6e09019e95b05d6603a117877fd34b13b34e8ed005379a9553ce7e719c44c658fd9c9acaae58a04c63cb8f7b5716db";
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
@@ -512,15 +507,14 @@ public:
         // 40% of the total annual emission of ~12M goes to the treasury
         // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
         // number of super blocks per year according to the 20160 block cycle
+        consensus.nSuperblockCycle = 60;
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = 336; // same as nSuperblockStartBlock for now
+        consensus.nSpecialTreasuryBudgetBlock = consensus.nSuperblockCycle * 36;
 
-        consensus.nMasternodePaymentsStartBlock = 1460; // 87600/60.. little over a day
+        consensus.nMasternodePaymentsStartBlock = 172800 / 60;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetProposalEstablishingTime = 60*20;
-        consensus.nSuperblockStartBlock = 336;   // 20160 / 60
-        consensus.nSuperblockCycle = 60; // every hour
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
         consensus.nMasternodeMinimumConfirmations = 1;
@@ -547,15 +541,15 @@ public:
         pchMessageStart[1] = 0x2a;
         pchMessageStart[2] = 0xab;
         pchMessageStart[3] = 0x60; // Changed the last byte just in case, even though the port is different too, so shouldn't mess with the general testnet
-        vAlertPubKey = ParseHex("04c3660259aa76854c135c5b5b0a668cecc7ca81b531dbbb212353c90132ba32cf1a11309eec989856bbf1748d047b69590279633f15e5e9835d263acdedad2400");
+        vAlertPubKey = ParseHex("04da7109a0215bf7bb19ecaf9e4295104142b4e03579473c1083ad44e8195a13394a8a7e51ca223fdbc5439420fd08963e491007beab68ac65c5b1c842c8635b37");
         nDefaultPort = 29797;
         nMaxTipAge = 0x7fffffff; // allow mining on top of old blocks for testnet
         nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1513976416UL, 38110691, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
+        genesis = CreateGenesisBlock(1516247493UL, 38628209, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
-        uint256 expectedGenesisHash = uint256S("0x522ac9ac37fa9de5bb3b2f9cb76d8d8a9e0de0b9ee0bc5377ef34beb05ec3e52");
+        uint256 expectedGenesisHash = uint256S("0xff06ae62b98d9db3e4f0ab7e0c936b5f40cc1a0c9240f3ff745954f75055d5bf");
         uint256 expectedGenesisMerkleRoot = uint256S("0x744d37be84d22167ca7b69219a6b04d5f2fbb33a6c9b38f7f5237badc1c8bc00");
 
         // TODO: mine genesis block for testnet60x
@@ -597,8 +591,7 @@ public:
 
         nPoolMaxTransactions = 3;
         nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
-        strSporkPubKey = "046f8bd5301f95b88d75f3557c732785e12916930506406e8919389f5360e7dffefbe6d6e45144b9ab837d65e21ab93b67d4af30d27ba38c5e5622d31903338039";
-        strMasternodePaymentsPubKey = "040c342b5f1a50c6b29adb92c5105eb8a1bea5151c7d353d30b85314a86bd577f1a76e27372220233a54afbb61b7c8f0e7e7dc6a030dc1b801b71369618ba59961";
+        strSporkPubKey = "044221353eb05b321b55f9b47dc90462066d6e09019e95b05d6603a117877fd34b13b34e8ed005379a9553ce7e719c44c658fd9c9acaae58a04c63cb8f7b5716db";
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
@@ -645,15 +638,14 @@ public:
         // 40% of the total annual emission of ~12M goes to the treasury
         // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
         // number of super blocks per year according to the 20160 block cycle
+        consensus.nSuperblockCycle = 60;
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = 1500; // same as nSuperblockStartBlock for now
+        consensus.nSpecialTreasuryBudgetBlock = consensus.nSuperblockCycle * 4;
 
         consensus.nMasternodePaymentsStartBlock = 240;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetProposalEstablishingTime = 60*20;
-        consensus.nSuperblockStartBlock = 1500;
-        consensus.nSuperblockCycle = 20160;
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 100;
         consensus.nMasternodeMinimumConfirmations = 1;
@@ -692,10 +684,10 @@ public:
         nDefaultPort = 39797;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1513976528UL, 3, 0x207fffff, 1, consensus.nBlockSubsidy);
+        genesis = CreateGenesisBlock(1516144496UL, 5, 0x207fffff, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        uint256 expectedGenesisHash = uint256S("0xc77bdfb0e05c990c3fe1c40071e6df0bd1092a2fe85495a18a961a8447ef6eec");
+        uint256 expectedGenesisHash = uint256S("0xf9d442ef921c690a367e3986f6f2293e6644db1befc33f7b8411f3c551453155");
         uint256 expectedGenesisMerkleRoot = uint256S("0x05c6efdc02cd5a40e168d22745297a2d35458e820577e71f639524bb4c01e740");
 
         #ifdef ENERGI_MINE_NEW_GENESIS_BLOCK

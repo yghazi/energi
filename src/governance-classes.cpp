@@ -520,7 +520,7 @@ CSuperblock(uint256& nHash)
 bool CSuperblock::IsValidBlockHeight(int nBlockHeight)
 {
     // SUPERBLOCKS CAN HAPPEN ONLY after hardfork and only ONCE PER CYCLE
-    return nBlockHeight >= Params().GetConsensus().nSuperblockStartBlock &&
+    return nBlockHeight >= Params().GetConsensus().nSuperblockCycle &&
             ((nBlockHeight % Params().GetConsensus().nSuperblockCycle) == 0);
 }
 
@@ -532,7 +532,7 @@ CAmount CSuperblock::GetPaymentsLimit(int nBlockHeight)
         return 0;
     }
 
-    CAmount nPaymentsLimit = consensusParams.nSpecialTreasuryBudgetBlock == nBlockHeight ? consensusParams.nSpecialTreasuryBudget : consensusParams.nRegularTreasuryBudget;
+    CAmount nPaymentsLimit = consensusParams.nSpecialTreasuryBudgetBlock == static_cast<uint32_t>(nBlockHeight) ? consensusParams.nSpecialTreasuryBudget : consensusParams.nRegularTreasuryBudget;
     LogPrint("gobject", "CSuperblock::GetPaymentsLimit -- Valid superblock height %d, payments max %lld\n", nBlockHeight, nPaymentsLimit);
 
     return nPaymentsLimit;
