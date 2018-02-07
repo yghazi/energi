@@ -280,7 +280,7 @@ public:
         //assert(consensus.hashGenesisBlock == expectedGenesisHash);
         //assert(genesis.hashMerkleRoot == expectedGenesisMerkleRoot);
 
-        vSeeds.push_back(CDNSSeedData("energi.network", "us-seed1.energi.network"));
+        vSeeds.push_back(CDNSSeedData("energi.network", "dnsseed.energi.network"));
 
         // Energi addresses start with 'E'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,33);
@@ -434,7 +434,7 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("energi.network", "us-seed1.test.energi.network"));
+        vSeeds.push_back(CDNSSeedData("test.energi.network", "dnsseed.test.energi.network"));
 
         // Testnet Energi addresses start with 't'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127);
@@ -565,7 +565,7 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("energi.network",  "us-seed1.test60x.energi.network"));
+        vSeeds.push_back(CDNSSeedData("test60x.energi.network",  "dnsseed.test60x.energi.network"));
 
         // Testnet Energi addresses start with 't'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127);
