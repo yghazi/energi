@@ -2437,7 +2437,7 @@ void CreateDAG(int height, egihash::progress_callback_type callback)
     using namespace egihash;
 
     if (!GetBoolArg("-usedag", DEFAULT_USEDAG)) {
-        LogPrintf("dag: Operating in light mode - skipping DAG creation (usedag=0)");
+        LogPrint("nrghash", "Operating in light mode - skipping DAG creation (usedag=0)");
         return;
     }
 
@@ -2447,18 +2447,18 @@ void CreateDAG(int height, egihash::progress_callback_type callback)
     ss << hex << setw(4) << setfill('0') << epoch << "-" << seedhash.substr(0, 12) << ".dag";
     auto const epoch_file = GetDataDir(false) / "dag" / ss.str();
 
-    LogPrint("dag", "DAG file for epoch %u is \"%s\"", epoch, epoch_file.string());
+    LogPrint("nrghash", "DAG file for epoch %u is \"%s\"", epoch, epoch_file.string());
     // try to load the DAG from disk
     try
     {
         unique_ptr<dag_t> new_dag(new dag_t(epoch_file.string(), callback));
         ActiveDAG(move(new_dag));
-        LogPrint("dag", "DAG file \"%s\" loaded successfully.", epoch_file.string());
+        LogPrint("nrghash", "DAG file \"%s\" loaded successfully.", epoch_file.string());
         return;
     }
     catch (hash_exception const & e)
     {
-        LogPrint("dag", "DAG file \"%s\" not loaded, will be generated instead. Message: %s", epoch_file.string(), e.what());
+        LogPrint("nrghash", "DAG file \"%s\" not loaded, will be generated instead. Message: %s", epoch_file.string(), e.what());
     }
 
     // try to generate the DAG
@@ -2468,7 +2468,7 @@ void CreateDAG(int height, egihash::progress_callback_type callback)
         boost::filesystem::create_directories(epoch_file.parent_path());
         new_dag->save(epoch_file.string());
         ActiveDAG(move(new_dag));
-        LogPrint("dag", "DAG generated successfully. Saved to \"%s\".", epoch_file.string());
+        LogPrint("nrghash", "DAG generated successfully. Saved to \"%s\".", epoch_file.string());
     }
     catch (hash_exception const & e)
     {
@@ -2489,8 +2489,9 @@ void InitDAG(egihash::progress_callback_type callback)
     {
         auto const height = (max)(GetHeight(), 0);
         CreateDAG(height, callback);
+        LogPrint("nrghash", "Loaded or created DAG for epoch %d", height / egihash::constants::EPOCH_LENGTH);
     }
-    LogPrint("dag", "DAG has been initialized already. Use ActiveDAG() to swap.");
+    LogPrint("nrghash", "DAG has been initialized already. Use ActiveDAG() to swap.");
 }
 
 /**
