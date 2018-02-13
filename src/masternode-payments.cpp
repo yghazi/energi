@@ -64,7 +64,7 @@ bool IsBlockValueValid(const CBlock& block, int nBlockHeight, CAmount blockRewar
     }
     if (!isFoundationRewardValueMet)
     {
-        LogPrint("gobject", "IsBlockValueValid -- coinbase does not pay correct Energi Foundation Amount");
+        LogPrint("mnpayments", "IsBlockValueValid -- coinbase does not pay correct Energi Foundation Amount\n");
         return false;
     }
 
@@ -155,7 +155,7 @@ bool IsBlockPayeeValid(const CTransaction& txNew, int nBlockHeight, CAmount bloc
 
     if (nBlockHeight < consensusParams.nMasternodePaymentsStartBlock)
     {
-        LogPrint("mnpayments", "IsBlockPayeeValid -- No masternode payments yet at height %d (start at %d)", nBlockHeight, consensusParams.nMasternodePaymentsStartBlock);
+        LogPrint("mnpayments", "IsBlockPayeeValid -- No masternode payments yet at height %d (start at %d)\n", nBlockHeight, consensusParams.nMasternodePaymentsStartBlock);
         return true;
     }
     else
