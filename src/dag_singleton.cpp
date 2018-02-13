@@ -19,14 +19,19 @@ std::unique_ptr<egihash::dag_t> const & ActiveDAG(std::unique_ptr<egihash::dag_t
     // if we have a next_dag swap it
     if (next_dag)
     {
+        auto const previous_epoch = active->epoch();
+        auto const new_epoch = next_dag->epoch();
         active.swap(next_dag);
+        LogPrint("nrghash", "DAG swapped to new epoch (%d->%d)", previous_epoch, new_epoch);
     }
 
     // unload the previous dag
     if (next_dag)
     {
+        auto previous_epoch = next_dag->epoch();
         next_dag->unload();
         next_dag.reset();
+        LogPrint("nrghash", "DAG for epoch %d unloaded", previous_epoch);
     }
 
     return active;

@@ -2516,25 +2516,25 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
             switch(phase)
             {
                 case egihash::cache_seeding:
-                    LogPrintf("Seeding cache... %3.2lf\n", progress);
+                    LogPrint("nrghash", "Seeding cache... %3.2lf\n", progress);
                     break;
                 case egihash::cache_generation:
-                    LogPrintf("Generating cache... %3.2lf\n", progress);
+                    LogPrint("nrghash", "Generating cache... %3.2lf\n", progress);
                     break;
                 case egihash::cache_saving:
-                    LogPrintf("Saving cache... %3.2lf\n", progress);
+                    LogPrint("nrghash", "Saving cache... %3.2lf\n", progress);
                     break;
                 case egihash::cache_loading:
-                    LogPrintf("Loading cache... %3.2lf\n", progress);
+                    LogPrint("nrghash", "Loading cache... %3.2lf\n", progress);
                     break;
                 case egihash::dag_generation:
-                    LogPrintf("Generating DAG... %3.2lf\n", progress);
+                    LogPrint("nrghash", "Generating DAG... %3.2lf\n", progress);
                     break;
                 case egihash::dag_saving:
-                    LogPrintf("Saving DAG... %3.2lf\n", progress);
+                    LogPrint("nrghash", "Saving DAG... %3.2lf\n", progress);
                     break;
                 case egihash::dag_loading:
-                    LogPrintf("Loading DAG... %3.2lf\n", progress);
+                    LogPrint("nrghash", "Loading DAG... %3.2lf\n", progress);
                     break;
                 default:
                     break;
