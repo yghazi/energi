@@ -22,28 +22,12 @@ CCriticalSection cs_mapMasternodeBlocks;
 CCriticalSection cs_mapMasternodePaymentVotes;
 
 /**
-* IsBlockValueValid
+* CheckEnergiFoundationPayment
 *
-*   Determine if coinbase outgoing created money is the correct value
-*
-*   Why is this needed?
-*   - In Energi some blocks are superblocks, which output much higher amounts of coins
-*   - Otherblocks are 10% lower in outgoing value, so in total, no extra coins are created
-*   - When non-superblocks are detected, the normal schedule should be maintained
+*   Determine if coinbase transaction contains the Energi Foundation payment.
 */
-
-bool IsBlockValueValid(const CBlock& block, int nBlockHeight, CAmount blockReward, std::string &strErrorRet)
+bool CheckEnergiFoundationPayment(const CBlock& block, const Consensus::Params& consensusParams)
 {
-    strErrorRet = "";
-
-    bool isBlockRewardValueMet = (block.vtx[0].GetValueOut() <= blockReward);
-    if(fDebug) LogPrintf("block.vtx[0].GetValueOut() %lld <= blockReward %lld\n", block.vtx[0].GetValueOut(), blockReward);
-
-    // we are still using budgets, but we have no data about them anymore,
-    // all we know is predefined budget cycle and window
-
-    const Consensus::Params& consensusParams = Params().GetConsensus();
-
     // verify the Energi foundation address payment
     // TODO: is there a better way to search tx outputs?
     bool isFoundationRewardValueMet = false;
@@ -67,6 +51,30 @@ bool IsBlockValueValid(const CBlock& block, int nBlockHeight, CAmount blockRewar
         LogPrint("gobject", "IsBlockValueValid -- coinbase does not pay correct Energi Foundation Amount");
         return false;
     }
+}
+
+/**
+* IsBlockValueValid
+*
+*   Determine if coinbase outgoing created money is the correct value
+*
+*   Why is this needed?
+*   - In Energi some blocks are superblocks, which output much higher amounts of coins
+*   - Otherblocks are 40% lower in outgoing value, so in total, no extra coins are created
+*   - When non-superblocks are detected, the normal schedule should be maintained
+*/
+
+bool IsBlockValueValid(const CBlock& block, int nBlockHeight, CAmount blockReward, std::string &strErrorRet)
+{
+    strErrorRet = "";
+
+    bool isBlockRewardValueMet = (block.vtx[0].GetValueOut() <= blockReward);
+    if(fDebug) LogPrintf("block.vtx[0].GetValueOut() %lld <= blockReward %lld\n", block.vtx[0].GetValueOut(), blockReward);
+
+    // we are still using budgets, but we have no data about them anymore,
+    // all we know is predefined budget cycle and window
+
+    const Consensus::Params& consensusParams = Params().GetConsensus();
 
     CAmount nSuperblockMaxValue =  blockReward + CSuperblock::GetPaymentsLimit(nBlockHeight);
     bool isSuperblockMaxValueMet = (block.vtx[0].GetValueOut() <= nSuperblockMaxValue);
@@ -88,7 +96,7 @@ bool IsBlockValueValid(const CBlock& block, int nBlockHeight, CAmount blockRewar
                                     nBlockHeight, block.vtx[0].GetValueOut(), blockReward);
         }
         // it MUST be a regular block otherwise
-        return isBlockRewardValueMet;
+        return CheckEnergiFoundationPayment(block, consensusParams) && isBlockRewardValueMet;
     }
 
     // we are synced, let's try to check as much data as we can
@@ -122,7 +130,7 @@ bool IsBlockValueValid(const CBlock& block, int nBlockHeight, CAmount blockRewar
     }
 
     // it MUST be a regular block
-    return isBlockRewardValueMet;
+    return CheckEnergiFoundationPayment(block, consensusParams) && isBlockRewardValueMet;
 }
 
 bool IsBlockPayeeValid(const CTransaction& txNew, int nBlockHeight, CAmount blockReward)
