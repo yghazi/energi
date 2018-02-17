@@ -65,7 +65,7 @@ bool IsBlockValueValid(const CBlock& block, int nBlockHeight, CAmount blockRewar
     if (!isFoundationRewardValueMet)
     {
         LogPrint("gobject", "IsBlockValueValid -- coinbase does not pay correct Energi Foundation Amount");
-        return false;
+        isBlockRewardValueMet = false;
     }
 
     CAmount nSuperblockMaxValue =  blockReward + CSuperblock::GetPaymentsLimit(nBlockHeight);
