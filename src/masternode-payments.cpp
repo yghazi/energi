@@ -64,7 +64,7 @@ bool IsBlockValueValid(const CBlock& block, int nBlockHeight, CAmount blockRewar
     }
     if (!isFoundationRewardValueMet)
     {
-        LogPrint("mnpayments", "IsBlockValueValid -- coinbase does not pay correct Energi Foundation Amount\n");
+        LogPrint("gobject", "IsBlockValueValid -- coinbase does not pay correct Energi Foundation Amount\n");
         return false;
     }
 
