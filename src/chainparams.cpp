@@ -280,7 +280,7 @@ public:
         //assert(consensus.hashGenesisBlock == expectedGenesisHash);
         //assert(genesis.hashMerkleRoot == expectedGenesisMerkleRoot);
 
-        vSeeds.push_back(CDNSSeedData("energi.network", "us-seed1.energi.network"));
+        vSeeds.push_back(CDNSSeedData("energi.network", "dnsseed.energi.network"));
 
         // Energi addresses start with 'E'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,33);
@@ -373,15 +373,15 @@ public:
 
         // 40% of the total annual emission of ~12M goes to the treasury
         // which is around 4.8M / 26.07 ~ 184,000, where 26.07 are the
-        // number of super blocks per year according to the 20160 block cycle
-        consensus.nSuperblockCycle = 20160; // (60*24*14) Super block cycle for every 14 days (2 weeks)
+        // number of super blocks per year according to the 180 block cycle
+        consensus.nSuperblockCycle = 30; // 30 Super block cycle for every 1/2 hours
         consensus.nRegularTreasuryBudget = 18400000000000;
         consensus.nSpecialTreasuryBudget = 400000000000000; // 4M special initial treasury budget
-        consensus.nSpecialTreasuryBudgetBlock = consensus.nSuperblockCycle * 4;
+        consensus.nSpecialTreasuryBudgetBlock = consensus.nSuperblockCycle * 50;
 
         consensus.nMasternodePaymentsStartBlock = 172800; // should be about 120 days after genesis
         consensus.nInstantSendKeepLock = 6;
-        consensus.nBudgetProposalEstablishingTime = 60*20;
+        consensus.nBudgetProposalEstablishingTime = 60*60;
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
         consensus.nMasternodeMinimumConfirmations = 1;
@@ -415,10 +415,10 @@ public:
         nPruneAfterHeight = 1000;
 
 
-        genesis = CreateGenesisBlock(1516144193UL, 6508026, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
+        genesis = CreateGenesisBlock(1518488210UL, 8001491, 0x1e0ffff0, 1, consensus.nBlockSubsidy);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        uint256 expectedGenesisHash = uint256S("0x1408784a8bd90a85a9ba7d58648de31f384bd4e33aebe94b7372fc17cde650ce");
+        uint256 expectedGenesisHash = uint256S("0x8537dd238f430a4645935648b7858cf320e8ef11853c949c4c11b910797a545b");
         uint256 expectedGenesisMerkleRoot = uint256S("0x05c6efdc02cd5a40e168d22745297a2d35458e820577e71f639524bb4c01e740");
 
         // TODO: mine genesis block for testnet
@@ -434,7 +434,7 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("energi.network", "us-seed1.test.energi.network"));
+        vSeeds.push_back(CDNSSeedData("test.energi.network", "dnsseed.test.energi.network"));
 
         // Testnet Energi addresses start with 't'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127);
@@ -565,7 +565,7 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("energi.network",  "us-seed1.test60x.energi.network"));
+        vSeeds.push_back(CDNSSeedData("test60x.energi.network",  "dnsseed.test60x.energi.network"));
 
         // Testnet Energi addresses start with 't'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,127);
