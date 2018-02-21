@@ -545,7 +545,7 @@ CAmount CSuperblock::GetPaymentsLimit(int nBlockHeight)
     // coins that would be allocated to masternodes are available to pay treasury proposals
     if (nBlockHeight < consensusParams.nMasternodePaymentsStartBlock)
     {
-        nPaymentsLimit += consensusParams.nSuperblockCycle * consensusParams.nBlockSubsidyMasternodes;
+        nPaymentsLimit += (consensusParams.nSuperblockCycle * consensusParams.nBlockSubsidyMasternodes);
     }
 
     LogPrint("gobject", "CSuperblock::GetPaymentsLimit -- Valid superblock height %d, payments max %lld\n", nBlockHeight, nPaymentsLimit);
