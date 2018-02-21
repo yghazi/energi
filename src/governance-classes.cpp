@@ -535,17 +535,17 @@ CAmount CSuperblock::GetPaymentsLimit(int nBlockHeight)
     // default budget limit
     CAmount nPaymentsLimit = consensusParams.nRegularTreasuryBudget;
 
+    // one budget cycle has a special payment limit to help with early distribution
+    if (consensusParams.nSpecialTreasuryBudgetBlock == static_cast<uint32_t>(nBlockHeight))
+    {
+        nPaymentsLimit = consensusParams.nSpecialTreasuryBudget;
+    }
+
     // before the masternode payments start at consensus.nMasternodePaymentsStartBlock
     // coins that would be allocated to masternodes are available to pay treasury proposals
     if (nBlockHeight < consensusParams.nMasternodePaymentsStartBlock)
     {
         nPaymentsLimit += consensusParams.nSuperblockCycle * consensusParams.nBlockSubsidyMasternodes;
-    }
-
-    // one budget cycle has a special payment limit to help with early distribution
-    if (consensusParams.nSpecialTreasuryBudgetBlock == static_cast<uint32_t>(nBlockHeight))
-    {
-        nPaymentsLimit = consensusParams.nSpecialTreasuryBudget;
     }
 
     LogPrint("gobject", "CSuperblock::GetPaymentsLimit -- Valid superblock height %d, payments max %lld\n", nBlockHeight, nPaymentsLimit);
