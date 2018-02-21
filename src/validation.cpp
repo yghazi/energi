@@ -1223,13 +1223,24 @@ double ConvertBitsToDouble(unsigned int nBits)
     return dDiff;
 }
 
+CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
+{
+    // before the nMasternodePaymentsStartBlock we only pay the miner reward & the Energi Foundation
+    if (nHeight < consensusParams.nMasternodePaymentsStartBlock)
+    {
+        return consensusParams.nBlockSubsidyFoundation + consensusParams.nBlockSubsidyMiners;
+    }
+
+    return consensusParams.nBlockSubsidy;
+}
+
 CAmount GetMasternodePayment(int nHeight, CAmount blockReward)
 {
     CAmount ret = 0;
     const Consensus::Params& consensusParams = Params().GetConsensus();
-    CAmount txFees = blockReward - consensusParams.nBlockSubsidy;
     if (nHeight >= consensusParams.nMasternodePaymentsStartBlock) {
         //Masternodes get their assigned block subsidy plus 50% of the tx fees
+        CAmount txFees = blockReward - GetBlockSubsidy(nHeight, consensusParams);
         ret = consensusParams.nBlockSubsidyMasternodes + (0.5 * txFees);
     }
     return ret;
@@ -2128,7 +2139,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     // the peer who sent us this block is missing some data and wasn't able
     // to recognize that block is actually invalid.
     // TODO: resync data (both ways?) and try to reprocess this block later.
-    CAmount blockReward = nFees + chainparams.GetConsensus().nBlockSubsidy;
+    CAmount blockReward = nFees + GetBlockSubsidy(pindex->nHeight, chainparams.GetConsensus());
     std::string strError = "";
     if (!IsBlockValueValid(block, pindex->nHeight, blockReward, strError)) {
         return state.DoS(0, error("ConnectBlock(NRG): %s", strError), REJECT_INVALID, "bad-cb-amount");
