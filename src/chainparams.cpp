@@ -709,6 +709,7 @@ public:
         fTestnetToBeDeprecatedFieldRPC = false;
 
         nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
+        strSporkPubKey = "044221353eb05b321b55f9b47dc90462066d6e09019e95b05d6603a117877fd34b13b34e8ed005379a9553ce7e719c44c658fd9c9acaae58a04c63cb8f7b5716db";
 
         checkpointData = (CCheckpointData){
             boost::assign::map_list_of
