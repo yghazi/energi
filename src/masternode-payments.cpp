@@ -190,7 +190,7 @@ void FillBlockPayments(CMutableTransaction& txNew, int nBlockHeight, CAmount blo
     // FILL BLOCK PAYEE WITH ENERGI FOUNDATION REWARD AND MASTERNODE PAYMENT OTHERWISE
     mnpayments.FillBlockFoundationReward(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
     // ONLY START PAYING THE MASTERNODE AFTER THE PAYMENTS START BLOCK
-    if(nBlockHeight + 1 > Params().GetConsensus().nMasternodePaymentsStartBlock) {
+    if(nBlockHeight >= Params().GetConsensus().nMasternodePaymentsStartBlock) {
         mnpayments.FillBlockPayee(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
         LogPrint("mnpayments", "FillBlockPayments -- nBlockHeight %d blockReward %lld txoutMasternodeRet %s txNew %s",
                             nBlockHeight, blockReward, txoutMasternodeRet.ToString(), txNew.ToString());

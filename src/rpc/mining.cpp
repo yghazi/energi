@@ -686,6 +686,10 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         aMutable.push_back("version/force");
     }
 
+    auto const newBlockHeight = pIndexPrev->nHeight + 1;
+    bool const mnPaymentsStarted = (newBlockHeight >= Params().GetConsensus().nMasternodePaymentsStartBlock);
+    bool const superblocksStarted = newBlockHeight >= Params().GetConsensus().nSuperblockCycle;
+
     result.push_back(Pair("previousblockhash", pblock->hashPrevBlock.GetHex()));
     result.push_back(Pair("transactions", transactions));
     result.push_back(Pair("coinbaseaux", aux));
@@ -699,10 +703,10 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
     result.push_back(Pair("sizelimit", (int64_t)MaxBlockSize(fDIP0001ActiveAtTip)));
     result.push_back(Pair("curtime", pblock->GetBlockTime()));
     result.push_back(Pair("bits", strprintf("%08x", pblock->nBits)));
-    result.push_back(Pair("height", (int64_t)(pindexPrev->nHeight+1)));
+    result.push_back(Pair("height", (int64_t)(newBlockHeight)));
 
     UniValue masternodeObj(UniValue::VOBJ);
-    if(pblock->txoutMasternode != CTxOut()) {
+    if(mnPaymentsStarted && (pblock->txoutMasternode != CTxOut())) {
         CTxDestination address1;
         ExtractDestination(pblock->txoutMasternode.scriptPubKey, address1);
         CBitcoinAddress address2(address1);
@@ -711,7 +715,7 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         masternodeObj.push_back(Pair("amount", pblock->txoutMasternode.nValue));
     }
     result.push_back(Pair("masternode", masternodeObj));
-    result.push_back(Pair("masternode_payments_started", pindexPrev->nHeight + 1 > Params().GetConsensus().nMasternodePaymentsStartBlock));
+    result.push_back(Pair("masternode_payments_started", mnPaymentsStarted));
     result.push_back(Pair("masternode_payments_enforced", sporkManager.IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)));
 
     UniValue superblockObjArray(UniValue::VARR);
@@ -728,7 +732,7 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         }
     }
     result.push_back(Pair("superblock", superblockObjArray));
-    result.push_back(Pair("superblocks_started", pindexPrev->nHeight + 1 > Params().GetConsensus().nSuperblockCycle));
+    result.push_back(Pair("superblocks_started", superblocksStarted);
     result.push_back(Pair("superblocks_enabled", sporkManager.IsSporkActive(SPORK_9_SUPERBLOCKS_ENABLED)));
 
     return result;
