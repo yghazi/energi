@@ -180,10 +180,10 @@ public:
         // Energi distribution parameters
         consensus.energiFoundationAddress = "TODO: implement me";
 
-        // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
-        // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
-        // miners get 20% of all coins or 2.4M / 525,600 ~ 4.57
-        // founder gets 10% of all coins or 1.2M / 525,600 ~ 2.28
+        // Seeing as there are 526,000 blocks per year, and there is a 12M annual emission
+        // masternodes get 30% of all coins or 3.6M / 526,000 ~ 6.85
+        // miners get 20% of all coins or 2.4M / 526,000 ~ 4.57
+        // founder gets 10% of all coins or 1.2M / 526,000 ~ 2.28
         // which adds up to 13.7 as block subsidy
         consensus.nBlockSubsidy = 1370000000;
         // 10% to energi foundation
@@ -351,10 +351,10 @@ public:
         // Energi distribution parameters
         consensus.energiFoundationAddress = "tA61JveN6y2kej9kYNK9tKvVuUgAvgaC6X";
 
-        // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
-        // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
-        // miners get 20% of all coins or 2.4M / 525,600 ~ 4.57
-        // founder gets 10% of all coins or 1.2M / 525,600 ~ 2.28
+        // Seeing as there are 526,000 blocks per year, and there is a 12M annual emission
+        // masternodes get 30% of all coins or 3.6M / 526,000 ~ 6.85
+        // miners get 20% of all coins or 2.4M / 526,000 ~ 4.57
+        // founder gets 10% of all coins or 1.2M / 526,000 ~ 2.28
         // which adds up to 13.7 as block subsidy
         consensus.nBlockSubsidy = 1370000000;
         // 10% founders reward
@@ -486,10 +486,10 @@ public:
 
         // Energi distribution parameters
         consensus.energiFoundationAddress = "tA61JveN6y2kej9kYNK9tKvVuUgAvgaC6X";
-        // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
-        // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
-        // miners get 20% of all coins or 2.4M / 525,600 ~ 4.57
-        // founder gets 10% of all coins or 1.2M / 525,600 ~ 2.28
+        // Seeing as there are 526,000 blocks per year, and there is a 12M annual emission
+        // masternodes get 30% of all coins or 3.6M / 526,000 ~ 6.85
+        // miners get 20% of all coins or 2.4M / 526,000 ~ 4.57
+        // founder gets 10% of all coins or 1.2M / 526,000 ~ 2.28
         // which adds up to 13.7 as block subsidy
         consensus.nBlockSubsidy = 82200000000; // 1370000000 * 60
         // 10% founders reward
@@ -617,10 +617,10 @@ public:
         // Energi distribution parameters
         consensus.energiFoundationAddress = "tA61JveN6y2kej9kYNK9tKvVuUgAvgaC6X";
 
-        // Seeing as there are 525,600 blocks per year, and there is a 12M annual emission
-        // masternodes get 30% of all coins or 3.6M / 525,600 ~ 6.85
-        // miners get 20% of all coins or 2.4M / 525,600 ~ 4.57
-        // founder gets 10% of all coins or 1.2M / 525,600 ~ 2.28
+        // Seeing as there are 526,000 blocks per year, and there is a 12M annual emission
+        // masternodes get 30% of all coins or 3.6M / 526,000 ~ 6.85
+        // miners get 20% of all coins or 2.4M / 526,000 ~ 4.57
+        // founder gets 10% of all coins or 1.2M / 526,000 ~ 2.28
         // which adds up to 13.7 as block subsidy
         consensus.nBlockSubsidy = 1370000000;
         // 10% founders reward
