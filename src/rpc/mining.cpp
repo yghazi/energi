@@ -397,6 +397,11 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
             "  \"curtime\" : ttt,                  (numeric) current timestamp in seconds since epoch (Jan 1 1970 GMT)\n"
             "  \"bits\" : \"xxx\",                 (string) compressed target of next block\n"
             "  \"height\" : n                      (numeric) The height of the next block\n"
+            "  \"foundation\" : {                  (json object) required Energi Foundation payee that must be included in the next block\n"
+            "      \"payee\" : \"xxxx\",             (string) payee address\n"
+            "      \"script\" : \"xxxx\",            (string) payee scriptPubKey\n"
+            "      \"amount\": n                   (numeric) required amount to pay\n"
+            "  },\n"
             "  \"masternode\" : {                  (json object) required masternode payee that must be included in the next block\n"
             "      \"payee\" : \"xxxx\",             (string) payee address\n"
             "      \"script\" : \"xxxx\",            (string) payee scriptPubKey\n"
@@ -704,6 +709,15 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
     result.push_back(Pair("curtime", pblock->GetBlockTime()));
     result.push_back(Pair("bits", strprintf("%08x", pblock->nBits)));
     result.push_back(Pair("height", (int64_t)(newBlockHeight)));
+
+    UniValue foundationObj(UniValue::VOBJ);
+    CTxDestination address1;
+    ExtractDestination(pblock->txoutFoundation.scriptPubKey, address1);
+    CBitcoinAddress address2(address1);
+    foundationObj.push_back(Pair("payee", address2.ToString().c_str()));
+    foundationObj.push_back(Pair("script", HexStr(pblock->txoutFoundation.scriptPubKey.begin(), pblock->txoutFoundation.scriptPubKey.end())));
+    foundationObj.push_back(Pair("amount", pblock->txoutFoundation.nValue));
+    result.push_back(Pair("foundation", foundationObj));
 
     UniValue masternodeObj(UniValue::VOBJ);
     if(mnPaymentsStarted && (pblock->txoutMasternode != CTxOut())) {
