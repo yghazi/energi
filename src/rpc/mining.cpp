@@ -686,7 +686,7 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         aMutable.push_back("version/force");
     }
 
-    auto const newBlockHeight = pIndexPrev->nHeight + 1;
+    auto const newBlockHeight = pindexPrev->nHeight + 1;
     bool const mnPaymentsStarted = (newBlockHeight >= Params().GetConsensus().nMasternodePaymentsStartBlock);
     bool const superblocksStarted = newBlockHeight >= Params().GetConsensus().nSuperblockCycle;
 
@@ -732,7 +732,7 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         }
     }
     result.push_back(Pair("superblock", superblockObjArray));
-    result.push_back(Pair("superblocks_started", superblocksStarted);
+    result.push_back(Pair("superblocks_started", superblocksStarted));
     result.push_back(Pair("superblocks_enabled", sporkManager.IsSporkActive(SPORK_9_SUPERBLOCKS_ENABLED)));
 
     return result;
