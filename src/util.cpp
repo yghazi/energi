@@ -279,6 +279,8 @@ bool LogAcceptCategory(const char* category)
                 ptrCategory->insert(string("spork"));
                 ptrCategory->insert(string("keepass"));
                 ptrCategory->insert(string("mnpayments"));
+                ptrCategory->insert(string("mnsync"));
+                ptrCategory->insert(string("nrghash"));
                 ptrCategory->insert(string("gobject"));
             }
         }

@@ -120,9 +120,9 @@ UniValue debug(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
         throw runtime_error(
-            "debug ( 0|1|addrman|alert|bench|coindb|db|lock|rand|rpc|selectcoins|mempool"
+            "debug ( 0|1|addrman|alert|bench|coindb|db|reindex|estimatefee|lock|rand|rpc|selectcoins|mempool"
             "|mempoolrej|net|proxy|prune|http|libevent|tor|zmq|"
-            "energi|privatesend|instantsend|masternode|spork|keepass|mnpayments|gobject )\n"
+            "energi|nrghash|privatesend|instantsend|masternode|spork|keepass|mnpayments|mnsync|gobject )\n"
             "Change debug category on the fly. Specify single category or use comma to specify many.\n"
             "\nExamples:\n"
             + HelpExampleCli("debug", "energi")
