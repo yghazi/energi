@@ -6,6 +6,7 @@
 #define ENERGI_DAG_SINGLETON_H
 
 #include "crypto/egihash.h"
+#include "util.h"
 
 #include <memory>
 
