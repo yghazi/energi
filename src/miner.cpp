@@ -282,7 +282,7 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
 
         }
 
-        CAmount blockReward = nFees + Params().GetConsensus().nBlockSubsidy;
+        CAmount blockReward = nFees + GetBlockSubsidy(nHeight, Params().GetConsensus());
 
         // Compute regular coinbase transaction.
         txNew.vout[0].nValue = blockReward;
