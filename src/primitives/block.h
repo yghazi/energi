@@ -93,6 +93,7 @@ public:
     std::vector<CTransaction> vtx;
 
     // memory only
+    mutable CTxOut txoutFoundation; // foundation payment
     mutable CTxOut txoutMasternode; // masternode payment
     mutable std::vector<CTxOut> voutSuperblock; // superblock payment
     mutable bool fChecked;
@@ -120,6 +121,7 @@ public:
     {
         CBlockHeader::SetNull();
         vtx.clear();
+        txoutFoundation = CTxOut();
         txoutMasternode = CTxOut();
         voutSuperblock.clear();
         fChecked = false;

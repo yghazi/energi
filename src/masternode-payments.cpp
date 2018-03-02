@@ -176,7 +176,7 @@ bool IsBlockPayeeValid(const CTransaction& txNew, int nBlockHeight, CAmount bloc
     return true;
 }
 
-void FillBlockPayments(CMutableTransaction& txNew, int nBlockHeight, CAmount blockReward, CTxOut& txoutMasternodeRet, std::vector<CTxOut>& voutSuperblockRet)
+void FillBlockPayments(CMutableTransaction& txNew, int nBlockHeight, CAmount blockReward, CTxOut& txoutFoundationRet, CTxOut& txoutMasternodeRet, std::vector<CTxOut>& voutSuperblockRet)
 {
     // only create superblocks if spork is enabled AND if superblock is actually triggered
     // (height should be validated inside)
@@ -187,14 +187,16 @@ void FillBlockPayments(CMutableTransaction& txNew, int nBlockHeight, CAmount blo
             return;
     }
 
-    // FILL BLOCK PAYEE WITH ENERGI FOUNDATION REWARD AND MASTERNODE PAYMENT OTHERWISE
-    mnpayments.FillBlockFoundationReward(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
-    // ONLY START PAYING THE MASTERNODE AFTER THE PAYMENTS START BLOCK
+    // add the Energi Foundation payment
+    mnpayments.FillBlockFoundationReward(txNew, txoutFoundationRet);
+
+    // add the masternode payment if the chain is long enough to start paying masternodes
     if(nBlockHeight >= Params().GetConsensus().nMasternodePaymentsStartBlock) {
         mnpayments.FillBlockPayee(txNew, nBlockHeight, blockReward, txoutMasternodeRet);
         LogPrint("mnpayments", "FillBlockPayments -- nBlockHeight %d blockReward %lld txoutMasternodeRet %s txNew %s",
                             nBlockHeight, blockReward, txoutMasternodeRet.ToString(), txNew.ToString());
     }
+
     LogPrint("mnpayments", "FillBlockPayments -- nBlockHeight %d blockReward %lld txNew %s",
                             nBlockHeight, blockReward, txNew.ToString());
 }
@@ -235,7 +237,7 @@ bool CMasternodePayments::CanVote(COutPoint outMasternode, int nBlockHeight)
 *
 *   Add the Energi Foundation reward transaction to the block
 */
-void CMasternodePayments::FillBlockFoundationReward(CMutableTransaction& txNew, int /*nBlockHeight*/, CAmount /*blockReward*/, CTxOut& txoutFoundationRet)
+void CMasternodePayments::FillBlockFoundationReward(CMutableTransaction& txNew, CTxOut& txoutFoundationRet)
 {
     auto const & consensus = Params().GetConsensus();
 
