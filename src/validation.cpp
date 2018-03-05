@@ -1225,10 +1225,10 @@ double ConvertBitsToDouble(unsigned int nBits)
 
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 {
-    // before the nMasternodePaymentsStartBlock we only pay the miner reward & the Energi Foundation
+    // before the nMasternodePaymentsStartBlock we only pay the miner reward & the Energi Backbone
     if (nHeight < consensusParams.nMasternodePaymentsStartBlock)
     {
-        return consensusParams.nBlockSubsidyFoundation + consensusParams.nBlockSubsidyMiners;
+        return consensusParams.nBlockSubsidyBackbone + consensusParams.nBlockSubsidyMiners;
     }
 
     return consensusParams.nBlockSubsidy;
