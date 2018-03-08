@@ -59,7 +59,7 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
 
-//#define ENERGI_MINE_NEW_GENESIS_BLOCK
+// #define ENERGI_MINE_NEW_GENESIS_BLOCK
 #ifdef ENERGI_MINE_NEW_GENESIS_BLOCK
 
 #include "dag_singleton.h"
@@ -415,10 +415,10 @@ public:
         nPruneAfterHeight = 1000;
 
 
-        genesis = CreateGenesisBlock(1519179011UL, 9573928, 0x1e0ffff0, 1, consensus.nBlockSubsidyBackbone + consensus.nBlockSubsidyMiners);
+        genesis = CreateGenesisBlock(1520544153UL, 11476682, 0x1e0ffff0, 1, consensus.nBlockSubsidyBackbone + consensus.nBlockSubsidyMiners);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        uint256 expectedGenesisHash = uint256S("0x88f1d2b537093044c153d516e0226a1c28858f3835c5b6704449156e864d23a2");
+        uint256 expectedGenesisHash = uint256S("0xf2e36a829a5aba8f899aad7fa0087699878de4ac7dd53ce7e8118892623fd6a3");
         uint256 expectedGenesisMerkleRoot = uint256S("0x75c2ee0d60966f833a512d56e7ffbb46295108219ee37c7f32b0dd90921c34fd");
 
         // TODO: mine genesis block for testnet
